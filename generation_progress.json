@@ -358,6 +358,14 @@
     {
       "lesson_id": 111,
       "error": "Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CZZZqeYD581ncSmDGmLUA'}"
+    },
+    {
+      "lesson_id": 112,
+      "error": "Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CZZZr3N96FqaAfb8wiQAX'}"
+    },
+    {
+      "lesson_id": 113,
+      "error": "Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CZZZrS8Mv1CTrk6YGmEui'}"
     }
   ],
   "last_generated": 29
