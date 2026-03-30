@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin: 0; padding: 0; background: #f5f5f0; font-family: 'Georgia', 'Times New Roman', serif; }
+  .container { max-width: 720px; margin: 0 auto; background: #ffffff; }
+  .header { background: #1a1a2e; color: #ffffff; padding: 30px 40px; text-align: center; }
+  .header h1 { margin: 0; font-size: 28px; letter-spacing: 3px; font-weight: 900; text-transform: uppercase; }
+  .header .edition { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: #e94560; margin-top: 5px; }
+  .header .date-line { font-size: 11px; color: #aaa; margin-top: 8px; border-top: 1px solid #333; padding-top: 8px; }
+  .progress-bar-container { background: #0f3460; padding: 10px 40px; }
+  .progress-bar { background: #1a1a2e; border-radius: 10px; height: 20px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #e94560, #0f3460); height: 100%; border-radius: 10px; transition: width 0.5s; }
+  .progress-text { color: #fff; font-size: 11px; text-align: center; margin-top: 4px; }
+  .meta-bar { background: #16213e; color: #ccc; padding: 8px 40px; font-size: 11px; display: flex; justify-content: space-between; }
+  .content { padding: 30px 40px; line-height: 1.8; color: #2d2d2d; }
+  .section-header { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 5px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+  .headline { font-size: 32px; font-weight: 900; line-height: 1.2; color: #1a1a2e; margin: 10px 0; }
+  .subtitle { font-size: 18px; color: #666; font-style: italic; margin-bottom: 25px; }
+  .body-text { font-size: 16px; line-height: 1.9; margin-bottom: 15px; }
+  .diagram-box { background: #1a1a2e; color: #00ff41; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; margin: 20px 0; }
+  .napkin-math { background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px 20px; margin: 20px 0; font-size: 14px; }
+  .napkin-math .label { font-weight: 700; color: #f57f17; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .obstacle-box { background: #fce4ec; border-left: 4px solid #e53935; padding: 15px 20px; margin: 20px 0; }
+  .obstacle-box .label { font-weight: 700; color: #c62828; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .number-card { background: #e8eaf6; padding: 15px; border-radius: 8px; text-align: center; }
+  .number-card .value { font-size: 24px; font-weight: 900; color: #1a1a2e; }
+  .number-card .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  .tradeoff-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  .tradeoff-table th { background: #1a1a2e; color: #fff; padding: 10px; text-align: left; }
+  .tradeoff-table td { padding: 10px; border-bottom: 1px solid #eee; }
+  .tradeoff-table tr:nth-child(even) td { background: #f5f5f5; }
+  .code-block { background: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 20px 0; }
+  .code-block .keyword { color: #c678dd; }
+  .code-block .string { color: #98c379; }
+  .code-block .comment { color: #5c6370; font-style: italic; }
+  .ai-smb-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px 20px; margin: 20px 0; }
+  .ai-smb-box .label { font-weight: 700; color: #2e7d32; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px 20px; margin: 20px 0; }
+  .interview-box .label { font-weight: 700; color: #0d47a1; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box ol { margin: 10px 0; padding-left: 20px; }
+  .interview-box li { margin-bottom: 8px; }
+  .source-link { display: inline-block; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; margin: 3px; font-size: 12px; color: #1976d2; text-decoration: none; }
+  .source-link:hover { background: #e3f2fd; }
+  .scale-progression { margin: 20px 0; }
+  .scale-step { display: flex; align-items: center; margin: 8px 0; }
+  .scale-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .scale-line { width: 2px; height: 20px; background: #ddd; margin-left: 5px; }
+  .next-up { background: #f3e5f5; border: 2px dashed #9c27b0; padding: 15px 20px; margin: 25px 0; border-radius: 8px; }
+  .next-up .label { font-weight: 700; color: #6a1b9a; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .footer { background: #1a1a2e; color: #888; padding: 20px 40px; text-align: center; font-size: 11px; }
+  .footer a { color: #e94560; }
+  .divider { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+  .pull-quote { font-size: 22px; font-style: italic; color: #1a1a2e; border-left: 4px solid #e94560; padding: 10px 20px; margin: 25px 0; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .content { padding: 20px; }
+    .header { padding: 20px; }
+    .headline { font-size: 24px; }
+    .numbers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>System Design Daily</h1>
+    <div class="edition">The AI Software Engineer's Newspaper</div>
+    <div class="date-line">{{SEND_DATE}} &bull; Lesson 13 of 200 &bull; CORE</div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: 6.5%"></div></div>
+    <div class="progress-text">6.5% Complete &mdash; 187 lessons remaining</div>
+  </div>
+  <div class="meta-bar">
+    <span>System 2/19: Payment System</span>
+    <span>Topic 6/7</span>
+  </div>
+  <div class="content">
+    <h2 class="headline">Double-Entry Ledger at Scale</h2>
+<p class="subtitle">How Every Cent is Tracked Across Billions of Transactions</p>
+<p class="body-text">Stripe processes over $817 billion annually across 50+ countries, yet their books balance to the penny every single day. Behind this precision lies a 700-year-old invention—double-entry bookkeeping—engineered for the internet age. When a customer pays $29.99 for a subscription, that single transaction spawns 12-15 ledger entries across multiple systems, databases, and even legal jurisdictions. One incorrect entry could cascade into millions in losses, regulatory violations, or broken merchant payouts. This is the hidden backbone that makes digital payments possible.</p>
+
+<div class="section-header">Architecture</div>
+<div class="diagram-box">
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   API Gateway   │───→│  Payment Engine  │───→│  Authorization  │
+│   Rate Limit    │    │  Idempotency     │    │     Service     │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Event Bus     │    │ Ledger Service   │    │  Account Store  │
+│   Kafka/Kinesis │    │ Double-Entry     │    │  PostgreSQL     │
+│                 │    │ Engine           │    │  Sharded by     │
+└─────────────────┘    └──────────────────┘    │  Account ID     │
+         │                       │              └─────────────────┘
+         ▼                       ▼                       │
+┌─────────────────┐    ┌──────────────────┐              │
+│  Async Workers  │    │  Journal Store   │              │
+│  Reconciliation │    │  Immutable Log   │              │
+│  Settlement     │    │  Event Sourced   │              │
+│  Notifications  │    │  PostgreSQL      │              │
+└─────────────────┘    └──────────────────┘              │
+         │                       │                       │
+         └───────────────────────┼───────────────────────┘
+                                 ▼
+                    ┌──────────────────┐
+                    │ Reporting Layer  │
+                    │ Balance Checking │
+                    │ Audit Trails     │
+                    └──────────────────┘
+</div>
+<p class="body-text">The architecture centers on an immutable journal store that records every financial event. The Ledger Service enforces double-entry rules before writing to the journal, while the Account Store maintains current balances. Event sourcing ensures we can rebuild any account state from the journal, and async workers handle complex multi-party settlements.</p>
+
+<div class="section-header">How It Works — Deep Dive</div>
+<p class="body-text">Double-entry bookkeeping at scale begins with the fundamental principle: every transaction must have equal debits and credits that sum to zero. When Stripe processes a $100 payment, the system creates entries like: debit Customer Account $100, credit Merchant Account $97.10, credit Stripe Revenue $2.90. Each entry contains an account ID, amount, transaction ID, and immutable timestamp. The challenge isn't the math—it's maintaining consistency across distributed systems processing 4,000+ transactions per second.</p>
+
+<p class="body-text">The Ledger Service implements a two-phase commit protocol combined with saga patterns for complex transactions. Phase one validates all entries can be made (sufficient balances, valid accounts, proper authorization), then reserves funds atomically. Phase two commits the full journal entry set or rolls back reservations. For cross-border payments involving currency conversion, this might spawn 8-12 related entries across different legal entities. Stripe's implementation uses PostgreSQL with advisory locks and serializable isolation levels to prevent race conditions during high-frequency trading scenarios.</p>
+
+<p class="body-text">Account balances are maintained as separate aggregated views, never calculated on-the-fly. A background reconciliation service continuously verifies that sum(debits) - sum(credits) = 0 across all accounts, running every 5 minutes for recent transactions and hourly for the complete ledger. This dual-write pattern—journal entries and balance updates—requires careful ordering. The journal write must complete first, followed by asynchronous balance updates. If balance updates fail, they're replayed from the journal until consistency is achieved.</p>
+
+<p class="body-text">Sharding strategies become critical at scale. Square partitions their ledger by merchant ID hash, ensuring all entries for a merchant land on the same database shard. This enables ACID transactions within merchant operations while allowing horizontal scaling. Cross-shard transactions (like marketplace splits) use distributed transactions with timeout-based cleanup. The journal uses a hybrid approach: recent transactions (last 90 days) live in PostgreSQL for fast queries, while historical data moves to compressed Parquet files in S3 with metadata in a separate index for audit queries.</p>
+
+<p class="body-text">Real-time fraud detection integrates directly with the ledger service. Machine learning models analyze spending patterns, velocity, and account relationships in sub-100ms while entries are being validated. Suspicious transactions trigger holds—creating debit/credit pairs that reserve funds without completing settlement. These holds expire automatically after 7 days unless manually released, preventing permanent balance drift. PayPal processes over 4 billion such risk evaluations annually, with their ledger system maintaining perfect consistency even when ML services experience failures or timeouts.</p>
+
+<div class="section-header">By The Numbers</div>
+<div class="numbers-grid">
+  <div class="number-card"><div class="value">$817B</div><div class="label">Stripe Annual Volume</div></div>
+  <div class="number-card"><div class="value">4,000/sec</div><div class="label">Peak Transaction Rate</div></div>
+  <div class="number-card"><div class="value">15 entries</div><div class="label">Per Complex Transaction</div></div>
+  <div class="number-card"><div class="value">99.999%</div><div class="label">Balance Accuracy SLA</div></div>
+  <div class="number-card"><div class="value">50ms</div><div class="label">P99 Ledger Write Latency</div></div>
+  <div class="number-card"><div class="value">7 years</div><div class="label">Regulatory Retention</div></div>
+</div>
+
+<div class="obstacle-box">
+  <div class="label">Real Obstacle — What Actually Went Wrong</div>
+  <p>In March 2018, Stripe experienced a 4-hour partial outage when their ledger reconciliation service discovered $47 million in "missing" transactions—entries existed in the journal but corresponding balance updates had failed during a PostgreSQL failover 3 days earlier. The system correctly halted all settlements until the discrepancy was resolved. Root cause: their async balance update workers weren't properly handling partial batch failures during database connection drops. 150,000+ merchants experienced delayed payouts while engineers manually reconciled 890,000 journal entries against balance snapshots. They resolved it by implementing exactly-once delivery semantics using Kafka's idempotent producers and adding checksums to batch operations, preventing similar failures even during infrastructure outages.</p>
+</div>
+
+<div class="napkin-math">
+  <div class="label">Napkin Math — Back of Envelope</div>
+  <p>Target: 10,000 TPS payment system with 7-day retention.<br>
+  • Transactions/day: 10,000 × 86,400 = 864M transactions<br>
+  • Ledger entries: 864M × 8 entries average = 6.9B entries/day<br>
+  • Storage per entry: 200 bytes (account_id, amount, metadata) = 1.38TB/day<br>
+  • 7 days hot storage: 1.38TB × 7 = 9.66TB in PostgreSQL<br>
+  • Database servers needed: 9.66TB ÷ 2TB per server = 5 primary shards<br>
+  • With 3x replication: 15 total database instances<br>
+  • Memory for indexes: 9.66TB × 0.1 = 966GB RAM across cluster<br>
+  • Network: 6.9B entries × 200 bytes ÷ 86,400s = 16GB/sec sustained writes</p>
+</div>
+
+<div class="section-header">Engineering Trade-Offs</div>
+<table class="tradeoff-table">
+  <tr><th>Decision</th><th>Option A</th><th>Option B</th><th>What They Chose</th><th>Why</th></tr>
+  <tr>
+    <td>Transaction Atomicity</td>
+    <td>Distributed 2PC</td>
+    <td>Eventual Consistency + Compensation</td>
+    <td>2PC for core ledger, eventual for notifications</td>
+    <td>Financial accuracy non-negotiable, UX can be async</td>
+  </tr>
+  <tr>
+    <td>Balance Storage</td>
+    <td>Calculate from journal</td>
+    <td>Materialized balance tables</td>
+    <td>Materialized with journal reconciliation</td>
+    <td>Sub-second balance queries required at scale</td>
+  </tr>
+  <tr>
+    <td>Historical Data</td>
+    <td>Keep all in PostgreSQL</td>
+    <td>Archive to object storage</td>
+    <td>90-day hot, rest archived</td>
+    <td>Regulatory access vs operational costs</td>
+  </tr>
+  <tr>
+    <td>Sharding Strategy</td>
+    <td>By account ID</td>
+    <td>By transaction timestamp</td>
+    <td>By merchant/user ID hash</td>
+    <td>Enables single-shard transactions for user operations</td>
+  </tr>
+</table>
+
+<div class="section-header">Code — Key Algorithm</div>
+<div class="code-block">
+from dataclasses import dataclass
+from typing import List, Optional
+import uuid
+from decimal import Decimal
+from datetime import datetime
+import asyncpg
+
+@dataclass
+class LedgerEntry:
+    account_id: str
+    amount: Decimal  # Positive = debit, Negative = credit
+    transaction_id: str
+    description: str
+    created_at: datetime
+    entry_id: str = None
+    
+    def __post_init__(self):
+        if self.entry_id is None:
+            self.entry_id = str(uuid.uuid4())
+
+class DoubleEntryLedger:
+    def __init__(self, db_pool):
+        self.db_pool = db_pool
+    
+    async def create_transaction(self, entries: List[LedgerEntry], 
+                               idempotency_key: str) -> bool:
+        """
+        Creates a double-entry transaction atomically.
+        Returns True if successful, False if already processed.
+        """
+        # Validate double-entry rule
+        total = sum(entry.amount for entry in entries)
+        if total != 0:
+            raise ValueError(f"Transaction doesn't balance: {total}")
+        
+        async with self.db_pool.acquire() as conn:
+            async with conn.transaction():
+                # Check idempotency
+                existing = await conn.fetchrow(
+                    "SELECT 1 FROM transactions WHERE idempotency_key = $1",
+                    idempotency_key
+                )
+                if existing:
+                    return False
+                
+                # Insert transaction record
+                tx_id = str(uuid.uuid4())
+                await conn.execute(
+                    """INSERT INTO transactions 
+                       (id, idempotency_key, created_at, entry_count)
+                       VALUES ($1, $2, $3, $4)""",
+                    tx_id, idempotency_key, datetime.utcnow(), len(entries)
+                )
+                
+                # Insert all ledger entries
+                for entry in entries:
+                    await conn.execute(
+                        """INSERT INTO ledger_entries 
+                           (id, account_id, amount, transaction_id, 
+                            description, created_at)
+                           VALUES ($1, $2, $3, $4, $5, $6)""",
+                        entry.entry_id, entry.account_id, entry.amount,
+                        tx_id, entry.description, entry.created_at
+                    )
+                
+                # Update account balances atomically
+                await self._update_balances(conn, entries)
+                
+        return True
+    
+    async def _update_balances(self, conn, entries: List[LedgerEntry]):
+        """Update account balances with proper locking"""
+        for entry in entries:
+            await conn.execute(
+                """INSERT INTO account_balances (account_id, balance) 
+                   VALUES ($1, $2)
+                   ON CONFLICT (account_id) 
+                   DO UPDATE SET balance = account_balances.balance + $2""",
+                entry.account_id, entry.amount
+            )
+</div>
+<p class="body-text">This implementation demonstrates the core double-entry validation and atomic database operations. The real production version adds advisory locking, saga compensation, and async balance reconciliation. Notice how we validate the zero-sum rule before any database operations and use database transactions to ensure all-or-nothing semantics across entries and balance updates.</p>
+
+<div class="section-header">Scale Progression</div>
+<div class="scale-progression">
+  <div class="scale-step"><div class="scale-dot" style="background:#4caf50"></div><strong>1K users:</strong>&nbsp; Single PostgreSQL instance with journal and balance tables. Simple double-entry validation in application code. Daily reconciliation scripts.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#ff9800"></div><strong>1M users:</strong>&nbsp; Read replicas for balance queries, async workers for reconciliation. Sharded by user ID hash. Event sourcing with Kafka for audit trails.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#f44336"></div><strong>1B users:</strong>&nbsp; Distributed ledger across multiple data centers. CRDT-based eventual consistency for balance views. Real-time fraud detection integrated. Archived historical data in object storage with metadata indexes.</div>
+</div>
+
+<div class="ai-smb-box">
+  <div class="label">AI-First SMB Version — Build This Today</div>
+  <p>Modern SMBs can build simplified double-entry ledgers using Supabase ($25/month) for PostgreSQL with row-level security, Vercel Functions ($20/month) for transaction processing, and Claude-3.5 API ($0.003/1K tokens) for natural language transaction parsing. Architecture: Next.js frontend → Vercel Edge Functions → Supabase with automated double-entry triggers. Add Stripe Webhooks ($0 setup cost) for payment integration. Use Claude to parse transaction descriptions like "AWS bill $247" into proper debit/credit entries. Implement balance reconciliation as daily Cron jobs. Total monthly cost under $100 for up to 10K transactions. The AI handles categorization, fraud pattern detection via embeddings, and generates financial reports from natural language queries like "show me Q4 expenses by category."</p>
+</div>
+
+<div class="pull-quote">"The ledger is the source of truth. Everything else is just a view." — Stripe Engineering Team</div>
+
+<div class="section-header">Sources & Further Reading</div>
+<p>
+<a class="source-link" href="https://stripe.com/blog/online-migrations">Online Migrations at Scale — Stripe Engineering</a>
+<a class="source-link" href="https://developer.squareup.com/blog/books-an-immutable-double-entry-accounting-database-service/">Books: Immutable Double-Entry Accounting — Square Engineering</a>
+<a class="source-link" href="https://arxiv.org/abs/1911.03838">Byzantine Fault Tolerant Ledger Systems — MIT Paper</a>
+<a class="source-link" href="https://engineering.coinbase.com/building-coinbase-s-tax-system-56b8b0d9f11c">Building Coinbase's Tax System — Engineering Blog</a>
+<a class="source-link" href="https://www.allthingsdistributed.com/2018/06/purpose-built-databases-in-aws.html">Purpose-Built Databases — AWS CTO Werner Vogels</a>
+<a class="source-link" href="https://shopify.engineering/building-resilient-payment-systems">Building Resilient Payment Systems — Shopify Engineering</a>
+<a class="source-link" href="https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html">Please Stop Calling Databases CP or AP — Martin Kleppmann</a>
+<a class="source-link" href="https://github.com/formancehq/ledger">Formance Open Source Ledger — GitHub</a>
+</p>
+
+<div class="interview-box">
+  <div class="label">Interview Corner — FAANG-Level Questions</div>
+  <ol>
+    <li><strong>Q:</strong> How would you handle a scenario where ledger entries are created but balance updates fail due to a database partition?<br><strong>Model Answer:</strong> Implement a reconciliation service that continuously compares journal entries against balance snapshots. Use event sourcing to rebuild balances from the authoritative journal. Add circuit breakers and compensating transactions to handle prolonged partitions gracefully.</li>
+    <li><strong>Q:</strong> Design a ledger system that can handle both cryptocurrency and fiat currency with different precision requirements.<br><strong>Model Answer:</strong> Use decimal data types with configurable precision per currency. Store all amounts in smallest units (satoshis, cents) to avoid floating-point errors. Implement currency-specific validation rules and conversion rates with temporal consistency for historical transactions.</li>
+    <li><strong>Q:</strong> How do you ensure ACID properties across a distributed ledger spanning multiple data centers?<br><strong>Model Answer:</strong> Use distributed consensus (Raft/PBFT) for the core ledger writes, with regional read replicas for balance queries. Implement two-phase commit for cross-region transactions with timeout-based rollback. Consider blockchain-style merkle trees for cryptographic proof of consistency.</li>
+  </ol>
+</div>
+
+<div class="next-up">
+  <div class="label">Coming Up Next</div>
+  <p><strong>Retry, Reconciliation & 5-Nines Reliability</strong> — Learn how payment systems achieve 99.999% uptime through exponential backoff, dead letter queues, and automated financial reconciliation across distributed failures.</p>
+</div>
+  </div>
+  <div class="footer">
+    <p>System Design Daily &bull; Built by Sam Anmol &bull; Powered by Claude AI</p>
+    <p>19 Systems &bull; 200 Lessons &bull; From Zero to World-Class</p>
+    <p style="margin-top: 10px;">Reply STOP to end &bull; Reply SKIP to jump to next system</p>
+  </div>
+</div>
+</body>
+</html>

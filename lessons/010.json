@@ -1,0 +1,9 @@
+{
+  "lesson_id": 10,
+  "title": "Idempotency & Exactly-Once Payments",
+  "subtitle": "Why Stripe's Idempotency Keys Prevent $0 to $Billions in Double Charges",
+  "system_name": "Payment System",
+  "type": "core",
+  "generated_at": "2026-03-30T15:29:26.752236+00:00",
+  "content_length": 20300
+}

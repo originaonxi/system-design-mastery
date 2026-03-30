@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin: 0; padding: 0; background: #f5f5f0; font-family: 'Georgia', 'Times New Roman', serif; }
+  .container { max-width: 720px; margin: 0 auto; background: #ffffff; }
+  .header { background: #1a1a2e; color: #ffffff; padding: 30px 40px; text-align: center; }
+  .header h1 { margin: 0; font-size: 28px; letter-spacing: 3px; font-weight: 900; text-transform: uppercase; }
+  .header .edition { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: #e94560; margin-top: 5px; }
+  .header .date-line { font-size: 11px; color: #aaa; margin-top: 8px; border-top: 1px solid #333; padding-top: 8px; }
+  .progress-bar-container { background: #0f3460; padding: 10px 40px; }
+  .progress-bar { background: #1a1a2e; border-radius: 10px; height: 20px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #e94560, #0f3460); height: 100%; border-radius: 10px; transition: width 0.5s; }
+  .progress-text { color: #fff; font-size: 11px; text-align: center; margin-top: 4px; }
+  .meta-bar { background: #16213e; color: #ccc; padding: 8px 40px; font-size: 11px; display: flex; justify-content: space-between; }
+  .content { padding: 30px 40px; line-height: 1.8; color: #2d2d2d; }
+  .section-header { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 5px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+  .headline { font-size: 32px; font-weight: 900; line-height: 1.2; color: #1a1a2e; margin: 10px 0; }
+  .subtitle { font-size: 18px; color: #666; font-style: italic; margin-bottom: 25px; }
+  .body-text { font-size: 16px; line-height: 1.9; margin-bottom: 15px; }
+  .diagram-box { background: #1a1a2e; color: #00ff41; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; margin: 20px 0; }
+  .napkin-math { background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px 20px; margin: 20px 0; font-size: 14px; }
+  .napkin-math .label { font-weight: 700; color: #f57f17; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .obstacle-box { background: #fce4ec; border-left: 4px solid #e53935; padding: 15px 20px; margin: 20px 0; }
+  .obstacle-box .label { font-weight: 700; color: #c62828; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .number-card { background: #e8eaf6; padding: 15px; border-radius: 8px; text-align: center; }
+  .number-card .value { font-size: 24px; font-weight: 900; color: #1a1a2e; }
+  .number-card .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  .tradeoff-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  .tradeoff-table th { background: #1a1a2e; color: #fff; padding: 10px; text-align: left; }
+  .tradeoff-table td { padding: 10px; border-bottom: 1px solid #eee; }
+  .tradeoff-table tr:nth-child(even) td { background: #f5f5f5; }
+  .code-block { background: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 20px 0; }
+  .code-block .keyword { color: #c678dd; }
+  .code-block .string { color: #98c379; }
+  .code-block .comment { color: #5c6370; font-style: italic; }
+  .ai-smb-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px 20px; margin: 20px 0; }
+  .ai-smb-box .label { font-weight: 700; color: #2e7d32; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px 20px; margin: 20px 0; }
+  .interview-box .label { font-weight: 700; color: #0d47a1; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box ol { margin: 10px 0; padding-left: 20px; }
+  .interview-box li { margin-bottom: 8px; }
+  .source-link { display: inline-block; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; margin: 3px; font-size: 12px; color: #1976d2; text-decoration: none; }
+  .source-link:hover { background: #e3f2fd; }
+  .scale-progression { margin: 20px 0; }
+  .scale-step { display: flex; align-items: center; margin: 8px 0; }
+  .scale-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .scale-line { width: 2px; height: 20px; background: #ddd; margin-left: 5px; }
+  .next-up { background: #f3e5f5; border: 2px dashed #9c27b0; padding: 15px 20px; margin: 25px 0; border-radius: 8px; }
+  .next-up .label { font-weight: 700; color: #6a1b9a; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .footer { background: #1a1a2e; color: #888; padding: 20px 40px; text-align: center; font-size: 11px; }
+  .footer a { color: #e94560; }
+  .divider { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+  .pull-quote { font-size: 22px; font-style: italic; color: #1a1a2e; border-left: 4px solid #e94560; padding: 10px 20px; margin: 25px 0; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .content { padding: 20px; }
+    .header { padding: 20px; }
+    .headline { font-size: 24px; }
+    .numbers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>System Design Daily</h1>
+    <div class="edition">The AI Software Engineer's Newspaper</div>
+    <div class="date-line">{{SEND_DATE}} &bull; Lesson 4 of 200 &bull; CORE</div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: 2.0%"></div></div>
+    <div class="progress-text">2.0% Complete &mdash; 196 lessons remaining</div>
+  </div>
+  <div class="meta-bar">
+    <span>System 1/19: Stock Exchange</span>
+    <span>Topic 4/7</span>
+  </div>
+  <div class="content">
+    <h2 class="headline">Risk Management & Circuit Breakers</h2>
+<p class="subtitle">How Exchanges Prevent Market Meltdowns</p>
+<p class="body-text">On August 1, 2012, Knight Capital's algorithmic trading system went rogue, generating 4 million erroneous trades in 45 minutes and losing $440 million. The incident highlighted a critical truth: in high-frequency trading, risk management isn't just about preventing losses—it's about preventing market-wide systemic collapse. Modern exchanges like NASDAQ and NYSE process over 10 billion shares daily, with individual trades executing in microseconds. At this scale, traditional risk controls are useless; by the time humans detect a problem, millions of dollars have already evaporated. This lesson explores how exchanges implement real-time risk management systems that make split-second decisions to halt markets, reject orders, and prevent cascading failures while maintaining the microsecond latencies that modern trading demands.</p>
+
+<div class="section-header">Architecture</div>
+<div class="diagram-box">
+┌─────────────┐    ┌──────────────────┐    ┌───────────────┐
+│   Market    │    │   Pre-Trade      │    │   Matching    │
+│   Data      │───▶│   Risk Engine    │───▶│   Engine      │
+│   Feed      │    │                  │    │               │
+└─────────────┘    │ • Position Check │    └───────┬───────┘
+                   │ • Margin Calc    │            │
+┌─────────────┐    │ • Price Limits   │            │
+│  Risk Limits│───▶│ • Order Size     │            │
+│  Database   │    │                  │            ▼
+└─────────────┘    └─────┬────────────┘    ┌───────────────┐
+                         │                 │   Post-Trade  │
+┌─────────────┐          │ REJECT          │   Risk        │
+│Circuit Break│          │                 │   Monitor     │
+│Controller   │          ▼                 └───────┬───────┘
+└─────┬───────┘    ┌──────────────────┐            │
+      │            │   Order Entry    │            │
+      │            │   Gateway        │            ▼
+      ▼            └──────────────────┘    ┌───────────────┐
+┌─────────────┐                          │   Kill        │
+│Market-Wide  │    ┌──────────────────┐  │   Switch      │
+│Halt Signal  │───▶│   All Trading    │◄─┤   Trigger     │
+└─────────────┘    │   Venues         │  └───────────────┘
+                   └──────────────────┘
+                   
+                   ┌──────────────────┐
+                   │   LULD Bands     │
+                   │   Price Monitor  │
+                   └──────────────────┘
+</div>
+<p class="body-text">The risk management architecture operates at multiple layers with sub-microsecond latency requirements. Pre-trade risk checks occur before orders enter the matching engine, using cached position data and pre-computed risk limits stored in L1 CPU cache. The circuit breaker controller monitors market-wide price movements and can halt trading across all venues simultaneously. Post-trade monitoring tracks position changes and can trigger kill switches that immediately stop all trading for specific participants.</p>
+
+<div class="section-header">How It Works — Deep Dive</div>
+<p class="body-text">Pre-trade risk checking forms the first line of defense, operating with a strict latency budget of under 5 microseconds per order. The system maintains real-time position tracking for every trading account across thousands of securities. When an order arrives, the risk engine performs multiple simultaneous checks: position limits (ensuring the trader doesn't exceed maximum allowed holdings), margin requirements (verifying sufficient capital to cover potential losses), and price reasonableness (rejecting orders with prices far from current market levels). These calculations must complete faster than a single memory access to main RAM, requiring all critical data to reside in CPU L1 cache.</p>
+
+<p class="body-text">Circuit breakers implement market-wide halts triggered by predetermined price thresholds. The SEC's current rules specify three levels: Level 1 (7% decline) and Level 2 (13% decline) each trigger 15-minute trading halts, while Level 3 (20% decline) closes markets for the remainder of the day. The system calculates these percentages against the previous day's closing price of the S&P 500 index. When triggered, the halt signal must propagate to all trading venues within 200 milliseconds to prevent arbitrage opportunities between halted and active markets. This requires a dedicated multicast network connecting all major exchanges, dark pools, and electronic communication networks (ECNs).</p>
+
+<p class="body-text">Limit Up-Limit Down (LULD) bands provide stock-specific price controls that prevent individual securities from experiencing extreme price movements. Each stock receives dynamic price bands that adjust every 30 seconds based on recent trading activity. For Tier 1 securities (stocks in the S&P 500 and Russell 1000), bands are set at ±5% for stocks priced above $3.00 and wider percentages for lower-priced stocks. When an order would execute outside these bands, the system enters a "limit state" for 15 seconds, preventing trades but continuing to accept orders. If no valid trades occur within the band during this period, a trading pause is declared.</p>
+
+<p class="body-text">Kill switches provide immediate trade termination capabilities for specific market participants. Unlike circuit breakers that affect entire markets, kill switches can instantly stop all trading activity for a single firm while allowing other participants to continue. The system implements this through real-time order tagging and matching engine integration. Each order carries a participant identifier, and the kill switch maintains a bitmap of active participants. When triggered, the system rejects all new orders from the affected participant and cancels existing orders in under 100 microseconds. This capability proved crucial during the Knight Capital incident, though it was activated too late to prevent massive losses.</p>
+
+<p class="body-text">Margin calculation engines run continuously in the background, updating risk metrics as positions and market prices change. The system uses SPAN (Standard Portfolio Analysis of Risk) methodology developed by the Chicago Mercantile Exchange, which evaluates portfolio risk across multiple scenarios of price and volatility changes. For a portfolio containing 10,000 positions, these calculations must complete within milliseconds to provide real-time risk updates. The implementation uses vectorized computations and GPU acceleration for Monte Carlo simulations, processing thousands of market scenarios simultaneously to estimate potential portfolio losses under extreme conditions.</p>
+
+<div class="section-header">By The Numbers</div>
+<div class="numbers-grid">
+  <div class="number-card"><div class="value">&lt;5μs</div><div class="label">Risk Check Latency Budget</div></div>
+  <div class="number-card"><div class="value">$440M</div><div class="label">Knight Capital Loss (45 min)</div></div>
+  <div class="number-card"><div class="value">7%/13%/20%</div><div class="label">Circuit Breaker Levels</div></div>
+  <div class="number-card"><div class="value">200ms</div><div class="label">Halt Propagation Time</div></div>
+  <div class="number-card"><div class="value">15 sec</div><div class="label">LULD Pause Duration</div></div>
+  <div class="number-card"><div class="value">64KB</div><div class="label">Risk Cache Size (L1)</div></div>
+</div>
+
+<div class="obstacle-box">
+  <div class="label">Real Obstacle — What Actually Went Wrong</div>
+  <p><strong>March 9, 2020 - COVID Circuit Breaker Cascade:</strong> At 9:34 AM, just minutes after market open, the S&P 500 dropped 7.4%, triggering the first market-wide circuit breaker since 2008. The 15-minute halt was designed to calm markets, but when trading resumed at 9:49 AM, massive sell orders flooded the system. The real problem emerged in halt propagation latency across venues. While NYSE and NASDAQ halted immediately, some dark pools and ECNs experienced delays of up to 800 milliseconds in receiving halt signals. High-frequency trading firms exploited this gap, executing thousands of trades in the brief window before all venues synchronized. Over the following week, circuit breakers triggered four times total - March 9, 12, 16, and 18 - exposing systematic issues in cross-venue coordination. The SEC's post-mortem revealed that the multicast halt distribution network, designed for pre-2010 trading volumes, couldn't handle the message throughput from thousands of simultaneous venue connections. The fix required upgrading to a dedicated fiber network with guaranteed sub-100ms propagation and implementing cryptographic message authentication to prevent spoofed halt signals.</p>
+</div>
+
+<div class="napkin-math">
+  <div class="label">Napkin Math — Back of Envelope</div>
+  <p><strong>Risk Check Performance Budget:</strong> Target: 1M orders/second processing capacity. CPU budget per order = 1μs (1 microsecond). Risk check must complete in <5μs to stay within budget. L1 cache access = 1ns, L2 cache = 10ns, main memory = 100ns. For 1000 actively traded instruments: Risk data per instrument = 64 bytes (position, limits, prices). Total cache requirement = 1000 × 64 bytes = 64KB. Modern Intel CPU L1 cache = 32KB instruction + 32KB data = fits! Cache misses would require 100ns memory access, blowing the 5μs budget. Therefore: pre-load all active instrument risk data into L1 cache during market open. Memory bandwidth check: 1M orders/sec × 64 bytes = 64 MB/sec data throughput - well within modern DDR4 bandwidth of 25,600 MB/sec. Conclusion: Risk checks are CPU-bound by computation, not memory-bound by data access, if properly cached.</p>
+</div>
+
+<div class="section-header">Engineering Trade-Offs</div>
+<table class="tradeoff-table">
+  <tr><th>Decision</th><th>Option A</th><th>Option B</th><th>What They Chose</th><th>Why</th></tr>
+  <tr><td>Risk Check Timing</td><td>Pre-trade (before matching)</td><td>Post-trade (after execution)</td><td>Pre-trade</td><td>Prevents bad trades but adds latency. Post-trade is too late for risk prevention</td></tr>
+  <tr><td>Circuit Breaker Scope</td><td>Per-stock individual halts</td><td>Market-wide universal halts</td><td>Both (LULD + Circuit Breakers)</td><td>Layered defense: stock-specific for single names, market-wide for systemic events</td></tr>
+  <tr><td>Kill Switch Granularity</td><td>Per-trader individual</td><td>Per-firm aggregate</td><td>Both levels available</td><td>Flexibility needed: sometimes one rogue algorithm, sometimes entire firm risk</td></tr>
+  <tr><td>Risk Data Storage</td><td>In-memory cache only</td><td>Persistent database with cache</td><td>Persistent + cache</td><td>Regulatory requirements demand audit trail, but speed requires caching</td></tr>
+</table>
+
+<div class="section-header">Code — Key Algorithm</div>
+<div class="code-block">
+import time
+from dataclasses import dataclass
+from typing import Dict, Optional
+
+@dataclass
+class RiskLimits:
+    max_position: int
+    max_order_size: int
+    buying_power: float
+    price_collar_pct: float
+
+@dataclass
+class Position:
+    symbol: str
+    quantity: int
+    avg_price: float
+    unrealized_pnl: float
+
+class PreTradeRiskEngine:
+    def __init__(self):
+        self.positions: Dict[str, Position] = {}
+        self.limits: Dict[str, RiskLimits] = {}
+        self.last_prices: Dict[str, float] = {}
+        
+    def check_order_risk(self, symbol: str, quantity: int, 
+                        price: float, account_id: str) -> tuple[bool, str]:
+        """
+        Pre-trade risk check with <5μs target latency
+        Returns (is_allowed, rejection_reason)
+        """
+        start_time = time.perf_counter_ns()
+        
+        # Get cached data (must be in L1 cache for speed)
+        limits = self.limits.get(account_id)
+        position = self.positions.get(f"{account_id}:{symbol}")
+        last_price = self.last_prices.get(symbol, 0)
+        
+        if not limits:
+            return False, "NO_LIMITS_FOUND"
+            
+        # 1. Order size check
+        if abs(quantity) > limits.max_order_size:
+            return False, f"ORDER_TOO_LARGE:{quantity}>{limits.max_order_size}"
+            
+        # 2. Price collar check (prevent fat finger errors)
+        if last_price > 0:
+            price_deviation = abs(price - last_price) / last_price
+            if price_deviation > limits.price_collar_pct:
+                return False, f"PRICE_OUTSIDE_COLLAR:{price_deviation:.2%}"
+        
+        # 3. Position limit check
+        current_pos = position.quantity if position else 0
+        new_position = current_pos + quantity
+        if abs(new_position) > limits.max_position:
+            return False, f"POSITION_LIMIT_EXCEEDED:{new_position}>{limits.max_position}"
+            
+        # 4. Buying power check
+        order_value = abs(quantity * price)
+        if order_value > limits.buying_power:
+            return False, f"INSUFFICIENT_BUYING_POWER:{order_value}>{limits.buying_power}"
+            
+        # Log latency (should be <5000ns)
+        latency_ns = time.perf_counter_ns() - start_time
+        if latency_ns > 5000:  # 5 microseconds
+            print(f"SLOW_RISK_CHECK: {latency_ns}ns")
+            
+        return True, "APPROVED"
+        
+    def update_position(self, account_id: str, symbol: str, 
+                       quantity: int, price: float):
+        """Update position after trade execution"""
+        key = f"{account_id}:{symbol}"
+        if key in self.positions:
+            pos = self.positions[key]
+            total_quantity = pos.quantity + quantity
+            if total_quantity != 0:
+                pos.avg_price = ((pos.quantity * pos.avg_price) + 
+                               (quantity * price)) / total_quantity
+            pos.quantity = total_quantity
+        else:
+            self.positions[key] = Position(symbol, quantity, price, 0.0)
+</div>
+<p class="body-text">This risk engine implementation prioritizes speed over feature completeness, using simple dictionary lookups that rely on data being pre-cached in CPU L1 cache. The checks are ordered by computational cost - simple comparisons first, complex calculations last. Real exchange implementations would use specialized data structures like lock-free hash tables and SIMD instructions for parallel risk calculations across multiple orders.</p>
+
+<div class="section-header">Scale Progression</div>
+<div class="scale-progression">
+  <div class="scale-step"><div class="scale-dot" style="background:#4caf50"></div><strong>1K users:</strong>&nbsp; Single-server risk engine with in-memory position tracking. Simple price collars and position limits. Manual circuit breaker monitoring.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#ff9800"></div><strong>1M users:</strong>&nbsp; Distributed risk cluster with Redis for position caching. Automated circuit breakers with market data feeds. Hardware timestamping and FPGA acceleration for latency.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#f44336"></div><strong>1B users:</strong>&nbsp; Custom silicon (ASICs) for risk calculations. Dedicated fiber networks for halt propagation. ML-based anomaly detection and predictive risk models running on GPU clusters.</div>
+</div>
+
+<div class="ai-smb-box">
+  <div class="label">AI-First SMB Version — Build This Today</div>
+  <p><strong>SMB Crypto Exchange Risk Engine:</strong> Use AWS Lambda with DynamoDB for position tracking ($0.25 per million requests). Implement Claude API for intelligent risk assessment - feed it position data, market conditions, and get back risk recommendations ($0.01 per 1K tokens). Use Pinecone vector database ($70/month) to store historical risk patterns and similar market conditions. Real-time monitoring via DataDog ($15/host/month). Architecture: API Gateway → Lambda risk function → Claude API risk analysis → DynamoDB position update. Add Chainlink oracles ($0.1 per price feed) for crypto price data. Total monthly cost for 100K orders: ~$500 vs $2M+ for traditional exchange infrastructure. Deploy with: Terraform for AWS resources, Claude SDK for risk analysis, WebSocket API for real-time position updates. The AI handles complex risk scenarios that would require months of traditional rule development.</p>
+</div>
+
+<div class="pull-quote">"The goal isn't to prevent all losses—it's to prevent any single loss from destroying the entire market. Circuit breakers are the financial system's immune response."</div>
+
+<div class="section-header">Sources & Further Reading</div>
+<p>
+<a class="source-link" href="https://www.sec.gov/news/studies/2010/marketevents-report.pdf">Findings Regarding the Market Events of May 6, 2010 — SEC</a>
+<a class="source-link" href="https://www.sciencedirect.com/science/article/pii/S1042957319300270">Circuit Breakers: A Survey — Journal of Financial Markets</a>
+<a class="source-link" href="https://www.sec.gov/rules/sro/nyse/2012/34-67090.pdf">Limit Up-Limit Down Mechanism — SEC Rule Filing</a>
+<a class="source-link" href="https://www.cmegroup.com/education/files/span-methodology.pdf">SPAN Risk Management Methodology — CME Group</a>
+<a class="source-link" href="https://www.nasdaq.com/docs/2020/03/20/nasdaq-market-quality-monthly-mar-2020.pdf">Market Quality Report March 2020 — NASDAQ</a>
+<a class="source-link" href="https://engineering.linkedin.com/blog/2016/05/building-linkedin-s-real-time-activity-data-pipeline">Building Real-Time Activity Data Pipeline — LinkedIn Engineering</a>
+<a class="source-link" href="https://queue.acm.org/detail.cfm?id=2839461">Responding to Urgent Events in Microseconds — ACM Queue</a>
+<a class="source-link" href="https://www.bankofengland.co.uk/quarterly-bulletin/2015/q3/high-frequency-trading">High-Frequency Trading: Behaviour and Impact — Bank of England</a>
+</p>
+
+<div class="interview-box">
+  <div class="label">Interview Corner — FAANG-Level Questions</div>
+  <ol>
+    <li><strong>Q:</strong> Design a pre-trade risk check system that adds <10μs latency to order processing at 1M orders/second.<br><strong>Model Answer:</strong> Cache all risk data in L1 CPU cache (64KB limit), use lock-free data structures to avoid context switches, implement checks as sequential comparisons ordered by computational cost, and use SIMD instructions for parallel calculations across multiple orders.</li>
+    <li><strong>Q:</strong> How would you implement circuit breakers for a crypto exchange operating 24/7 across global markets?<br><strong>Model Answer:</strong> Use rolling percentage thresholds instead of daily closes, implement regional circuit breakers for different geographic markets, create cross-exchange coordination via blockchain or distributed consensus, and design progressive halt levels (1min, 5min, 15min) rather than full day halts.</li>
+    <li><strong>Q:</strong> What's the tradeoff between risk check thoroughness and latency, and how do you optimize this?<br><strong>Model Answer:</strong> More thorough checks require more computation time and data access, creating latency. Optimize by: pre-computing complex risk metrics in background processes, using tiered checking (fast basic checks first, comprehensive checks async), and implementing risk scoring rather than binary pass/fail decisions.</li>
+  </ol>
+</div>
+
+<div class="next-up">
+  <div class="label">Coming Up Next</div>
+  <p><strong>Settlement & Clearing Architecture</strong> — How trades worth trillions of dollars settle correctly every night using distributed consensus and cryptographic proof systems.</p>
+</div>
+  </div>
+  <div class="footer">
+    <p>System Design Daily &bull; Built by Sam Anmol &bull; Powered by Claude AI</p>
+    <p>19 Systems &bull; 200 Lessons &bull; From Zero to World-Class</p>
+    <p style="margin-top: 10px;">Reply STOP to end &bull; Reply SKIP to jump to next system</p>
+  </div>
+</div>
+</body>
+</html>

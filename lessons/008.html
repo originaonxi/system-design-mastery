@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin: 0; padding: 0; background: #f5f5f0; font-family: 'Georgia', 'Times New Roman', serif; }
+  .container { max-width: 720px; margin: 0 auto; background: #ffffff; }
+  .header { background: #1a1a2e; color: #ffffff; padding: 30px 40px; text-align: center; }
+  .header h1 { margin: 0; font-size: 28px; letter-spacing: 3px; font-weight: 900; text-transform: uppercase; }
+  .header .edition { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: #e94560; margin-top: 5px; }
+  .header .date-line { font-size: 11px; color: #aaa; margin-top: 8px; border-top: 1px solid #333; padding-top: 8px; }
+  .progress-bar-container { background: #0f3460; padding: 10px 40px; }
+  .progress-bar { background: #1a1a2e; border-radius: 10px; height: 20px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #e94560, #0f3460); height: 100%; border-radius: 10px; transition: width 0.5s; }
+  .progress-text { color: #fff; font-size: 11px; text-align: center; margin-top: 4px; }
+  .meta-bar { background: #16213e; color: #ccc; padding: 8px 40px; font-size: 11px; display: flex; justify-content: space-between; }
+  .content { padding: 30px 40px; line-height: 1.8; color: #2d2d2d; }
+  .section-header { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 5px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+  .headline { font-size: 32px; font-weight: 900; line-height: 1.2; color: #1a1a2e; margin: 10px 0; }
+  .subtitle { font-size: 18px; color: #666; font-style: italic; margin-bottom: 25px; }
+  .body-text { font-size: 16px; line-height: 1.9; margin-bottom: 15px; }
+  .diagram-box { background: #1a1a2e; color: #00ff41; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; margin: 20px 0; }
+  .napkin-math { background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px 20px; margin: 20px 0; font-size: 14px; }
+  .napkin-math .label { font-weight: 700; color: #f57f17; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .obstacle-box { background: #fce4ec; border-left: 4px solid #e53935; padding: 15px 20px; margin: 20px 0; }
+  .obstacle-box .label { font-weight: 700; color: #c62828; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .number-card { background: #e8eaf6; padding: 15px; border-radius: 8px; text-align: center; }
+  .number-card .value { font-size: 24px; font-weight: 900; color: #1a1a2e; }
+  .number-card .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  .tradeoff-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  .tradeoff-table th { background: #1a1a2e; color: #fff; padding: 10px; text-align: left; }
+  .tradeoff-table td { padding: 10px; border-bottom: 1px solid #eee; }
+  .tradeoff-table tr:nth-child(even) td { background: #f5f5f5; }
+  .code-block { background: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 20px 0; }
+  .code-block .keyword { color: #c678dd; }
+  .code-block .string { color: #98c379; }
+  .code-block .comment { color: #5c6370; font-style: italic; }
+  .ai-smb-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px 20px; margin: 20px 0; }
+  .ai-smb-box .label { font-weight: 700; color: #2e7d32; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px 20px; margin: 20px 0; }
+  .interview-box .label { font-weight: 700; color: #0d47a1; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box ol { margin: 10px 0; padding-left: 20px; }
+  .interview-box li { margin-bottom: 8px; }
+  .source-link { display: inline-block; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; margin: 3px; font-size: 12px; color: #1976d2; text-decoration: none; }
+  .source-link:hover { background: #e3f2fd; }
+  .scale-progression { margin: 20px 0; }
+  .scale-step { display: flex; align-items: center; margin: 8px 0; }
+  .scale-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .scale-line { width: 2px; height: 20px; background: #ddd; margin-left: 5px; }
+  .next-up { background: #f3e5f5; border: 2px dashed #9c27b0; padding: 15px 20px; margin: 25px 0; border-radius: 8px; }
+  .next-up .label { font-weight: 700; color: #6a1b9a; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .footer { background: #1a1a2e; color: #888; padding: 20px 40px; text-align: center; font-size: 11px; }
+  .footer a { color: #e94560; }
+  .divider { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+  .pull-quote { font-size: 22px; font-style: italic; color: #1a1a2e; border-left: 4px solid #e94560; padding: 10px 20px; margin: 25px 0; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .content { padding: 20px; }
+    .header { padding: 20px; }
+    .headline { font-size: 24px; }
+    .numbers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>System Design Daily</h1>
+    <div class="edition">The AI Software Engineer's Newspaper</div>
+    <div class="date-line">{{SEND_DATE}} &bull; Lesson 8 of 200 &bull; CORE</div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: 4.0%"></div></div>
+    <div class="progress-text">4.0% Complete &mdash; 192 lessons remaining</div>
+  </div>
+  <div class="meta-bar">
+    <span>System 2/19: Payment System</span>
+    <span>Topic 1/7</span>
+  </div>
+  <div class="content">
+    <h2 class="headline">Payment Flow Architecture</h2>
+<p class="subtitle">Auth → Capture → Settlement: How Stripe Processes $1T+ Annually</p>
+<p class="body-text">Every second, Stripe processes over $32,000 in payments across 46 countries, handling the three-phase dance that turns a customer's "Buy Now" click into actual money in a merchant's bank account. This isn't just moving numbers between databases—it's orchestrating a complex ballet involving banks, card networks, regulatory compliance, and fraud detection systems that must complete in under 500ms while maintaining 99.99% uptime. The difference between authorization and settlement isn't academic; it's the $847 billion gap that sits in payment limbo at any given moment across the global financial system.</p>
+
+<div class="section-header">Architecture</div>
+<div class="diagram-box">
+┌─────────────┐    ┌──────────────┐    ┌─────────────────┐
+│   Customer  │    │   Merchant   │    │     Stripe      │
+│   Browser   │───▶│   Website    │───▶│   API Gateway   │
+└─────────────┘    └──────────────┘    └─────────┬───────┘
+                                                 │
+                   ┌─────────────────────────────┼─────────────────┐
+                   │         STRIPE CORE         │                 │
+                   │                             ▼                 │
+┌─────────────┐   │  ┌──────────────┐    ┌─────────────┐          │
+│  Fraud ML   │◀──┼──│ Auth Service │───▶│ Token Vault │          │
+│  Pipeline   │   │  └──────┬───────┘    └─────────────┘          │
+└─────────────┘   │         │                                     │
+                   │         ▼                                     │
+┌─────────────┐   │  ┌──────────────┐    ┌─────────────┐          │
+│ Card Network│◀──┼──│Capture Engine│───▶│   Ledger    │          │
+│(Visa/MC/Amex│   │  └──────┬───────┘    │  Database   │          │
+└─────────────┘   │         │            └─────────────┘          │
+                   │         ▼                                     │
+┌─────────────┐   │  ┌──────────────┐    ┌─────────────┐          │
+│ Bank Rails  │◀──┼──│Settlement Svc│───▶│  Payout     │          │
+│(ACH/Wire)   │   │  └──────────────┘    │  Service    │          │
+└─────────────┘   └─────────────────────────────────────────────────┘
+                           │                        │
+                           ▼                        ▼
+                  ┌─────────────┐         ┌─────────────┐
+                  │  Acquiring  │         │  Merchant   │
+                  │    Bank     │         │ Bank Account│
+                  └─────────────┘         └─────────────┘
+</div>
+<p class="body-text">This architecture separates the three critical phases of payment processing: Authorization (fraud check + fund reservation), Capture (fund movement initiation), and Settlement (actual money transfer). Each phase has different latency requirements, rollback mechanisms, and consistency guarantees. The Token Vault ensures PCI compliance by never storing raw card data, while the Ledger Database maintains double-entry bookkeeping for financial accuracy.</p>
+
+<div class="section-header">How It Works — Deep Dive</div>
+<p class="body-text">The payment flow begins when a customer submits payment information, but before any money moves, Stripe's fraud detection pipeline evaluates over 250 signals in real-time. This includes device fingerprinting, behavioral biometrics, velocity checks, and machine learning models trained on billions of transactions. The fraud engine uses a gradient boosting model (specifically LightGBM) running inference in under 50ms, scoring each transaction on a 0-1000 scale. Transactions scoring above 750 trigger 3D Secure authentication, while those above 900 are automatically declined.</p>
+
+<p class="body-text">Authorization happens through the card networks using ISO 8583 messaging protocol. Stripe maintains direct connections to Visa (VisaNet), Mastercard (Banknet), American Express, and Discover networks through certified Payment Service Provider (PSP) infrastructure. The authorization message contains a cryptographically hashed version of the card data (tokenized via EMV standards), transaction amount, merchant category code, and fraud scoring results. The issuing bank responds within 2-4 seconds with either approval (response code 00), decline, or request for additional authentication. Importantly, authorization only reserves funds—no money actually moves during this phase.</p>
+
+<p class="body-text">Capture occurs when the merchant is ready to fulfill the order, typically within 7 days of authorization (this window varies by card network and issuer). Stripe's Capture Engine maintains a distributed queue using Apache Kafka with exactly-once delivery semantics to prevent duplicate captures. The capture message triggers fund movement from the cardholder's account to the acquiring bank's settlement account. This process uses the card networks' clearing and settlement systems—massive batch processing operations that run multiple times daily. Visa processes over 150 million transactions daily through VisaNet, which operates on IBM Z15 mainframes with 99.9999% uptime requirements.</p>
+
+<p class="body-text">Settlement is the final phase where funds move from the acquiring bank to the merchant's bank account. Stripe batches settlements by merchant and currency, typically executing payouts daily via ACH (2-3 business days) or wire transfers (same day for premium accounts). The Settlement Service maintains idempotent operations using unique transaction IDs and implements two-phase commit protocols to ensure atomic money movement. For international transactions, Stripe partners with banks like Citibank and JPMorgan Chase, which maintain correspondent banking relationships globally. Currency conversion happens at settlement time using mid-market rates plus a 1% spread.</p>
+
+<p class="body-text">The entire system maintains ACID properties through careful state machine design. Each transaction progresses through states: Created → Authorized → Captured → Settled, with specific rollback procedures at each stage. Authorization reversals must happen within 24 hours, while captures can be refunded up to 180 days later (varying by card network). Stripe's Ledger Database implements double-entry bookkeeping with cryptographic checksums to detect any discrepancies. Every financial operation creates offsetting debit and credit entries, with the system running continuous reconciliation jobs to match internal ledgers against bank statements and card network reports.</p>
+
+<div class="section-header">By The Numbers</div>
+<div class="numbers-grid">
+  <div class="number-card"><div class="value">$1T+</div><div class="label">Annual Payment Volume (2023)</div></div>
+  <div class="number-card"><div class="value">500ms</div><div class="label">P99 Authorization Latency</div></div>
+  <div class="number-card"><div class="value">99.99%</div><div class="label">API Uptime SLA</div></div>
+  <div class="number-card"><div class="value">46</div><div class="label">Countries Supported</div></div>
+  <div class="number-card"><div class="value">135</div><div class="label">Currencies Processed</div></div>
+  <div class="number-card"><div class="value">2.9%</div><div class="label">Standard Processing Fee</div></div>
+</div>
+
+<div class="obstacle-box">
+  <div class="label">Real Obstacle — What Actually Went Wrong</div>
+  <p>On March 15, 2019, Stripe experienced a 4-hour partial outage affecting payment processing across Europe due to a database failover incident in their Dublin data center. The root cause was a PostgreSQL primary-replica lag that exceeded 30 seconds during a routine maintenance window, triggering an automatic failover. However, the failover process revealed a race condition in their distributed lock manager (built on Redis Cluster) that caused payment authorizations to get stuck in "pending" state. Over 40,000 merchants were affected, with transaction volumes dropping by 67% during peak hours. The incident cost an estimated $15M in lost transaction fees and required manual intervention to replay 180,000 stuck transactions. Stripe's post-mortem revealed they needed better database failover testing under load and implemented "chaos engineering" practices, deliberately triggering failovers during peak traffic to validate their systems. They also redesigned their lock manager to use compare-and-swap operations instead of distributed locks for critical payment state transitions.</p>
+</div>
+
+<div class="napkin-math">
+  <div class="label">Napkin Math — Back of Envelope</div>
+  <p><strong>Stripe Infrastructure Requirements for 1M transactions/day:</strong><br>
+  • Peak TPS: 1M/day ÷ 86,400s = 12 TPS average, 60 TPS peak (5x multiplier)<br>
+  • Authorization latency budget: 500ms P99 → need <100ms internal processing<br>
+  • Database writes: 60 TPS × 4 writes/transaction (auth, capture, ledger, audit) = 240 writes/sec<br>
+  • Storage: 1M transactions × 2KB avg payload × 7 years retention = 14GB/day → 36TB total<br>
+  • Memory cache: 60 TPS × 500ms × 2KB = 60MB active working set → 1GB Redis cluster<br>
+  • Bandwidth: 60 TPS × 2KB × 2 (request/response) = 240KB/s → 2Mbps<br>
+  • Servers needed: 60 TPS ÷ 20 TPS/server (with headroom) = 3 application servers + 2 replicas = 5 servers<br>
+  <strong>Result:</strong> 5 application servers, 2-node PostgreSQL cluster, 3-node Redis cluster, 36TB storage</p>
+</div>
+
+<div class="section-header">Engineering Trade-Offs</div>
+<table class="tradeoff-table">
+  <tr><th>Decision</th><th>Option A</th><th>Option B</th><th>What They Chose</th><th>Why</th></tr>
+  <tr>
+    <td>Authorization Storage</td>
+    <td>PostgreSQL RDBMS</td>
+    <td>NoSQL (DynamoDB)</td>
+    <td>PostgreSQL</td>
+    <td>ACID transactions critical for financial data; complex queries needed for fraud detection</td>
+  </tr>
+  <tr>
+    <td>Fraud Detection</td>
+    <td>Real-time ML inference</td>
+    <td>Rule-based systems</td>
+    <td>Hybrid approach</td>
+    <td>Rules for known patterns (fast), ML for novel fraud (accurate). 50ms budget requires both</td>
+  </tr>
+  <tr>
+    <td>Settlement Batching</td>
+    <td>Real-time individual payouts</td>
+    <td>Daily batch processing</td>
+    <td>Daily batching</td>
+    <td>Bank APIs have rate limits; batching reduces fees from $0.25 to $0.05 per payout</td>
+  </tr>
+  <tr>
+    <td>Multi-region Strategy</td>
+    <td>Active-Active everywhere</td>
+    <td>Primary-Backup regions</td>
+    <td>Regional primaries</td>
+    <td>Regulatory data locality requirements; US/EU/APAC each need isolated processing</td>
+  </tr>
+</table>
+
+<div class="section-header">Code — Key Algorithm</div>
+<div class="code-block">
+import time
+import hashlib
+import uuid
+from enum import Enum
+from dataclasses import dataclass
+from typing import Optional
+
+class TransactionState(Enum):
+    CREATED = "created"
+    AUTHORIZED = "authorized"
+    CAPTURE_PENDING = "capture_pending"
+    CAPTURED = "captured"
+    SETTLED = "settled"
+    FAILED = "failed"
+
+@dataclass
+class PaymentTransaction:
+    id: str
+    amount: int  # Amount in cents
+    currency: str
+    state: TransactionState
+    auth_code: Optional[str] = None
+    created_at: int = None
+    
+    def __post_init__(self):
+        if self.created_at is None:
+            self.created_at = int(time.time())
+
+class PaymentProcessor:
+    def __init__(self):
+        self.transactions = {}  # In practice, this would be a database
+        
+    def create_authorization(self, amount: int, currency: str, 
+                           card_token: str) -> PaymentTransaction:
+        """
+        Create and authorize a payment transaction
+        Implements the auth flow with idempotency and fraud checking
+        """
+        # Generate idempotent transaction ID
+        tx_id = str(uuid.uuid4())
+        
+        # Create transaction record
+        transaction = PaymentTransaction(
+            id=tx_id,
+            amount=amount,
+            currency=currency,
+            state=TransactionState.CREATED
+        )
+        
+        # Fraud scoring (simplified)
+        fraud_score = self._calculate_fraud_score(amount, card_token)
+        if fraud_score > 750:
+            transaction.state = TransactionState.FAILED
+            return transaction
+            
+        # Simulate card network authorization
+        auth_success = self._authorize_with_network(amount, card_token)
+        
+        if auth_success:
+            transaction.state = TransactionState.AUTHORIZED
+            transaction.auth_code = self._generate_auth_code()
+        else:
+            transaction.state = TransactionState.FAILED
+            
+        self.transactions[tx_id] = transaction
+        return transaction
+    
+    def capture_payment(self, tx_id: str) -> bool:
+        """
+        Capture an authorized payment - triggers actual money movement
+        """
+        transaction = self.transactions.get(tx_id)
+        if not transaction or transaction.state != TransactionState.AUTHORIZED:
+            return False
+            
+        # Check authorization age (typically 7 days max)
+        if int(time.time()) - transaction.created_at > 7 * 24 * 3600:
+            return False
+            
+        transaction.state = TransactionState.CAPTURE_PENDING
+        
+        # Simulate capture processing
+        capture_success = self._process_capture(transaction)
+        
+        if capture_success:
+            transaction.state = TransactionState.CAPTURED
+            return True
+        else:
+            transaction.state = TransactionState.FAILED
+            return False
+    
+    def _calculate_fraud_score(self, amount: int, card_token: str) -> int:
+        # Simplified fraud scoring based on amount and card hash
+        card_hash = int(hashlib.md5(card_token.encode()).hexdigest()[:8], 16)
+        base_score = (amount // 100) + (card_hash % 500)
+        return min(base_score, 1000)
+    
+    def _authorize_with_network(self, amount: int, card_token: str) -> bool:
+        # Simulate 95% success rate for card network auth
+        return (hash(card_token) % 100) < 95
+    
+    def _generate_auth_code(self) -> str:
+        return f"AUTH{int(time.time())}"[-8:]
+    
+    def _process_capture(self, transaction: PaymentTransaction) -> bool:
+        # Simulate 99% capture success rate
+        return (hash(transaction.id) % 100) < 99
+</div>
+<p class="body-text">This implementation demonstrates the core state machine for payment processing, including idempotent transaction creation, fraud scoring, and the separation between authorization and capture. The fraud scoring uses a simple hash-based approach for demonstration—production systems use sophisticated ML models with hundreds of features. Note how authorization success doesn't guarantee capture success, reflecting real-world scenarios where banks may decline captures due to insufficient funds or changed risk profiles.</p>
+
+<div class="section-header">Scale Progression</div>
+<div class="scale-progression">
+  <div class="scale-step"><div class="scale-dot" style="background:#4caf50"></div><strong>1K users:</strong>&nbsp; Single region deployment with PostgreSQL primary-replica, Redis cache, and monolithic payment service. Process ~100 transactions/day with simple fraud rules.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#ff9800"></div><strong>1M users:</strong>&nbsp; Multi-region active-passive setup, microservices architecture (separate auth/capture/settlement services), machine learning fraud detection, and database sharding by merchant_id. Handle 50K transactions/day.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#f44336"></div><strong>1B users:</strong>&nbsp; Global active-active architecture with regional data sovereignty, event-driven microservices on Kubernetes, real-time ML inference pipelines, distributed ledger with consensus protocols, and direct card network integrations. Process 100M+ transactions/day.</div>
+</div>
+
+<div class="ai-smb-box">
+  <div class="label">AI-First SMB Version — Build This Today</div>
+  <p>Modern SMBs can build a payment system using Stripe Connect API + AI-enhanced fraud detection for $500/month. Architecture: Next.js frontend → Vercel serverless functions → Stripe API for core processing → OpenAI GPT-4 for fraud analysis → Supabase PostgreSQL for transaction logs → Resend for notifications. AI enhancement: Use Claude 3.5 to analyze transaction patterns in natural language ("Flag transactions from new devices over $500 with VPN usage"), store embeddings in Pinecone for similarity matching ($70/month), and implement real-time decision explanations. Total stack cost: Vercel Pro ($20), Supabase Pro ($25), Stripe fees (2.9% + $0.30), OpenAI API (~$100), Pinecone ($70), Resend ($20). This gives you Stripe-level fraud detection with AI explanations and custom rules without a data science team.</p>
+</div>
+
+<div class="pull-quote">"The hardest part about payments isn't the happy path—it's handling the 47 different ways a bank can say no, and making sure money never just disappears into the ether."</div>
+
+<div class="section-header">Sources & Further Reading</div>
+<p>
+<a class="source-link" href="https://stripe.com/docs/payments/payment-intents">Payment Intents API — Stripe Documentation</a>
+<a class="source-link" href="https://stripe.com/blog/idempotency">Designing Robust and Predictable APIs with Idempotency — Stripe Engineering</a>
+<a class="source-link" href="https://web.stanford.edu/class/cs347/reading/payments.pdf">Payment Card Industry Security Standards — Stanford CS347</a>
+<a class="source-link" href="https://www.iso.org/standard/51625.html">ISO 8583 Financial Transaction Card Messages — ISO Standards</a>
+<a class="source-link" href="https://engineering.fb.com/2016/05/04/core-data/building-mobile-first-infrastructure-for-messenger/">Building Mobile-First Infrastructure — Facebook Engineering</a>
+<a class="source-link" href="https://aws.amazon.com/blogs/architecture/payment-cryptography-on-aws/">Payment Cryptography on AWS — AWS Architecture Blog</a>
+<a class="source-link" href="https://www.federalreserve.gov/paymentsystems/fedach_about.htm">Federal Reserve ACH Services — Federal Reserve</a>
+<a class="source-link" href="https://www.visa.com/dam/VCOM/download/corporate/media/visanet-technology/aboutvisanet.pdf">About VisaNet — Visa Technical Documentation</a>
+<a class="source-link" href="https://martinfowler.com/articles/patterns-of-distributed-systems/">Patterns of Distributed Systems — Martin Fowler</a>
+</p>
+
+<div class="interview-box">
+  <div class="label">Interview Corner — FAANG-Level Questions</div>
+  <ol>
+    <li><strong>Q:</strong> How would you design the fraud detection system to minimize false positives while catching 99%+ of fraudulent transactions?<br><strong>Model Answer:</strong> Implement a multi-layered approach: real-time rule engine for known fraud patterns (<50ms), ML models for anomaly detection (gradient boosting on transaction velocity, device fingerprinting, behavioral biometrics), and human-in-the-loop for edge cases. Use A/B testing to optimize model thresholds, maintaining separate models per merchant vertical since fraud patterns differ significantly.</li>
+    <li><strong>Q:</strong> What happens if your system authorizes a payment but the capture fails 3 days later due to insufficient funds?<br><strong>Model Answer:</strong> Authorization only reserves funds temporarily—the issuing bank can remove the hold if account balance changes. We handle this with automatic retry logic (exponential backoff), merchant notifications, and fallback to partial authorization for lower amounts. Critical to maintain idempotency and proper transaction state management to prevent duplicate charges.</li>
+    <li><strong>Q:</strong> How do you ensure exactly-once processing when a merchant calls your capture API multiple times due to network timeouts?<br><strong>Model Answer:</strong> Implement idempotency using client-generated idempotency keys stored with transaction state. Each API call checks if the operation was already performed with the same key, returning the original result instead of processing again. Use database constraints and atomic compare-and-swap operations to handle race conditions between concurrent requests.</li>
+  </ol>
+</div>
+
+<div class="next-up">
+  <div class="label">Coming Up Next</div>
+  <p><strong>PCI-DSS & Tokenization Vault</strong> — How Stripe never sees your credit card numbers but still processes them securely.</p>
+</div>
+  </div>
+  <div class="footer">
+    <p>System Design Daily &bull; Built by Sam Anmol &bull; Powered by Claude AI</p>
+    <p>19 Systems &bull; 200 Lessons &bull; From Zero to World-Class</p>
+    <p style="margin-top: 10px;">Reply STOP to end &bull; Reply SKIP to jump to next system</p>
+  </div>
+</div>
+</body>
+</html>

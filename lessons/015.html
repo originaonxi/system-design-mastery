@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin: 0; padding: 0; background: #f5f5f0; font-family: 'Georgia', 'Times New Roman', serif; }
+  .container { max-width: 720px; margin: 0 auto; background: #ffffff; }
+  .header { background: #1a1a2e; color: #ffffff; padding: 30px 40px; text-align: center; }
+  .header h1 { margin: 0; font-size: 28px; letter-spacing: 3px; font-weight: 900; text-transform: uppercase; }
+  .header .edition { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: #e94560; margin-top: 5px; }
+  .header .date-line { font-size: 11px; color: #aaa; margin-top: 8px; border-top: 1px solid #333; padding-top: 8px; }
+  .progress-bar-container { background: #0f3460; padding: 10px 40px; }
+  .progress-bar { background: #1a1a2e; border-radius: 10px; height: 20px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #e94560, #0f3460); height: 100%; border-radius: 10px; transition: width 0.5s; }
+  .progress-text { color: #fff; font-size: 11px; text-align: center; margin-top: 4px; }
+  .meta-bar { background: #16213e; color: #ccc; padding: 8px 40px; font-size: 11px; display: flex; justify-content: space-between; }
+  .content { padding: 30px 40px; line-height: 1.8; color: #2d2d2d; }
+  .section-header { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 5px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+  .headline { font-size: 32px; font-weight: 900; line-height: 1.2; color: #1a1a2e; margin: 10px 0; }
+  .subtitle { font-size: 18px; color: #666; font-style: italic; margin-bottom: 25px; }
+  .body-text { font-size: 16px; line-height: 1.9; margin-bottom: 15px; }
+  .diagram-box { background: #1a1a2e; color: #00ff41; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; margin: 20px 0; }
+  .napkin-math { background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px 20px; margin: 20px 0; font-size: 14px; }
+  .napkin-math .label { font-weight: 700; color: #f57f17; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .obstacle-box { background: #fce4ec; border-left: 4px solid #e53935; padding: 15px 20px; margin: 20px 0; }
+  .obstacle-box .label { font-weight: 700; color: #c62828; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .number-card { background: #e8eaf6; padding: 15px; border-radius: 8px; text-align: center; }
+  .number-card .value { font-size: 24px; font-weight: 900; color: #1a1a2e; }
+  .number-card .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  .tradeoff-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  .tradeoff-table th { background: #1a1a2e; color: #fff; padding: 10px; text-align: left; }
+  .tradeoff-table td { padding: 10px; border-bottom: 1px solid #eee; }
+  .tradeoff-table tr:nth-child(even) td { background: #f5f5f5; }
+  .code-block { background: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 20px 0; }
+  .code-block .keyword { color: #c678dd; }
+  .code-block .string { color: #98c379; }
+  .code-block .comment { color: #5c6370; font-style: italic; }
+  .ai-smb-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px 20px; margin: 20px 0; }
+  .ai-smb-box .label { font-weight: 700; color: #2e7d32; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px 20px; margin: 20px 0; }
+  .interview-box .label { font-weight: 700; color: #0d47a1; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box ol { margin: 10px 0; padding-left: 20px; }
+  .interview-box li { margin-bottom: 8px; }
+  .source-link { display: inline-block; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; margin: 3px; font-size: 12px; color: #1976d2; text-decoration: none; }
+  .source-link:hover { background: #e3f2fd; }
+  .scale-progression { margin: 20px 0; }
+  .scale-step { display: flex; align-items: center; margin: 8px 0; }
+  .scale-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .scale-line { width: 2px; height: 20px; background: #ddd; margin-left: 5px; }
+  .next-up { background: #f3e5f5; border: 2px dashed #9c27b0; padding: 15px 20px; margin: 25px 0; border-radius: 8px; }
+  .next-up .label { font-weight: 700; color: #6a1b9a; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .footer { background: #1a1a2e; color: #888; padding: 20px 40px; text-align: center; font-size: 11px; }
+  .footer a { color: #e94560; }
+  .divider { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+  .pull-quote { font-size: 22px; font-style: italic; color: #1a1a2e; border-left: 4px solid #e94560; padding: 10px 20px; margin: 25px 0; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .content { padding: 20px; }
+    .header { padding: 20px; }
+    .headline { font-size: 24px; }
+    .numbers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>System Design Daily</h1>
+    <div class="edition">The AI Software Engineer's Newspaper</div>
+    <div class="date-line">{{SEND_DATE}} &bull; Lesson 15 of 200 &bull; CORE</div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: 7.5%"></div></div>
+    <div class="progress-text">7.5% Complete &mdash; 185 lessons remaining</div>
+  </div>
+  <div class="meta-bar">
+    <span>System 3/19: YouTube</span>
+    <span>Topic 1/7</span>
+  </div>
+  <div class="content">
+    <h2 class="headline">Video Upload & Transcoding Pipeline</h2>
+<p class="subtitle">Processing 500 Hours of Video Uploaded Every Minute</p>
+<p class="body-text">Every minute, YouTube processes approximately 500 hours of video content—that's equivalent to transcoding 720,000 individual video files per hour across dozens of formats and quality levels. Behind this staggering scale lies one of the most sophisticated distributed processing pipelines ever built, handling everything from mobile phone uploads to 8K professional content while maintaining sub-5-second time-to-first-frame for viewers worldwide.</p>
+
+<div class="section-header">Architecture</div>
+<div class="diagram-box">
+┌─────────────┐    ┌──────────────┐    ┌─────────────────┐
+│   Client    │───▶│ Upload Proxy │───▶│  Chunk Storage  │
+│  (Mobile/Web)│    │   (Edge)     │    │    (GCS)        │
+└─────────────┘    └──────────────┘    └─────────────────┘
+                          │                       │
+                          ▼                       ▼
+┌─────────────────────────────────────┐    ┌─────────────────┐
+│          Upload Manager             │◀───│   File Merger   │
+│     (Resumable Upload Service)      │    │   (Assembly)    │
+└─────────────────────────────────────┘    └─────────────────┘
+                    │                               │
+                    ▼                               ▼
+┌─────────────────────────────────────┐    ┌─────────────────┐
+│        Video Processing Queue       │    │  Original File  │
+│         (Google Pub/Sub)            │    │   Validator     │
+└─────────────────────────────────────┘    └─────────────────┘
+                    │                               │
+                    ▼                               ▼
+┌──────────────┐  ┌─────────────────┐  ┌──────────────────────┐
+│  Transcode   │  │   Thumbnail     │  │    Audio Track       │
+│  Workers     │  │   Generator     │  │    Extractor         │
+│ (1000s pods) │  │   (ML-based)    │  │                      │
+└──────────────┘  └─────────────────┘  └──────────────────────┘
+       │                  │                        │
+       ▼                  ▼                        ▼
+┌─────────────────────────────────────────────────────────────┐
+│                Global Content Store                         │
+│        (Multi-region GCS with CDN distribution)            │
+└─────────────────────────────────────────────────────────────┘
+</div>
+<p class="body-text">The architecture follows a scatter-gather pattern where uploads are chunked at the edge, reassembled centrally, then distributed across thousands of transcode workers before final distribution to global storage tiers.</p>
+
+<div class="section-header">How It Works — Deep Dive</div>
+
+<p class="body-text">The YouTube upload pipeline begins with resumable uploads using the Google Cloud Storage resumable upload protocol. When a user initiates an upload, the client first calls the YouTube Data API v3 to create a video resource and receive an upload URL. This URL points to a geographically close upload proxy that implements chunked transfer encoding with 256KB default chunks. The resumable upload protocol allows clients to query upload status and resume from any byte offset, crucial for mobile users with unstable connections.</p>
+
+<p class="body-text">Once chunks arrive at the upload proxy, they're immediately written to Google Cloud Storage in the nearest region while simultaneously being streamed to a file assembly service. This dual-write pattern ensures durability while enabling parallel processing. The assembly service uses a merkle tree structure to verify chunk integrity and detect missing segments. Each chunk is validated using CRC32C checksums, and the complete file undergoes additional validation including container format verification, codec compatibility checks, and malware scanning using Google's VirusTotal integration.</p>
+
+<p class="body-text">After validation, the original file triggers a complex orchestration workflow managed by Google's internal Borg scheduler (similar to Kubernetes but predating it). The workflow creates multiple processing jobs: primary transcoding jobs for different resolutions (144p through 8K), audio extraction jobs for multiple language tracks, thumbnail generation using ML models to select optimal keyframes, and closed caption processing if present. Each job is queued in Google Pub/Sub with priority based on channel subscriber count, upload frequency, and content type detection.</p>
+
+<p class="body-text">The transcoding workers themselves run on specialized hardware including Google's custom Tensor Processing Units (TPUs) for ML-enhanced encoding and traditional CPU clusters for standard H.264/H.265 encoding. YouTube uses a modified version of FFmpeg with custom patches for hardware acceleration and quality optimization. The encoding ladder is dynamically determined using content-aware encoding (CAE) that analyzes video complexity in real-time—high-motion content like gaming videos receive different bitrate allocations than talking-head videos. Each output format is encoded with multiple bitrate variants for adaptive streaming, typically generating 15-30 different files per original upload.</p>
+
+<p class="body-text">The final stage involves global distribution to YouTube's CDN infrastructure. Transcoded files are initially stored in the region where processing occurred, then replicated to other regions based on predicted demand using ML models that consider factors like uploader location, content language, historical viewing patterns, and trending topic analysis. Popular content is pre-positioned across all global edge locations within 6 hours of upload, while long-tail content follows a lazy-replication pattern triggered by actual viewer requests. The entire pipeline from upload completion to global availability typically completes within 15 minutes for standard uploads, though high-priority channels can see sub-5-minute processing times.</p>
+
+<div class="section-header">By The Numbers</div>
+<div class="numbers-grid">
+  <div class="number-card"><div class="value">500 hours</div><div class="label">Video uploaded per minute</div></div>
+  <div class="number-card"><div class="value">18 formats</div><div class="label">Average outputs per upload</div></div>
+  <div class="number-card"><div class="value">15 minutes</div><div class="label">Upload to global availability</div></div>
+  <div class="number-card"><div class="value">256 KB</div><div class="label">Default chunk size</div></div>
+  <div class="number-card"><div class="value">95%</div><div class="label">Upload success rate</div></div>
+  <div class="number-card"><div class="value">$0.002</div><div class="label">Cost per minute transcoded</div></div>
+</div>
+
+<div class="obstacle-box">
+  <div class="label">Real Obstacle — What Actually Went Wrong</div>
+  <p>In October 2018, YouTube experienced a global outage affecting upload processing for 2.5 hours, costing an estimated $1.6M in lost ad revenue. The root cause was a cascading failure in the transcoding pipeline triggered by a routine deployment of new FFmpeg libraries with HEVC optimization. The new libraries had a memory leak when processing certain iPhone X videos with specific metadata configurations, causing transcode workers to consume excessive memory and trigger OOM kills. As workers restarted, they pulled the same problematic videos from the queue, creating a death spiral. The upload queue backed up to 18 hours of pending videos before engineers identified the pattern, rolled back the FFmpeg deployment, and manually drained poison messages. The incident led to implementation of circuit breakers in the processing pipeline and "chaos engineering" tests specifically for transcoding worker failures.</p>
+</div>
+
+<div class="napkin-math">
+  <div class="label">Napkin Math — Back of Envelope</div>
+  <p>Let's calculate YouTube's transcoding infrastructure needs: 500 hours uploaded/minute = 30,000 hours/hour = 720,000 hours/day. Each hour generates ~18 different format variants, so 12.96M transcode jobs/day. Assuming average 1:1 transcode ratio (1 CPU-hour to transcode 1 video-hour), that's 12.96M CPU-hours daily. Using 72-core machines running 24/7, each machine provides 1,728 CPU-hours/day. Total needed: 12.96M ÷ 1,728 = 7,500 dedicated transcode machines. At $2,000/month per machine (including networking, storage, cooling), that's $15M/month or $180M/year just for transcoding compute—not including storage, bandwidth, or redundancy.</p>
+</div>
+
+<div class="section-header">Engineering Trade-Offs</div>
+<table class="tradeoff-table">
+  <tr><th>Decision</th><th>Option A</th><th>Option B</th><th>What They Chose</th><th>Why</th></tr>
+  <tr><td>Upload Protocol</td><td>Single HTTP POST</td><td>Resumable chunks</td><td>Resumable chunks</td><td>Mobile reliability over simplicity</td></tr>
+  <tr><td>Processing Order</td><td>Sequential pipeline</td><td>Parallel fanout</td><td>Parallel fanout</td><td>Speed over resource efficiency</td></tr>
+  <tr><td>Encoding Quality</td><td>Fixed bitrate ladder</td><td>Content-aware encoding</td><td>Content-aware encoding</td><td>Bandwidth savings worth complexity</td></tr>
+  <tr><td>Global Replication</td><td>Eager (immediate)</td><td>Lazy (on-demand)</td><td>Hybrid prediction-based</td><td>ML-driven optimization</td></tr>
+</table>
+
+<div class="section-header">Code — Key Algorithm</div>
+<div class="code-block">
+import asyncio
+import hashlib
+import time
+from typing import List, Dict, Optional
+
+class ResumableUploadManager:
+    def __init__(self, chunk_size: int = 256 * 1024):
+        self.chunk_size = chunk_size
+        self.upload_sessions: Dict[str, UploadSession] = {}
+    
+    async def initiate_upload(self, file_size: int, content_type: str) -> str:
+        """Create resumable upload session and return session ID"""
+        session_id = hashlib.md5(f"{time.time()}{file_size}".encode()).hexdigest()
+        session = UploadSession(session_id, file_size, content_type)
+        self.upload_sessions[session_id] = session
+        return session_id
+    
+    async def upload_chunk(self, session_id: str, chunk_data: bytes, 
+                          chunk_offset: int) -> Dict[str, any]:
+        """Process individual chunk with validation and deduplication"""
+        session = self.upload_sessions.get(session_id)
+        if not session:
+            raise ValueError("Invalid session ID")
+        
+        # Validate chunk boundaries and size
+        if chunk_offset < 0 or chunk_offset >= session.file_size:
+            raise ValueError("Invalid chunk offset")
+        
+        expected_size = min(self.chunk_size, session.file_size - chunk_offset)
+        if len(chunk_data) != expected_size:
+            raise ValueError(f"Chunk size mismatch: expected {expected_size}, got {len(chunk_data)}")
+        
+        # Calculate chunk hash for deduplication
+        chunk_hash = hashlib.sha256(chunk_data).hexdigest()
+        
+        # Store chunk with metadata
+        session.chunks[chunk_offset] = {
+            'data': chunk_data,
+            'hash': chunk_hash,
+            'received_at': time.time(),
+            'size': len(chunk_data)
+        }
+        
+        # Check if upload is complete
+        total_received = sum(chunk['size'] for chunk in session.chunks.values())
+        is_complete = total_received == session.file_size
+        
+        return {
+            'bytes_received': total_received,
+            'bytes_total': session.file_size,
+            'is_complete': is_complete,
+            'missing_ranges': session.get_missing_ranges() if not is_complete else []
+        }
+    
+    async def finalize_upload(self, session_id: str) -> bytes:
+        """Assemble final file from chunks with integrity validation"""
+        session = self.upload_sessions.get(session_id)
+        if not session or not session.is_complete():
+            raise ValueError("Upload incomplete or session invalid")
+        
+        # Reassemble file in correct order
+        final_data = bytearray()
+        for offset in sorted(session.chunks.keys()):
+            final_data.extend(session.chunks[offset]['data'])
+        
+        # Cleanup session
+        del self.upload_sessions[session_id]
+        
+        return bytes(final_data)
+
+class UploadSession:
+    def __init__(self, session_id: str, file_size: int, content_type: str):
+        self.session_id = session_id
+        self.file_size = file_size
+        self.content_type = content_type
+        self.chunks: Dict[int, Dict] = {}
+        self.created_at = time.time()
+    
+    def is_complete(self) -> bool:
+        total_size = sum(chunk['size'] for chunk in self.chunks.values())
+        return total_size == self.file_size
+    
+    def get_missing_ranges(self) -> List[tuple]:
+        """Return list of (start, end) byte ranges that are missing"""
+        received_ranges = sorted(self.chunks.keys())
+        missing = []
+        expected_offset = 0
+        
+        for offset in received_ranges:
+            if offset > expected_offset:
+                missing.append((expected_offset, offset - 1))
+            expected_offset = offset + self.chunks[offset]['size']
+        
+        if expected_offset < self.file_size:
+            missing.append((expected_offset, self.file_size - 1))
+        
+        return missing
+</div>
+<p class="body-text">This resumable upload manager handles chunked file uploads with automatic gap detection and client-side recovery. The algorithm maintains chunk metadata for integrity verification and provides missing range information for efficient resume operations, critical for handling network interruptions during large video uploads.</p>
+
+<div class="section-header">Scale Progression</div>
+<div class="scale-progression">
+  <div class="scale-step"><div class="scale-dot" style="background:#4caf50"></div><strong>1K users:</strong>&nbsp; Single FFmpeg server, MySQL upload tracking, local file storage, synchronous processing with simple queues</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#ff9800"></div><strong>1M users:</strong>&nbsp; Multiple transcode workers, Redis job queues, CDN integration, async processing, database sharding by user ID</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#f44336"></div><strong>1B users:</strong>&nbsp; Global edge upload proxies, distributed processing pipeline, ML-optimized encoding, predictive replication, custom silicon acceleration</div>
+</div>
+
+<div class="ai-smb-box">
+  <div class="label">AI-First SMB Version — Build This Today</div>
+  <p>Modern SMBs can build video transcoding using: AWS MediaConvert ($0.0075/minute) for processing, S3 with multipart uploads for storage, and Lambda functions for orchestration. Add OpenAI's Whisper API ($0.006/minute) for auto-generated captions and Claude 3 for content analysis and thumbnail selection. Architecture: Client uploads to S3 → Lambda triggers MediaConvert job → Completion webhook processes outputs via SQS → Final Lambda updates database and CDN. Total cost: ~$0.02 per video minute including storage, transcoding, and AI enhancements. Use Supabase for metadata storage and Cloudflare Stream as a turnkey alternative at $1/1000 minutes delivered. This provides YouTube-level features at 1/100th the complexity.</p>
+</div>
+
+<div class="pull-quote">"The biggest lesson from building YouTube's upload pipeline is that reliability beats performance—users will wait for their video to process, but they won't forgive losing it entirely."</div>
+
+<div class="section-header">Sources & Further Reading</div>
+<p>
+<a class="source-link" href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/44877.pdf">Large-scale cluster management at Google with Borg — Google Research</a>
+<a class="source-link" href="https://blog.youtube/inside-youtube/innovation-at-youtube-scale/">YouTube Engineering Blog: Innovation at YouTube Scale</a>
+<a class="source-link" href="https://cloud.google.com/storage/docs/resumable-uploads">Google Cloud Storage Resumable Uploads Documentation</a>
+<a class="source-link" href="https://netflixtechblog.com/high-quality-video-encoding-at-scale-d159db052746">High Quality Video Encoding at Scale — Netflix Technology Blog</a>
+<a class="source-link" href="https://developers.google.com/youtube/v3/docs/videos/insert">YouTube Data API v3 - Videos Insert Documentation</a>
+<a class="source-link" href="https://research.google/pubs/pub45411/">Profiling a warehouse-scale computer — Google Research</a>
+<a class="source-link" href="https://www.usenix.org/system/files/conference/atc19/atc19-goiri.pdf">Resource Central: Understanding and Predicting Workloads for Improved Resource Management — USENIX ATC '19</a>
+</p>
+
+<div class="interview-box">
+  <div class="label">Interview Corner — FAANG-Level Questions</div>
+  <ol>
+    <li><strong>Q:</strong> How would you handle poison messages in the transcoding queue that consistently crash workers?<br><strong>Model Answer:</strong> Implement a dead letter queue with exponential backoff, track failure counts per message, and add circuit breakers to isolate problematic content. Include message metadata analysis to identify patterns and automated rollback capabilities for recent deployments.</li>
+    <li><strong>Q:</strong> Design a cost optimization strategy for a video platform processing 100K hours daily with 70% low-view content.<br><strong>Model Answer:</strong> Use tiered processing with immediate transcoding for popular channels, on-demand transcoding for long-tail content, and spot instances with preemption handling. Implement content-aware encoding to reduce bitrates and predictive models to pre-process likely viral content.</li>
+    <li><strong>Q:</strong> How do you ensure upload reliability for users on mobile networks with high packet loss?<br><strong>Model Answer:</strong> Implement resumable uploads with small chunk sizes (64-256KB), aggressive client-side retry with exponential backoff, chunk-level deduplication to avoid re-uploading data, and upload sessions with 24-48 hour timeouts to handle long network outages.</li>
+  </ol>
+</div>
+
+<div class="next-up">
+  <div class="label">Coming Up Next</div>
+  <p><strong>Content Delivery Network (CDN)</strong> — How YouTube serves 1 billion hours of video daily from 900+ edge locations worldwide with sub-100ms latency</p>
+</div>
+  </div>
+  <div class="footer">
+    <p>System Design Daily &bull; Built by Sam Anmol &bull; Powered by Claude AI</p>
+    <p>19 Systems &bull; 200 Lessons &bull; From Zero to World-Class</p>
+    <p style="margin-top: 10px;">Reply STOP to end &bull; Reply SKIP to jump to next system</p>
+  </div>
+</div>
+</body>
+</html>

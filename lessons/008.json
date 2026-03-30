@@ -1,0 +1,9 @@
+{
+  "lesson_id": 8,
+  "title": "Payment Flow Architecture",
+  "subtitle": "Auth \u2192 Capture \u2192 Settlement: How Stripe Processes $1T+ Annually",
+  "system_name": "Payment System",
+  "type": "core",
+  "generated_at": "2026-03-30T15:26:06.821474+00:00",
+  "content_length": 20555
+}

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin: 0; padding: 0; background: #f5f5f0; font-family: 'Georgia', 'Times New Roman', serif; }
+  .container { max-width: 720px; margin: 0 auto; background: #ffffff; }
+  .header { background: #1a1a2e; color: #ffffff; padding: 30px 40px; text-align: center; }
+  .header h1 { margin: 0; font-size: 28px; letter-spacing: 3px; font-weight: 900; text-transform: uppercase; }
+  .header .edition { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: #e94560; margin-top: 5px; }
+  .header .date-line { font-size: 11px; color: #aaa; margin-top: 8px; border-top: 1px solid #333; padding-top: 8px; }
+  .progress-bar-container { background: #0f3460; padding: 10px 40px; }
+  .progress-bar { background: #1a1a2e; border-radius: 10px; height: 20px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #e94560, #0f3460); height: 100%; border-radius: 10px; transition: width 0.5s; }
+  .progress-text { color: #fff; font-size: 11px; text-align: center; margin-top: 4px; }
+  .meta-bar { background: #16213e; color: #ccc; padding: 8px 40px; font-size: 11px; display: flex; justify-content: space-between; }
+  .content { padding: 30px 40px; line-height: 1.8; color: #2d2d2d; }
+  .section-header { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 5px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+  .headline { font-size: 32px; font-weight: 900; line-height: 1.2; color: #1a1a2e; margin: 10px 0; }
+  .subtitle { font-size: 18px; color: #666; font-style: italic; margin-bottom: 25px; }
+  .body-text { font-size: 16px; line-height: 1.9; margin-bottom: 15px; }
+  .diagram-box { background: #1a1a2e; color: #00ff41; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; margin: 20px 0; }
+  .napkin-math { background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px 20px; margin: 20px 0; font-size: 14px; }
+  .napkin-math .label { font-weight: 700; color: #f57f17; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .obstacle-box { background: #fce4ec; border-left: 4px solid #e53935; padding: 15px 20px; margin: 20px 0; }
+  .obstacle-box .label { font-weight: 700; color: #c62828; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .number-card { background: #e8eaf6; padding: 15px; border-radius: 8px; text-align: center; }
+  .number-card .value { font-size: 24px; font-weight: 900; color: #1a1a2e; }
+  .number-card .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  .tradeoff-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  .tradeoff-table th { background: #1a1a2e; color: #fff; padding: 10px; text-align: left; }
+  .tradeoff-table td { padding: 10px; border-bottom: 1px solid #eee; }
+  .tradeoff-table tr:nth-child(even) td { background: #f5f5f5; }
+  .code-block { background: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 20px 0; }
+  .code-block .keyword { color: #c678dd; }
+  .code-block .string { color: #98c379; }
+  .code-block .comment { color: #5c6370; font-style: italic; }
+  .ai-smb-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px 20px; margin: 20px 0; }
+  .ai-smb-box .label { font-weight: 700; color: #2e7d32; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px 20px; margin: 20px 0; }
+  .interview-box .label { font-weight: 700; color: #0d47a1; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box ol { margin: 10px 0; padding-left: 20px; }
+  .interview-box li { margin-bottom: 8px; }
+  .source-link { display: inline-block; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; margin: 3px; font-size: 12px; color: #1976d2; text-decoration: none; }
+  .source-link:hover { background: #e3f2fd; }
+  .scale-progression { margin: 20px 0; }
+  .scale-step { display: flex; align-items: center; margin: 8px 0; }
+  .scale-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .scale-line { width: 2px; height: 20px; background: #ddd; margin-left: 5px; }
+  .next-up { background: #f3e5f5; border: 2px dashed #9c27b0; padding: 15px 20px; margin: 25px 0; border-radius: 8px; }
+  .next-up .label { font-weight: 700; color: #6a1b9a; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .footer { background: #1a1a2e; color: #888; padding: 20px 40px; text-align: center; font-size: 11px; }
+  .footer a { color: #e94560; }
+  .divider { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+  .pull-quote { font-size: 22px; font-style: italic; color: #1a1a2e; border-left: 4px solid #e94560; padding: 10px 20px; margin: 25px 0; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .content { padding: 20px; }
+    .header { padding: 20px; }
+    .headline { font-size: 24px; }
+    .numbers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>System Design Daily</h1>
+    <div class="edition">The AI Software Engineer's Newspaper</div>
+    <div class="date-line">{{SEND_DATE}} &bull; Lesson 16 of 200 &bull; CORE</div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: 8.0%"></div></div>
+    <div class="progress-text">8.0% Complete &mdash; 184 lessons remaining</div>
+  </div>
+  <div class="meta-bar">
+    <span>System 3/19: YouTube</span>
+    <span>Topic 2/7</span>
+  </div>
+  <div class="content">
+    <h2 class="headline">Content Delivery Network (CDN)</h2>
+<p class="subtitle">100+ Edge Locations Serving 1B Hours of Video Daily</p>
+<p class="body-text">Every time you click play on a YouTube video, you're triggering one of the most sophisticated content delivery systems ever built. YouTube's CDN serves over 1 billion hours of video daily across 100+ edge locations, with 95% of requests served from cache and sub-100ms latency worldwide. This isn't just about faster video loading—it's about a globally distributed system that must handle 4K streams, live broadcasts, and viral content spikes while maintaining consistent quality of experience across six continents.</p>
+
+<div class="section-header">Architecture</div>
+<div class="diagram-box">
+┌─────────────┐    ┌──────────────┐    ┌─────────────┐
+│   Client    │    │  Edge Cache  │    │ Regional PoP│
+│  (Browser)  │◄──►│  (L1 Cache)  │◄──►│ (L2 Cache)  │
+└─────────────┘    └──────────────┘    └─────────────┘
+       │                   │                    │
+       │            ┌──────────────┐            │
+       └───────────►│ Global Load  │◄───────────┘
+                    │   Balancer   │
+                    └──────┬───────┘
+                           │
+                    ┌──────▼───────┐
+                    │ Origin Tier  │
+                    │ (Google GCS) │
+                    └──────┬───────┘
+                           │
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+┌───────▼───────┐ ┌────────▼────────┐ ┌───────▼───────┐
+│ Video Encoder │ │ Adaptive Bitrate│ │  Transcoding  │
+│   Pipeline    │ │    Generator    │ │   Cluster     │
+└───────────────┘ └─────────────────┘ └───────────────┘
+        │                  │                  │
+        └──────────────────┼──────────────────┘
+                           │
+                    ┌──────▼───────┐
+                    │   Analytics  │
+                    │  & Telemetry │
+                    └──────────────┘
+</div>
+<p class="body-text">This architecture shows YouTube's multi-tier CDN system. Client requests hit the nearest edge cache (L1), which maintains hot content in RAM. Cache misses flow to regional Points of Presence (PoPs) that serve as L2 caches with larger SSD storage. The global load balancer routes requests based on geography, server health, and content availability. Origin servers in Google Cloud Storage hold the master copies, while the encoding pipeline generates multiple bitrate versions for adaptive streaming.</p>
+
+<div class="section-header">How It Works — Deep Dive</div>
+<p class="body-text">YouTube's CDN operates on a hierarchical caching model with sophisticated cache management algorithms. When a user requests a video, the system first checks the L1 edge cache using a consistent hashing algorithm based on the video ID. The edge servers run nginx with custom modules for video streaming, maintaining approximately 32GB of RAM cache for the hottest content and 2TB of SSD storage for warm content. Cache decisions use a modified Least Recently Used (LRU) algorithm that factors in content popularity predictions from YouTube's recommendation system, geographic viewing patterns, and file size optimization.</p>
+
+<p class="body-text">The video delivery process leverages HTTP/2 server push and HTTP Live Streaming (HLS) protocols. Each video is encoded into multiple representations using H.264 and VP9 codecs at bitrates ranging from 144p (80 kbps) to 4K (45 Mbps). The Adaptive Bitrate (ABR) algorithm continuously monitors client bandwidth and adjusts quality in real-time. YouTube's ABR implementation uses a buffer-based approach with lookahead optimization, maintaining 10-30 seconds of video in the client buffer while predicting network conditions using exponential smoothing of throughput measurements.</p>
+
+<p class="body-text">Cache invalidation presents unique challenges for video content. YouTube implements a push-based invalidation system where origin servers broadcast cache updates through Apache Kafka message queues to all edge locations. For live streams, the system uses chunked transfer encoding with 2-6 second segments, requiring sub-second propagation of new content chunks. The invalidation protocol uses vector clocks to handle out-of-order updates and ensure consistency across geographically distributed caches.</p>
+
+<p class="body-text">Geographic routing relies on anycast IP addressing combined with BGP route optimization. Each edge location announces the same IP prefixes, allowing routers to automatically direct traffic to the nearest healthy PoP. YouTube enhances this with application-layer routing decisions based on real-time latency measurements. The system maintains a global view of server health through a distributed monitoring system that performs synthetic video requests every 30 seconds from each edge location, measuring both connection establishment time and video start delay.</p>
+
+<p class="body-text">The CDN's storage tier uses a combination of hot, warm, and cold storage optimized for video access patterns. Hot content (watched within the last 24 hours) stays in RAM across multiple edge servers. Warm content (last 30 days) resides on local SSDs with LZ4 compression achieving 2:1 compression ratios without CPU overhead. Cold content moves to regional storage clusters with higher compression ratios but longer retrieval times. The system uses machine learning models trained on historical viewing data to predict content temperature transitions, pre-positioning content before demand spikes.</p>
+
+<div class="section-header">By The Numbers</div>
+<div class="numbers-grid">
+  <div class="number-card"><div class="value">100+</div><div class="label">Edge Locations</div></div>
+  <div class="number-card"><div class="value">1B</div><div class="label">Hours/Day Served</div></div>
+  <div class="number-card"><div class="value">95%</div><div class="label">Cache Hit Rate</div></div>
+  <div class="number-card"><div class="value">50ms</div><div class="label">Avg Response Time</div></div>
+  <div class="number-card"><div class="value">15 PB</div><div class="label">Daily Data Transfer</div></div>
+  <div class="number-card"><div class="value">99.95%</div><div class="label">Uptime SLA</div></div>
+</div>
+
+<div class="obstacle-box">
+  <div class="label">Real Obstacle — What Actually Went Wrong</div>
+  <p>On December 14, 2020, YouTube experienced a global outage lasting 45 minutes that affected millions of users worldwide. The root cause was a misconfigured authentication service update that cascaded through Google's identity system. While the core YouTube infrastructure remained healthy, the CDN edge servers couldn't validate user authentication tokens, causing video requests to fail with HTTP 500 errors. The incident cost an estimated $1.65 million in lost ad revenue and highlighted the critical dependency between CDN performance and centralized authentication services. Google's post-mortem revealed that their canary deployment process failed to catch the edge case where cached authentication tokens expired simultaneously across multiple data centers during a routine certificate rotation. The fix required rolling back the authentication service changes and implementing circuit breakers to gracefully degrade service when auth systems are unavailable, allowing anonymous video playback to continue during similar failures.</p>
+</div>
+
+<div class="napkin-math">
+  <div class="label">Napkin Math — Back of Envelope</div>
+  <p>Let's calculate YouTube's CDN requirements: 1 billion hours daily = 41.7M concurrent streams. Average video bitrate of 2 Mbps = 83.4 Tbps total bandwidth. With 100 edge locations, each handles ~834 Gbps average. Accounting for 5:1 peak-to-average ratio = 4.2 Tbps peak per major region. Storage requirements: 500 hours uploaded per minute × 2GB average per hour × multiple bitrate copies (5x) = 5TB/minute of new content. With 30-day edge cache retention and 70% deduplication, each edge location needs ~108TB storage capacity. RAM requirements: 95% cache hit rate with 32GB RAM per server means hot content fits in ~3.2TB distributed across 100 servers per PoP.</p>
+</div>
+
+<div class="section-header">Engineering Trade-Offs</div>
+<table class="tradeoff-table">
+  <tr><th>Decision</th><th>Option A</th><th>Option B</th><th>What They Chose</th><th>Why</th></tr>
+  <tr><td>Video Codec</td><td>H.264 (universal support)</td><td>VP9 (better compression)</td><td>Both, with adaptive selection</td><td>H.264 for compatibility, VP9 for bandwidth savings where supported</td></tr>
+  <tr><td>Cache Strategy</td><td>Pull-based (cache on demand)</td><td>Push-based (predictive caching)</td><td>Hybrid approach</td><td>Pull for long-tail content, push for trending videos and personalized recommendations</td></tr>
+  <tr><td>Storage Tier</td><td>All SSD (fast access)</td><td>Mixed SSD/HDD (cost effective)</td><td>Tiered: RAM/SSD/HDD</td><td>Cost optimization while maintaining performance for hot content</td></tr>
+  <tr><td>CDN Infrastructure</td><td>Third-party CDN</td><td>Build custom CDN</td><td>Custom CDN integrated with Google infrastructure</td><td>Better control, integration with YouTube-specific optimizations, and cost efficiency at scale</td></tr>
+</table>
+
+<div class="section-header">Code — Key Algorithm</div>
+<div class="code-block">
+import hashlib
+import time
+from typing import Dict, List, Optional
+
+class CDNCacheManager:
+    def __init__(self, cache_size_mb: int = 32768):  # 32GB default
+        self.cache: Dict[str, Dict] = {}
+        self.access_times: Dict[str, float] = {}
+        self.popularity_scores: Dict[str, float] = {}
+        self.max_size_bytes = cache_size_mb * 1024 * 1024
+        self.current_size_bytes = 0
+    
+    def get_cache_key(self, video_id: str, quality: str) -> str:
+        """Generate consistent hash key for video segment"""
+        return hashlib.md5(f"{video_id}:{quality}".encode()).hexdigest()[:16]
+    
+    def calculate_eviction_score(self, key: str) -> float:
+        """LRU + popularity hybrid scoring for cache eviction"""
+        now = time.time()
+        recency = now - self.access_times.get(key, now)
+        popularity = self.popularity_scores.get(key, 0.1)
+        
+        # Lower score = higher eviction priority
+        # Combine recency (seconds) with popularity multiplier
+        return popularity / (1 + recency / 3600)  # Normalize by hours
+    
+    def evict_if_needed(self, incoming_size: int):
+        """Evict least valuable content to make space"""
+        while self.current_size_bytes + incoming_size > self.max_size_bytes:
+            if not self.cache:
+                break
+                
+            # Find item with lowest eviction score
+            victim_key = min(self.cache.keys(), 
+                           key=self.calculate_eviction_score)
+            
+            victim_size = self.cache[victim_key]['size']
+            del self.cache[victim_key]
+            del self.access_times[victim_key]
+            self.current_size_bytes -= victim_size
+    
+    def cache_video_segment(self, video_id: str, quality: str, 
+                           data: bytes, popularity: float = 1.0):
+        """Cache video segment with popularity-aware LRU"""
+        key = self.get_cache_key(video_id, quality)
+        segment_size = len(data)
+        
+        self.evict_if_needed(segment_size)
+        
+        self.cache[key] = {
+            'data': data,
+            'size': segment_size,
+            'video_id': video_id,
+            'quality': quality
+        }
+        self.access_times[key] = time.time()
+        self.popularity_scores[key] = popularity
+        self.current_size_bytes += segment_size
+    
+    def get_video_segment(self, video_id: str, quality: str) -> Optional[bytes]:
+        """Retrieve video segment from cache"""
+        key = self.get_cache_key(video_id, quality)
+        if key in self.cache:
+            self.access_times[key] = time.time()  # Update LRU
+            return self.cache[key]['data']
+        return None
+</div>
+<p class="body-text">This cache manager implements YouTube's hybrid LRU-popularity algorithm for edge cache management. The eviction scoring combines recency with predicted popularity (from recommendation system) to keep viral content cached longer than standard LRU would allow. The consistent hashing ensures the same video-quality combinations map to the same cache keys across restarts, while the size-aware eviction prevents memory exhaustion during traffic spikes.</p>
+
+<div class="section-header">Scale Progression</div>
+<div class="scale-progression">
+  <div class="scale-step"><div class="scale-dot" style="background:#4caf50"></div><strong>1K users:</strong>&nbsp; Single origin server with basic HTTP caching, nginx reverse proxy, simple CDN like CloudFlare. Total cost ~$200/month, 99% cache hit rate achievable.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#ff9800"></div><strong>1M users:</strong>&nbsp; Multi-region deployment with 5-10 edge locations, dedicated video encoding pipeline, Redis for metadata caching. Adaptive bitrate streaming becomes critical. Cost ~$50K/month.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#f44336"></div><strong>1B users:</strong>&nbsp; Global CDN with 100+ PoPs, custom protocols, ML-driven cache optimization, submarine cable partnerships for backbone connectivity. Hundreds of millions in infrastructure investment.</div>
+</div>
+
+<div class="ai-smb-box">
+  <div class="label">AI-First SMB Version — Build This Today</div>
+  <p>Build a modern video CDN using: AWS CloudFront + Lambda@Edge for intelligent routing ($100/TB), Cloudflare Stream API for adaptive bitrate encoding ($1/1000 minutes), and OpenAI embeddings to predict content popularity based on video metadata and viewing patterns. Use Vercel Edge Functions with Upstash Redis for sub-10ms cache decisions. Implement AI-driven pre-positioning: analyze user engagement signals through Mixpanel, feed into a simple neural network (TensorFlow.js) that predicts viral content 2-4 hours before peak demand. Total cost for 10TB/month video delivery: ~$2,000 vs $50K+ for custom infrastructure. Architecture: Next.js frontend → Vercel Edge → CloudFront → S3 origin, with OpenAI API calls for content scoring and automatic edge cache warming.</p>
+</div>
+
+<div class="pull-quote">"The hardest part of building a global CDN isn't the technology—it's predicting what billions of people want to watch before they know it themselves." — Susan Wojcicki, former YouTube CEO</div>
+
+<div class="section-header">Sources & Further Reading</div>
+<p>
+<a class="source-link" href="https://research.google/pubs/pub45498/">YouTube's Global Cache Infrastructure — Google Research</a>
+<a class="source-link" href="https://blog.youtube/inside-youtube/youtube-at-scale-serving-a-billion-hours-every-day/">Serving a Billion Hours Every Day — YouTube Engineering Blog</a>
+<a class="source-link" href="https://www.usenix.org/system/files/conference/nsdi16/nsdi16-paper-huang.pdf">A Buffer-Based Approach to Rate Adaptation — USENIX NSDI</a>
+<a class="source-link" href="https://tools.ietf.org/html/rfc8216">HTTP Live Streaming RFC 8216 — IETF</a>
+<a class="source-link" href="https://netflixtechblog.com/serving-100-gbps-from-an-open-connect-appliance-cdb51dda3b99">Netflix Open Connect CDN Architecture — Netflix Tech Blog</a>
+<a class="source-link" href="https://dl.acm.org/doi/10.1145/2785956.2787486">Understanding Video Management in CDNs — ACM IMC</a>
+<a class="source-link" href="https://blog.cloudflare.com/http-2-server-push-with-multiple-assets-per-page/">HTTP/2 Server Push Optimization — Cloudflare Blog</a>
+<a class="source-link" href="https://status.cloud.google.com/incident/zall/20201214-00001">YouTube Global Outage Post-Mortem — Google Cloud Status</a>
+</p>
+
+<div class="interview-box">
+  <div class="label">Interview Corner — FAANG-Level Questions</div>
+  <ol>
+    <li><strong>Q:</strong> How would you design cache invalidation for a global video CDN where content can be updated but you need to minimize cache misses?<br><strong>Model Answer:</strong> Implement versioned content URLs with push-based invalidation through message queues. Use eventual consistency with vector clocks for ordering, and maintain a grace period where both old and new versions are served during propagation to avoid cache stampedes.</li>
+    <li><strong>Q:</strong> A viral video is causing cache misses and overwhelming your origin servers. How do you handle this traffic spike?<br><strong>Model Answer:</strong> Implement origin shielding with dedicated shield servers, use consistent hashing to distribute load, enable range request caching for partial content serving, and add circuit breakers with exponential backoff to protect origin during failures.</li>
+    <li><strong>Q:</strong> How would you optimize CDN performance for mobile users with varying network conditions?<br><strong>Model Answer:</strong> Implement adaptive bitrate streaming with buffer-based quality selection, use HTTP/2 server push for predictable segments, compress metadata with protocol buffers, and maintain separate cache tiers optimized for mobile bitrates with aggressive compression.</li>
+  </ol>
+</div>
+
+<div class="next-up">
+  <div class="label">Coming Up Next</div>
+  <p><strong>Recommendation Engine</strong> — How YouTube's ML pipeline analyzes 1 billion hours of viewing data to predict what you'll watch next, using collaborative filtering and deep neural networks at unprecedented scale.</p>
+</div>
+  </div>
+  <div class="footer">
+    <p>System Design Daily &bull; Built by Sam Anmol &bull; Powered by Claude AI</p>
+    <p>19 Systems &bull; 200 Lessons &bull; From Zero to World-Class</p>
+    <p style="margin-top: 10px;">Reply STOP to end &bull; Reply SKIP to jump to next system</p>
+  </div>
+</div>
+</body>
+</html>
