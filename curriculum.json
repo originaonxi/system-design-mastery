@@ -1,0 +1,532 @@
+{
+  "version": "2.0",
+  "total_lessons": 200,
+  "systems": [
+    {
+      "id": 1,
+      "name": "Stock Exchange",
+      "real_company": "NASDAQ / NYSE",
+      "lessons": [
+        {
+          "lesson_id": 1,
+          "title": "Order Matching Engine",
+          "subtitle": "How NASDAQ Processes 1M+ Orders Per Second",
+          "type": "core",
+          "system_id": 1,
+          "topics": ["matching engine architecture", "price-time priority", "FIFO queue per price level", "FIX protocol", "market makers"],
+          "real_numbers": {
+            "nasdaq_orders_per_sec": "1,000,000+",
+            "nyse_daily_volume": "$25 billion",
+            "matching_latency": "50 microseconds",
+            "uptime_target": "99.999%"
+          },
+          "real_obstacle": "Knight Capital lost $440M in 45 minutes (Aug 1, 2012) due to a deployment bug that activated old test code in their matching engine",
+          "papers": [
+            {"title": "The Design of a Financial Exchange", "url": "https://queue.acm.org/detail.cfm?id=3448307", "source": "ACM Queue"},
+            {"title": "LMAX Exchange Architecture", "url": "https://martinfowler.com/articles/lmax.html", "source": "Martin Fowler"},
+            {"title": "Mechanical Sympathy Blog - Disruptor", "url": "https://mechanical-sympathy.blogspot.com/", "source": "LMAX"}
+          ],
+          "napkin_math": "1M orders/sec × 100 bytes/order = 100MB/sec throughput. At 50μs latency, need single-threaded hot path (no locks). LMAX Disruptor achieves this with ring buffer.",
+          "ai_smb_angle": "Build AI-powered order matching for SMB crypto/stock brokerages using event-driven architecture + ML-based anomaly detection for flash crash prevention. Claude API predicts unusual volume spikes 30sec ahead.",
+          "interview_questions": [
+            "Design an order matching engine that handles 100K orders/sec with <1ms latency",
+            "How would you handle partial fills in a limit order book?",
+            "What happens when the matching engine crashes mid-trade?"
+          ]
+        },
+        {
+          "lesson_id": 2,
+          "title": "Order Book Data Structure",
+          "subtitle": "The Heart of Every Exchange - Price-Time Priority at Nanosecond Speed",
+          "type": "core",
+          "system_id": 1,
+          "topics": ["limit order book", "red-black tree", "price levels", "bid-ask spread", "market depth", "L2/L3 data"],
+          "real_numbers": {
+            "typical_spread": "0.01 cents for liquid stocks",
+            "order_book_depth": "10-50 price levels visible",
+            "book_updates_per_sec": "100,000+ for active stocks",
+            "memory_per_book": "~50MB for active stock"
+          },
+          "real_obstacle": "The 2010 Flash Crash: Dow dropped 1,000 points in 5 minutes. A $4.1B sell order caused cascading order book imbalance. SEC introduced circuit breakers afterward.",
+          "papers": [
+            {"title": "Limit Order Book Dynamics and Asset Pricing", "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2449288", "source": "SSRN"},
+            {"title": "Price Dynamics in a Markovian Limit Order Market", "url": "https://arxiv.org/abs/1104.4596", "source": "arXiv"}
+          ],
+          "napkin_math": "100K updates/sec × 8 bytes per price level × 1000 stocks = 800MB/sec of order book data. Need in-memory sorted structure. Red-black tree: O(log n) insert/delete.",
+          "ai_smb_angle": "AI order book analyzer for SMB trading platforms: predict short-term price movements from order book imbalance using transformer models. Real-time anomaly detection flags manipulation.",
+          "interview_questions": [
+            "What data structure would you use for a limit order book and why?",
+            "How do you handle the thundering herd problem when a large order hits?",
+            "Design a system to detect spoofing in the order book"
+          ]
+        },
+        {
+          "lesson_id": 3,
+          "title": "Market Data Feed Architecture",
+          "subtitle": "Distributing Real-Time Prices to Millions of Traders Worldwide",
+          "type": "core",
+          "system_id": 1,
+          "topics": ["multicast UDP", "SIP protocol", "consolidated tape", "market data normalization", "sequence numbers", "gap detection"],
+          "real_numbers": {
+            "messages_per_day": "50+ billion across US exchanges",
+            "peak_messages_per_sec": "10,000,000+",
+            "feed_latency": "<1 millisecond",
+            "data_volume_per_day": "5+ terabytes"
+          },
+          "real_obstacle": "Aug 22, 2013: NASDAQ halted trading for 3 hours due to SIP (Securities Information Processor) overload. The consolidated feed couldn't keep up with quote traffic, causing stale prices.",
+          "papers": [
+            {"title": "Latency in Financial Systems", "url": "https://queue.acm.org/detail.cfm?id=2536492", "source": "ACM Queue"},
+            {"title": "High-Frequency Trading Technology", "url": "https://arxiv.org/abs/1511.04200", "source": "arXiv"}
+          ],
+          "napkin_math": "10M messages/sec × 200 bytes avg = 2GB/sec. With 1000 subscribers each needing their own copy = 2TB/sec if unicast. Multicast: same 2GB/sec serves all. 1000x bandwidth savings.",
+          "ai_smb_angle": "Build AI-filtered market data feeds for SMB brokers: instead of raw firehose, ML models pre-filter relevant signals per user's portfolio. Reduce bandwidth 95% while surfacing only actionable data.",
+          "interview_questions": [
+            "Why does market data use UDP multicast instead of TCP?",
+            "How would you handle message gaps in a market data feed?",
+            "Design a system to normalize data from 13 different exchanges into one unified feed"
+          ]
+        },
+        {
+          "lesson_id": 4,
+          "title": "Risk Management & Circuit Breakers",
+          "subtitle": "How Exchanges Prevent Market Meltdowns",
+          "type": "core",
+          "system_id": 1,
+          "topics": ["pre-trade risk checks", "circuit breakers", "LULD bands", "kill switches", "position limits", "margin calculation"],
+          "real_numbers": {
+            "circuit_breaker_level1": "7% drop triggers 15-min halt",
+            "circuit_breaker_level2": "13% drop triggers 15-min halt",
+            "circuit_breaker_level3": "20% drop halts market for day",
+            "risk_check_latency_budget": "<5 microseconds",
+            "knight_capital_loss": "$440M in 45 minutes"
+          },
+          "real_obstacle": "March 9, 2020: Circuit breakers triggered 4 times in one week during COVID crash. S&P 500 dropped 7% within minutes of opening bell. System worked as designed but exposed latency in halt propagation across venues.",
+          "papers": [
+            {"title": "Circuit Breakers: A Survey", "url": "https://www.sciencedirect.com/science/article/pii/S1042957319300270", "source": "Journal of Financial Markets"},
+            {"title": "The Role of Circuit Breakers in Market Stability", "url": "https://www.sec.gov/news/studies/2010/marketevents-report.pdf", "source": "SEC"}
+          ],
+          "napkin_math": "Risk check must complete in <5μs to not slow matching engine. At 1M orders/sec, that's 1μs per order budget. Pre-computed risk limits in L1 cache (64 bytes per instrument) = ~64KB for 1000 instruments. Fits in CPU cache.",
+          "ai_smb_angle": "AI risk engine for SMB brokerages: real-time position monitoring with ML-based stress testing. Predict portfolio VaR (Value at Risk) using Monte Carlo + neural nets. Auto-hedge suggestions via Claude API.",
+          "interview_questions": [
+            "Design a pre-trade risk check system that adds <10μs latency",
+            "How would you implement circuit breakers for a crypto exchange?",
+            "What's the tradeoff between risk check thoroughness and latency?"
+          ]
+        },
+        {
+          "lesson_id": 5,
+          "title": "Settlement & Clearing Architecture",
+          "subtitle": "T+1: How $1 Trillion Changes Hands Daily Without Losing a Penny",
+          "type": "core",
+          "system_id": 1,
+          "topics": ["DTCC clearing", "netting", "T+1 settlement", "CCP counterparty risk", "delivery vs payment", "fails management"],
+          "real_numbers": {
+            "dtcc_daily_volume": "$1.7 trillion",
+            "netting_efficiency": "98% of trades netted (reduces actual transfers)",
+            "settlement_fail_rate": "<1%",
+            "dtcc_members": "600+ broker-dealers"
+          },
+          "real_obstacle": "GameStop (Jan 2021): DTCC raised collateral requirements 10x overnight. Robinhood needed $3.4B in 24 hours. They restricted buying, causing congressional hearings. Root cause: T+2 settlement meant 2 days of counterparty risk.",
+          "papers": [
+            {"title": "The Economics of Clearing and Settlement", "url": "https://www.bis.org/publ/work580.pdf", "source": "Bank for International Settlements"},
+            {"title": "Blockchain and the Future of Settlement", "url": "https://www.dtcc.com/~/media/Files/Downloads/WhitePapers/blockchain-and-beyond.pdf", "source": "DTCC"}
+          ],
+          "napkin_math": "Without netting: 10M trades/day × $10K avg = $100T in transfers needed. With netting: 98% cancelled out = $2T actual transfers. Netting saves $98T in daily capital movement.",
+          "ai_smb_angle": "AI-powered settlement prediction for SMB brokers: ML predicts settlement fails 24hrs ahead based on counterparty patterns. Smart netting algorithms reduce capital requirements 40%. Blockchain-based instant settlement for SMB trading platforms.",
+          "interview_questions": [
+            "Why can't stock trades settle instantly? What are the technical barriers?",
+            "Design a netting system that handles 10M trades per day",
+            "How would blockchain change the clearing and settlement process?"
+          ]
+        },
+        {
+          "lesson_id": 6,
+          "title": "Co-location & Latency Arbitrage",
+          "subtitle": "Paying $14K/Month for 1 Microsecond Advantage",
+          "type": "core",
+          "system_id": 1,
+          "topics": ["co-location", "FPGA trading", "kernel bypass", "microwave towers", "latency measurement", "cross-connect"],
+          "real_numbers": {
+            "colo_rack_cost": "$14,000/month at NYSE",
+            "speed_of_light_nyc_chicago": "6.55 milliseconds (fiber), 4.25ms (microwave)",
+            "fpga_latency": "<1 microsecond",
+            "hft_percentage_of_volume": "50-60% of US equity volume"
+          },
+          "real_obstacle": "Spread Networks spent $300M to build a fiber optic cable from Chicago to NYC that was 100 miles shorter than existing routes, saving 3ms. Then microwave towers made it obsolete in 2 years. McKay Brothers now does Chicago-NYC in 4.25ms via microwave.",
+          "papers": [
+            {"title": "Flash Boys by Michael Lewis", "url": "https://www.amazon.com/Flash-Boys-Wall-Street-Revolt/dp/0393351599", "source": "Book"},
+            {"title": "The High-Frequency Trading Arms Race", "url": "https://faculty.chicagobooth.edu/eric.budish/research/HFT-Races-AER.pdf", "source": "American Economic Review"}
+          ],
+          "napkin_math": "Light travels 300km/ms in vacuum, ~200km/ms in fiber. NYC-Chicago = 1,200km fiber = 6ms. Microwave through air at ~280km/ms = 4.3ms. 1.7ms advantage × 1000 trades/sec = 1.7 seconds of information advantage per second.",
+          "ai_smb_angle": "SMBs can't compete on latency. Instead: AI-powered smart order routing that finds best execution across venues. ML models predict short-term price impact to minimize slippage. Claude API analyzes order flow patterns.",
+          "interview_questions": [
+            "How would you design a system to measure end-to-end latency in microseconds?",
+            "What's kernel bypass and why do HFT firms use it?",
+            "Design a smart order router that minimizes execution cost"
+          ]
+        },
+        {
+          "lesson_id": 7,
+          "title": "Exchange Fault Tolerance",
+          "subtitle": "When Wall Street Goes Dark: Real Outages and How They Were Fixed",
+          "type": "core",
+          "system_id": 1,
+          "topics": ["hot-hot redundancy", "state machine replication", "disaster recovery", "Raft consensus", "deterministic replay"],
+          "real_numbers": {
+            "nyse_outage_2015": "3 hours 38 minutes (July 8)",
+            "nasdaq_outage_2013": "3 hours (August 22)",
+            "target_recovery_time": "<30 seconds",
+            "state_replication_lag": "<1 millisecond"
+          },
+          "real_obstacle": "NYSE July 8, 2015: A software update the night before introduced a configuration issue. Gateway servers rejected connections. Manual failover took 3hrs 38min because the backup systems had a different software version. Cost: estimated $2.4B in trading opportunity.",
+          "papers": [
+            {"title": "Raft Consensus Algorithm", "url": "https://raft.github.io/raft.pdf", "source": "Stanford"},
+            {"title": "In Search of an Understandable Consensus Algorithm", "url": "https://www.usenix.org/system/files/conference/atc14/atc14-paper-ongaro.pdf", "source": "USENIX ATC 2014"}
+          ],
+          "napkin_math": "3hr 38min outage × $25B daily volume / 6.5hr trading day = ~$14B in trades that couldn't execute. Even at 0.01% commission = $1.4M in direct revenue loss. Indirect losses: trust, regulatory fines.",
+          "ai_smb_angle": "AI-powered chaos engineering for SMB exchanges: automated fault injection testing, ML-predicted failure modes, self-healing infrastructure. Claude API monitors system health and auto-escalates before humans notice.",
+          "interview_questions": [
+            "Design a hot-hot failover system for a matching engine",
+            "How do you ensure both replicas process orders in the same sequence?",
+            "What's the tradeoff between consistency and availability for a stock exchange?"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Payment System",
+      "real_company": "Stripe / Square / PayPal",
+      "lessons": [
+        {"lesson_id": 8, "title": "Payment Flow Architecture", "subtitle": "Auth → Capture → Settlement: How Stripe Processes $1T+ Annually", "type": "core", "system_id": 2},
+        {"lesson_id": 9, "title": "PCI-DSS & Tokenization Vault", "subtitle": "Securing 500M+ Card Numbers Without Ever Seeing Them", "type": "core", "system_id": 2},
+        {"lesson_id": 10, "title": "Idempotency & Exactly-Once Payments", "subtitle": "Why Stripe's Idempotency Keys Prevent $0 to $Billions in Double Charges", "type": "core", "system_id": 2},
+        {"lesson_id": 11, "title": "Fraud Detection ML Pipeline", "subtitle": "Stripe Radar: Blocking 500M+ Fraudulent Attempts Per Year in Real-Time", "type": "core", "system_id": 2},
+        {"lesson_id": 12, "title": "Multi-Currency & FX Engine", "subtitle": "Real-Time Exchange Rates Across 135 Currencies at Transaction Speed", "type": "core", "system_id": 2},
+        {"lesson_id": 13, "title": "Double-Entry Ledger at Scale", "subtitle": "How Every Cent is Tracked Across Billions of Transactions", "type": "core", "system_id": 2},
+        {"lesson_id": 14, "title": "Retry, Reconciliation & 5-Nines Reliability", "subtitle": "Stripe's Path to 99.999% Uptime for Money Movement", "type": "core", "system_id": 2}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "YouTube",
+      "real_company": "YouTube / Google",
+      "lessons": [
+        {"lesson_id": 15, "title": "Video Upload & Transcoding Pipeline", "subtitle": "Processing 500 Hours of Video Uploaded Every Minute", "type": "core", "system_id": 3},
+        {"lesson_id": 16, "title": "Content Delivery Network (CDN)", "subtitle": "100+ Edge Locations Serving 1B Hours of Video Daily", "type": "core", "system_id": 3},
+        {"lesson_id": 17, "title": "Recommendation Engine", "subtitle": "The Algorithm Behind 70% of All Watch Time", "type": "core", "system_id": 3},
+        {"lesson_id": 18, "title": "Vitess: MySQL Sharding Born at YouTube", "subtitle": "How YouTube Scaled MySQL to Serve Billions", "type": "core", "system_id": 3},
+        {"lesson_id": 19, "title": "Live Streaming Architecture", "subtitle": "Sub-2-Second Latency for Millions of Concurrent Viewers", "type": "core", "system_id": 3},
+        {"lesson_id": 20, "title": "Content Moderation at Scale", "subtitle": "ML Classifies 500+ Hours/Min for Policy Violations", "type": "core", "system_id": 3},
+        {"lesson_id": 21, "title": "Ad Auction & Monetization", "subtitle": "Real-Time Bidding for 2B Monthly Users", "type": "core", "system_id": 3}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Google Docs",
+      "real_company": "Google Workspace",
+      "lessons": [
+        {"lesson_id": 22, "title": "Operational Transformation vs CRDT", "subtitle": "How Concurrent Edits Merge Without Conflict", "type": "core", "system_id": 4},
+        {"lesson_id": 23, "title": "WebSocket Architecture at Scale", "subtitle": "Persistent Connections for 100M+ Active Users", "type": "core", "system_id": 4},
+        {"lesson_id": 24, "title": "Revision History & Versioning", "subtitle": "Every Keystroke Stored: Document Time Travel", "type": "core", "system_id": 4},
+        {"lesson_id": 25, "title": "Conflict Resolution Deep Dive", "subtitle": "Google Uses OT, Figma Uses CRDT: Which Wins?", "type": "core", "system_id": 4},
+        {"lesson_id": 26, "title": "Offline Mode & Eventual Consistency", "subtitle": "Editing Without Internet and Syncing Later", "type": "core", "system_id": 4},
+        {"lesson_id": 27, "title": "Permission System at Scale", "subtitle": "ACL for 3B+ Documents Across Organizations", "type": "core", "system_id": 4}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Apache Kafka",
+      "real_company": "Confluent / LinkedIn",
+      "lessons": [
+        {"lesson_id": 28, "title": "Kafka Core Architecture", "subtitle": "Brokers, Topics, Partitions, Consumer Groups Explained", "type": "core", "system_id": 5},
+        {"lesson_id": 29, "title": "Log-Structured Storage", "subtitle": "Why Kafka Gets 2M+ Messages/Sec Write Throughput", "type": "core", "system_id": 5},
+        {"lesson_id": 30, "title": "Exactly-Once Semantics", "subtitle": "Idempotent Producers + Transactional Writes", "type": "core", "system_id": 5},
+        {"lesson_id": 31, "title": "Kafka Streams & Real-Time Processing", "subtitle": "Stream Processing Without a Separate Cluster", "type": "core", "system_id": 5},
+        {"lesson_id": 32, "title": "Replication & Leader Election", "subtitle": "ISR Protocol: Zero Data Loss at Scale", "type": "core", "system_id": 5},
+        {"lesson_id": 33, "title": "Kafka at LinkedIn", "subtitle": "Processing 7 Trillion Messages Per Day", "type": "core", "system_id": 5},
+        {"lesson_id": 34, "title": "Schema Evolution & Registry", "subtitle": "Avro, Protobuf, and Backward Compatibility", "type": "core", "system_id": 5}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Pastebin",
+      "real_company": "Pastebin / Hastebin",
+      "lessons": [
+        {"lesson_id": 35, "title": "URL Shortening & Hash Design", "subtitle": "Base62 Encoding, Collision Handling at 18M Monthly Pastes", "type": "core", "system_id": 6},
+        {"lesson_id": 36, "title": "Rate Limiting Architecture", "subtitle": "Token Bucket vs Sliding Window vs Leaky Bucket", "type": "core", "system_id": 6},
+        {"lesson_id": 37, "title": "Storage Tiering Strategy", "subtitle": "Hot/Warm/Cold: Optimizing Cost for Billions of Pastes", "type": "core", "system_id": 6},
+        {"lesson_id": 38, "title": "CDN & Cache Optimization", "subtitle": "From 60% to 95% Cache Hit Ratio", "type": "core", "system_id": 6},
+        {"lesson_id": 39, "title": "TTL & Expiration at Scale", "subtitle": "Cleaning Up Expired Content Without Killing Performance", "type": "core", "system_id": 6}
+      ]
+    },
+    {
+      "id": 7,
+      "name": "WhatsApp",
+      "real_company": "WhatsApp / Meta",
+      "lessons": [
+        {"lesson_id": 40, "title": "End-to-End Encryption", "subtitle": "Signal Protocol: The Double Ratchet Algorithm Explained", "type": "core", "system_id": 7},
+        {"lesson_id": 41, "title": "Erlang/BEAM Architecture", "subtitle": "How 50 Engineers Handled 900M Users", "type": "core", "system_id": 7},
+        {"lesson_id": 42, "title": "Message Delivery Guarantees", "subtitle": "Sent → Delivered → Read: The Three Checkmarks", "type": "core", "system_id": 7},
+        {"lesson_id": 43, "title": "Media Storage Pipeline", "subtitle": "Photo/Video Compression and Delivery at 100B+ Messages/Day", "type": "core", "system_id": 7},
+        {"lesson_id": 44, "title": "Group Messaging Architecture", "subtitle": "Fan-Out on Write vs Read for Groups of 1024", "type": "core", "system_id": 7},
+        {"lesson_id": 45, "title": "Push Notification System", "subtitle": "FCM/APNs Integration at Planetary Scale", "type": "core", "system_id": 7},
+        {"lesson_id": 46, "title": "Presence & Last Seen", "subtitle": "Distributed State for 2B Online/Offline Users", "type": "core", "system_id": 7}
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Airbnb",
+      "real_company": "Airbnb",
+      "lessons": [
+        {"lesson_id": 47, "title": "Search & Ranking", "subtitle": "ML-Based Scoring for 7M+ Listings", "type": "core", "system_id": 8},
+        {"lesson_id": 48, "title": "Dynamic Pricing (Smart Pricing)", "subtitle": "Demand Prediction Models That Set Optimal Price", "type": "core", "system_id": 8},
+        {"lesson_id": 49, "title": "Payment Escrow System", "subtitle": "Hold Funds 24hrs After Check-In Across 220 Countries", "type": "core", "system_id": 8},
+        {"lesson_id": 50, "title": "Trust & Safety Architecture", "subtitle": "Identity Verification, Reviews, and Fraud Detection", "type": "core", "system_id": 8},
+        {"lesson_id": 51, "title": "Availability Calendar at Scale", "subtitle": "Distributed Calendar for 7M Properties", "type": "core", "system_id": 8},
+        {"lesson_id": 52, "title": "Geo-Spatial Search with S2 Geometry", "subtitle": "Location-Based Queries Using Hilbert Curves", "type": "core", "system_id": 8},
+        {"lesson_id": 53, "title": "Photo Quality Scoring", "subtitle": "ML Model That Rates Listing Photos to Boost Bookings 20%", "type": "core", "system_id": 8}
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Spotify",
+      "real_company": "Spotify",
+      "lessons": [
+        {"lesson_id": 54, "title": "Audio Streaming Architecture", "subtitle": "Ogg Vorbis, Adaptive Bitrate for 100M+ Songs", "type": "core", "system_id": 9},
+        {"lesson_id": 55, "title": "Discover Weekly Recommendation Engine", "subtitle": "Collaborative Filtering + NLP on 4B Playlists", "type": "core", "system_id": 9},
+        {"lesson_id": 56, "title": "800+ Microservices Architecture", "subtitle": "Service Mesh, API Gateway, and Backstage", "type": "core", "system_id": 9},
+        {"lesson_id": 57, "title": "Audio Content Delivery", "subtitle": "From P2P to CDN: The 2014 Architecture Pivot", "type": "core", "system_id": 9},
+        {"lesson_id": 58, "title": "Offline Sync & DRM", "subtitle": "Encrypted Downloads and License Management", "type": "core", "system_id": 9},
+        {"lesson_id": 59, "title": "A/B Testing Platform", "subtitle": "Running 500+ Experiments Simultaneously", "type": "core", "system_id": 9},
+        {"lesson_id": 60, "title": "Podcast Ingestion Pipeline", "subtitle": "RSS Processing for 5M+ Podcasts", "type": "core", "system_id": 9}
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Slack",
+      "real_company": "Slack / Salesforce",
+      "lessons": [
+        {"lesson_id": 61, "title": "Real-Time Messaging Gateway", "subtitle": "WebSocket Handling 750K+ Simultaneous Connections", "type": "core", "system_id": 10},
+        {"lesson_id": 62, "title": "Channel & Workspace Architecture", "subtitle": "Multi-Tenant Data Model for Enterprise", "type": "core", "system_id": 10},
+        {"lesson_id": 63, "title": "Search Infrastructure", "subtitle": "Indexing and Searching 100B+ Messages", "type": "core", "system_id": 10},
+        {"lesson_id": 64, "title": "File Sharing & Preview Generation", "subtitle": "S3-Backed Storage with Real-Time Thumbnails", "type": "core", "system_id": 10},
+        {"lesson_id": 65, "title": "Notification Routing Engine", "subtitle": "Per-User DND Rules Across Desktop, Mobile, Email", "type": "core", "system_id": 10},
+        {"lesson_id": 66, "title": "Slack Connect: Cross-Org Federation", "subtitle": "Connecting Separate Workspaces Securely", "type": "core", "system_id": 10},
+        {"lesson_id": 67, "title": "Block Kit & Message Formatting", "subtitle": "Structured Interactive Messages at Scale", "type": "core", "system_id": 10}
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Reddit",
+      "real_company": "Reddit",
+      "lessons": [
+        {"lesson_id": 68, "title": "Ranking Algorithms", "subtitle": "Hot, Best, Controversial: Wilson Score Interval", "type": "core", "system_id": 11},
+        {"lesson_id": 69, "title": "Vote Counting at Scale", "subtitle": "Approximate Counting, HyperLogLog, Anti-Gaming", "type": "core", "system_id": 11},
+        {"lesson_id": 70, "title": "Subreddit Multi-Tenant Architecture", "subtitle": "100K+ Communities with Custom Rules", "type": "core", "system_id": 11},
+        {"lesson_id": 71, "title": "Python to Go Migration", "subtitle": "How Reddit Reduced Latency 60% by Rewriting Core Services", "type": "core", "system_id": 11},
+        {"lesson_id": 72, "title": "Comment Threading", "subtitle": "Tree Structure with Billions of Nodes", "type": "core", "system_id": 11},
+        {"lesson_id": 73, "title": "Content Moderation & AutoModerator", "subtitle": "Rule-Based + ML Spam Detection", "type": "core", "system_id": 11},
+        {"lesson_id": 74, "title": "Karma & Awards System", "subtitle": "Gamification Architecture at Scale", "type": "core", "system_id": 11}
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Google Search",
+      "real_company": "Google",
+      "lessons": [
+        {"lesson_id": 75, "title": "Web Crawling at Scale", "subtitle": "Googlebot Crawls 100B+ Pages", "type": "core", "system_id": 12},
+        {"lesson_id": 76, "title": "Inverted Index & PageRank", "subtitle": "The Algorithm That Built a $1.9T Company", "type": "core", "system_id": 12},
+        {"lesson_id": 77, "title": "Query Processing Pipeline", "subtitle": "Spelling, Intent, Entity Recognition in <200ms", "type": "core", "system_id": 12},
+        {"lesson_id": 78, "title": "Ranking Evolution", "subtitle": "PageRank → RankBrain → BERT → MUM → Gemini", "type": "core", "system_id": 12},
+        {"lesson_id": 79, "title": "Serving Infrastructure", "subtitle": "Results in <200ms with 99.99% Availability", "type": "core", "system_id": 12},
+        {"lesson_id": 80, "title": "Knowledge Graph", "subtitle": "500B+ Facts and Entity Disambiguation", "type": "core", "system_id": 12},
+        {"lesson_id": 81, "title": "Ads Auction System", "subtitle": "Second-Price → VCG: The $224B Revenue Engine", "type": "core", "system_id": 12}
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Real-Time Leaderboard",
+      "real_company": "Gaming / Competitive Platforms",
+      "lessons": [
+        {"lesson_id": 82, "title": "Redis Sorted Sets (ZSET)", "subtitle": "O(log N) Rank Queries for 100M+ Players", "type": "core", "system_id": 13},
+        {"lesson_id": 83, "title": "Sharded Global Leaderboards", "subtitle": "Consistent Hashing for Worldwide Scale", "type": "core", "system_id": 13},
+        {"lesson_id": 84, "title": "Time-Windowed Leaderboards", "subtitle": "Daily/Weekly/Seasonal Reset Architecture", "type": "core", "system_id": 13},
+        {"lesson_id": 85, "title": "Approximate Ranking", "subtitle": "Probabilistic Data Structures When Exact Isn't Needed", "type": "core", "system_id": 13},
+        {"lesson_id": 86, "title": "Anti-Cheat Architecture", "subtitle": "Server-Side Validation and Anomaly Detection", "type": "core", "system_id": 13}
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Twitter Timeline",
+      "real_company": "Twitter / X",
+      "lessons": [
+        {"lesson_id": 87, "title": "Fan-Out on Write vs Read", "subtitle": "Twitter's Hybrid Approach to Timeline Delivery", "type": "core", "system_id": 14},
+        {"lesson_id": 88, "title": "Tweet Storage & Snowflake IDs", "subtitle": "500M Tweets/Day with Time-Sortable Unique IDs", "type": "core", "system_id": 14},
+        {"lesson_id": 89, "title": "Timeline Service", "subtitle": "Materialized Timelines in Redis", "type": "core", "system_id": 14},
+        {"lesson_id": 90, "title": "The Celebrity Problem", "subtitle": "Lady Gaga's 84M Followers = Special Fan-Out Handling", "type": "core", "system_id": 14},
+        {"lesson_id": 91, "title": "Trends Detection", "subtitle": "Real-Time Stream Processing for Trending Topics", "type": "core", "system_id": 14},
+        {"lesson_id": 92, "title": "Ads in Timeline", "subtitle": "Sponsored Content Ranking and Injection", "type": "core", "system_id": 14},
+        {"lesson_id": 93, "title": "Media Processing Pipeline", "subtitle": "Image/Video Transcoding for 500M Tweets/Day", "type": "core", "system_id": 14}
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Uber ETA",
+      "real_company": "Uber",
+      "lessons": [
+        {"lesson_id": 94, "title": "Graph-Based Routing", "subtitle": "Road Network as Weighted Directed Graph", "type": "core", "system_id": 15},
+        {"lesson_id": 95, "title": "Real-Time Traffic Integration", "subtitle": "GPS Data from Millions of Drivers", "type": "core", "system_id": 15},
+        {"lesson_id": 96, "title": "ETA ML Model", "subtitle": "Gradient Boosted Trees with Distance, Time, Weather Features", "type": "core", "system_id": 15},
+        {"lesson_id": 97, "title": "Dispatch System", "subtitle": "Matching Riders to Drivers: Hungarian Algorithm at Scale", "type": "core", "system_id": 15},
+        {"lesson_id": 98, "title": "Surge Pricing Algorithm", "subtitle": "Supply/Demand Equilibrium in Real-Time", "type": "core", "system_id": 15},
+        {"lesson_id": 99, "title": "Geofencing & Dynamic Zones", "subtitle": "City/Airport Zones and Dynamic Polygon Management", "type": "core", "system_id": 15},
+        {"lesson_id": 100, "title": "H3 Hexagonal Grid System", "subtitle": "Uber's Open-Source Spatial Indexing", "type": "core", "system_id": 15}
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Amazon Lambda",
+      "real_company": "AWS",
+      "lessons": [
+        {"lesson_id": 101, "title": "Cold Start Deep Dive", "subtitle": "Container Recycling: 100ms → 1ms Optimization Journey", "type": "core", "system_id": 16},
+        {"lesson_id": 102, "title": "Firecracker MicroVM", "subtitle": "125ms Boot Time, 5MB Memory Overhead", "type": "core", "system_id": 16},
+        {"lesson_id": 103, "title": "Event-Driven Architecture", "subtitle": "Triggers, Queues, EventBridge Patterns", "type": "core", "system_id": 16},
+        {"lesson_id": 104, "title": "Concurrency Management", "subtitle": "Reserved vs Provisioned: Avoiding Throttling", "type": "core", "system_id": 16},
+        {"lesson_id": 105, "title": "Lambda@Edge", "subtitle": "Serverless at CDN Edge Locations", "type": "core", "system_id": 16},
+        {"lesson_id": 106, "title": "Step Functions Orchestration", "subtitle": "State Machines for Complex Serverless Workflows", "type": "core", "system_id": 16},
+        {"lesson_id": 107, "title": "Cost Optimization Patterns", "subtitle": "Right-Sizing Memory and Avoiding Anti-Patterns", "type": "core", "system_id": 16}
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Amazon S3",
+      "real_company": "AWS",
+      "lessons": [
+        {"lesson_id": 108, "title": "Object Storage Architecture", "subtitle": "11 Nines (99.999999999%) Durability Explained", "type": "core", "system_id": 17},
+        {"lesson_id": 109, "title": "Storage Classes & Lifecycle", "subtitle": "Standard/IA/Glacier/Deep Archive Tiering Strategy", "type": "core", "system_id": 17},
+        {"lesson_id": 110, "title": "Consistent Hashing for Partitions", "subtitle": "How S3 Distributes Trillions of Objects", "type": "core", "system_id": 17},
+        {"lesson_id": 111, "title": "Replication & Versioning", "subtitle": "Cross-Region, Same-Region, Point-in-Time Recovery", "type": "core", "system_id": 17},
+        {"lesson_id": 112, "title": "S3 Select & Query-in-Place", "subtitle": "Pushdown Filtering to Reduce Data Transfer 80%", "type": "core", "system_id": 17},
+        {"lesson_id": 113, "title": "Event Notifications Pipeline", "subtitle": "S3 → Lambda/SQS/SNS Reactive Architectures", "type": "core", "system_id": 17},
+        {"lesson_id": 114, "title": "Request Routing & DNS", "subtitle": "Virtual-Hosted Style URLs at Planetary Scale", "type": "core", "system_id": 17}
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Apple AirTags",
+      "real_company": "Apple",
+      "lessons": [
+        {"lesson_id": 115, "title": "BLE Beacon Architecture", "subtitle": "Bluetooth Low Energy Broadcasting Explained", "type": "core", "system_id": 18},
+        {"lesson_id": 116, "title": "Find My Network", "subtitle": "1B+ Apple Devices as Crowdsourced Relay Mesh", "type": "core", "system_id": 18},
+        {"lesson_id": 117, "title": "Privacy Architecture", "subtitle": "Rotating Keys and End-to-End Encryption", "type": "core", "system_id": 18},
+        {"lesson_id": 118, "title": "Precision Finding with UWB", "subtitle": "Ultra-Wideband for Centimeter-Accurate Location", "type": "core", "system_id": 18},
+        {"lesson_id": 119, "title": "Anti-Stalking Measures", "subtitle": "Unwanted Tracker Detection Protocol", "type": "core", "system_id": 18},
+        {"lesson_id": 120, "title": "Offline Finding Protocol", "subtitle": "Cryptographic Design for Privacy-Preserving Location", "type": "core", "system_id": 18}
+      ]
+    },
+    {
+      "id": 19,
+      "name": "ChatGPT / LLMs",
+      "real_company": "OpenAI",
+      "lessons": [
+        {"lesson_id": 121, "title": "Transformer Architecture", "subtitle": "Attention Is All You Need: The Paper That Changed Everything", "type": "core", "system_id": 19},
+        {"lesson_id": 122, "title": "Training Infrastructure", "subtitle": "10,000+ GPU Clusters and Distributed Training", "type": "core", "system_id": 19},
+        {"lesson_id": 123, "title": "RLHF Pipeline", "subtitle": "Reward Models, PPO, and Constitutional AI", "type": "core", "system_id": 19},
+        {"lesson_id": 124, "title": "Inference Optimization", "subtitle": "KV Cache, Speculative Decoding, Quantization", "type": "core", "system_id": 19},
+        {"lesson_id": 125, "title": "Token-Based API Design", "subtitle": "Streaming, Rate Limiting, Usage Metering", "type": "core", "system_id": 19},
+        {"lesson_id": 126, "title": "Tool Use & RAG Architecture", "subtitle": "Function Calling, Retrieval-Augmented Generation", "type": "core", "system_id": 19},
+        {"lesson_id": 127, "title": "Safety & Alignment", "subtitle": "Content Filtering, Red Teaming, Guardrails", "type": "core", "system_id": 19}
+      ]
+    }
+  ],
+  "bonus_lessons": {
+    "cross_system_patterns": [
+      {"lesson_id": 128, "title": "Pattern: Consistent Hashing Everywhere", "subtitle": "S3, Kafka, DynamoDB, Discord — Same Algorithm, Different Problems", "type": "pattern"},
+      {"lesson_id": 129, "title": "Pattern: Fan-Out Strategies", "subtitle": "Twitter vs WhatsApp vs Slack: Write-Time vs Read-Time", "type": "pattern"},
+      {"lesson_id": 130, "title": "Pattern: Event-Driven Architecture", "subtitle": "Kafka, Lambda, S3 Events: The Reactive Paradigm", "type": "pattern"},
+      {"lesson_id": 131, "title": "Pattern: Rate Limiting Across Systems", "subtitle": "Token Bucket in Stripe, Sliding Window in Cloudflare", "type": "pattern"},
+      {"lesson_id": 132, "title": "Pattern: Caching Strategies", "subtitle": "YouTube CDN vs Reddit Cache vs Slack Message Cache", "type": "pattern"},
+      {"lesson_id": 133, "title": "Pattern: Real-Time Communication", "subtitle": "WebSockets in Slack vs Long Polling in WhatsApp vs SSE in ChatGPT", "type": "pattern"},
+      {"lesson_id": 134, "title": "Pattern: Sharding Strategies", "subtitle": "Vitess, Kafka Partitions, Redis Cluster — When and How", "type": "pattern"},
+      {"lesson_id": 135, "title": "Pattern: ML in Production", "subtitle": "YouTube Recommendations vs Uber ETA vs Stripe Fraud", "type": "pattern"},
+      {"lesson_id": 136, "title": "Pattern: Search Architecture", "subtitle": "Google vs Slack vs Reddit: Inverted Index Variations", "type": "pattern"},
+      {"lesson_id": 137, "title": "Pattern: Idempotency & Exactly-Once", "subtitle": "Stripe Payments vs Kafka Messages vs Lambda Invocations", "type": "pattern"},
+      {"lesson_id": 138, "title": "Pattern: Storage Tiering", "subtitle": "S3 Classes vs YouTube CDN Tiers vs Pastebin Hot/Cold", "type": "pattern"},
+      {"lesson_id": 139, "title": "Pattern: Distributed Consensus", "subtitle": "Raft in Exchange vs Paxos in Google vs ZAB in Kafka", "type": "pattern"},
+      {"lesson_id": 140, "title": "Pattern: Privacy by Design", "subtitle": "AirTag E2E Encryption vs WhatsApp Signal Protocol", "type": "pattern"},
+      {"lesson_id": 141, "title": "Pattern: Microservices vs Monolith", "subtitle": "Spotify 800 Services vs WhatsApp 50 Engineers", "type": "pattern"},
+      {"lesson_id": 142, "title": "Pattern: Geographic Distribution", "subtitle": "Uber H3 vs Airbnb S2 vs Google S2 Cells", "type": "pattern"}
+    ],
+    "comparison_emails": [
+      {"lesson_id": 143, "title": "WhatsApp vs Slack", "subtitle": "Why Radically Different Architectures for Similar Products", "type": "comparison"},
+      {"lesson_id": 144, "title": "Kafka vs RabbitMQ vs SQS", "subtitle": "Message Queues: When to Use Which", "type": "comparison"},
+      {"lesson_id": 145, "title": "YouTube vs Spotify Streaming", "subtitle": "Video vs Audio: CDN Strategies Compared", "type": "comparison"},
+      {"lesson_id": 146, "title": "Google Search vs Reddit Search", "subtitle": "Web-Scale vs Community-Scale Search", "type": "comparison"},
+      {"lesson_id": 147, "title": "Stripe vs PayPal Architecture", "subtitle": "API-First vs Legacy Payment Systems", "type": "comparison"},
+      {"lesson_id": 148, "title": "Lambda vs Kubernetes vs EC2", "subtitle": "Serverless vs Containers vs VMs: The Complete Tradeoff", "type": "comparison"},
+      {"lesson_id": 149, "title": "SQL vs NoSQL in Practice", "subtitle": "How Each System Chose: YouTube MySQL, Reddit Postgres, Uber Cassandra", "type": "comparison"},
+      {"lesson_id": 150, "title": "Monolith to Microservices", "subtitle": "Spotify, Netflix, Uber: Migration War Stories", "type": "comparison"},
+      {"lesson_id": 151, "title": "REST vs GraphQL vs gRPC", "subtitle": "API Design: What Airbnb, Spotify, Google Actually Use", "type": "comparison"},
+      {"lesson_id": 152, "title": "Push vs Pull vs Hybrid", "subtitle": "Twitter Fan-Out, Airbnb Search, YouTube Recs", "type": "comparison"},
+      {"lesson_id": 153, "title": "Redis vs Memcached vs DynamoDB", "subtitle": "In-Memory Data Stores: Performance Benchmarks", "type": "comparison"},
+      {"lesson_id": 154, "title": "Encryption Approaches", "subtitle": "AirTag vs WhatsApp vs Stripe: Different Threat Models", "type": "comparison"},
+      {"lesson_id": 155, "title": "Real-Time vs Near-Real-Time vs Batch", "subtitle": "When Each Approach Wins and Loses", "type": "comparison"}
+    ],
+    "capstone_challenges": [
+      {"lesson_id": 156, "title": "Design TikTok", "subtitle": "YouTube CDN + Twitter Timeline + Spotify Recs + Lambda Processing", "type": "capstone"},
+      {"lesson_id": 157, "title": "Design Robinhood", "subtitle": "Stock Exchange + Payment System + Real-Time Leaderboard", "type": "capstone"},
+      {"lesson_id": 158, "title": "Design Discord", "subtitle": "Slack Messaging + WhatsApp Voice + YouTube Streaming + Leaderboard", "type": "capstone"},
+      {"lesson_id": 159, "title": "Design Notion", "subtitle": "Google Docs Collab + Reddit Threading + Pastebin Storage", "type": "capstone"},
+      {"lesson_id": 160, "title": "Design DoorDash", "subtitle": "Uber ETA + Airbnb Search + Stripe Payments + Kafka Events", "type": "capstone"},
+      {"lesson_id": 161, "title": "Design Netflix", "subtitle": "YouTube CDN + Spotify Recs + Lambda Transcoding + S3 Storage", "type": "capstone"},
+      {"lesson_id": 162, "title": "Design Coinbase", "subtitle": "Stock Exchange + Payment System + S3 + Lambda + WhatsApp Alerts", "type": "capstone"},
+      {"lesson_id": 163, "title": "Design Figma", "subtitle": "Google Docs CRDT + S3 Storage + CDN + WebSocket Architecture", "type": "capstone"},
+      {"lesson_id": 164, "title": "Design GitHub Copilot", "subtitle": "ChatGPT Inference + Kafka Streaming + Lambda + S3 Model Storage", "type": "capstone"},
+      {"lesson_id": 165, "title": "Design Shopify", "subtitle": "Stripe Payments + Airbnb Search + CDN + Lambda + Kafka Events", "type": "capstone"},
+      {"lesson_id": 166, "title": "Design Zoom", "subtitle": "WhatsApp E2E + Slack Channels + YouTube Live + Google Docs Collab", "type": "capstone"},
+      {"lesson_id": 167, "title": "Design Apple Health", "subtitle": "AirTag BLE + S3 Storage + Lambda Processing + ML Pipeline", "type": "capstone"},
+      {"lesson_id": 168, "title": "Design LinkedIn Feed", "subtitle": "Twitter Timeline + Reddit Ranking + Google Search + Kafka", "type": "capstone"},
+      {"lesson_id": 169, "title": "Design Perplexity AI", "subtitle": "ChatGPT + Google Search + Kafka + S3 + Real-Time Ranking", "type": "capstone"},
+      {"lesson_id": 170, "title": "Design Stripe Atlas (Full Platform)", "subtitle": "All Payment + Lambda + S3 + Kafka + Google Docs", "type": "capstone"}
+    ],
+    "ai_smb_deep_dives": [
+      {"lesson_id": 171, "title": "AI-First Architecture for SMBs", "subtitle": "Why SMBs Need Different Architecture Than FAANG", "type": "ai_smb"},
+      {"lesson_id": 172, "title": "Building AI Payment Fraud Detection", "subtitle": "Claude API + Stripe: Real-Time Fraud Scoring for SMBs", "type": "ai_smb"},
+      {"lesson_id": 173, "title": "AI-Powered Search for SMB Marketplaces", "subtitle": "Vector Search + LLM Ranking vs Traditional ElasticSearch", "type": "ai_smb"},
+      {"lesson_id": 174, "title": "Predictive Infrastructure Scaling", "subtitle": "ML Models That Auto-Scale Before Traffic Spikes", "type": "ai_smb"},
+      {"lesson_id": 175, "title": "AI Content Moderation Pipeline", "subtitle": "Multi-Modal LLM Moderation at 1/100th the Cost", "type": "ai_smb"},
+      {"lesson_id": 176, "title": "Natural Language Database Queries", "subtitle": "Text-to-SQL: Let SMB Users Query Without Code", "type": "ai_smb"},
+      {"lesson_id": 177, "title": "AI-Powered Monitoring & Alerting", "subtitle": "Anomaly Detection That Pages Before Users Complain", "type": "ai_smb"},
+      {"lesson_id": 178, "title": "Automated API Documentation with AI", "subtitle": "Generate, Test, and Keep API Docs Current Automatically", "type": "ai_smb"},
+      {"lesson_id": 179, "title": "AI Load Testing & Chaos Engineering", "subtitle": "LLM-Generated Failure Scenarios You'd Never Think Of", "type": "ai_smb"},
+      {"lesson_id": 180, "title": "Building AI Agents for System Operations", "subtitle": "Self-Healing Infrastructure with Human Approval Gates", "type": "ai_smb"},
+      {"lesson_id": 181, "title": "Vector Databases in Production", "subtitle": "Pinecone vs Weaviate vs pgvector: When Each Wins", "type": "ai_smb"},
+      {"lesson_id": 182, "title": "RAG Architecture for SMB Knowledge Bases", "subtitle": "Retrieval-Augmented Generation That Actually Works", "type": "ai_smb"},
+      {"lesson_id": 183, "title": "AI-Powered Dynamic Pricing for SMBs", "subtitle": "Airbnb Smart Pricing Rebuilt with Claude API", "type": "ai_smb"},
+      {"lesson_id": 184, "title": "Conversational Commerce Architecture", "subtitle": "AI Shopping Assistants That Convert 3x Better", "type": "ai_smb"},
+      {"lesson_id": 185, "title": "AI Code Review & Deployment Pipeline", "subtitle": "Automated PR Review, Testing, and Deployment with Human Gates", "type": "ai_smb"}
+    ],
+    "scale_progression": [
+      {"lesson_id": 186, "title": "0 to 1K Users", "subtitle": "Monolith, Single DB, Deploy on a $20 Server", "type": "scale"},
+      {"lesson_id": 187, "title": "1K to 100K Users", "subtitle": "Read Replicas, CDN, Caching, Load Balancer", "type": "scale"},
+      {"lesson_id": 188, "title": "100K to 1M Users", "subtitle": "Microservices, Sharding, Message Queues, Monitoring", "type": "scale"},
+      {"lesson_id": 189, "title": "1M to 100M Users", "subtitle": "Multi-Region, Global Load Balancing, Data Pipeline", "type": "scale"},
+      {"lesson_id": 190, "title": "100M to 1B Users", "subtitle": "Custom Infrastructure, Edge Computing, ML at Scale", "type": "scale"}
+    ],
+    "outage_deep_dives": [
+      {"lesson_id": 191, "title": "AWS S3 Outage (Feb 2017)", "subtitle": "One Typo Took Down Half the Internet for 5 Hours", "type": "outage"},
+      {"lesson_id": 192, "title": "Facebook 6-Hour Outage (Oct 2021)", "subtitle": "BGP Misconfiguration Erased Facebook from the Internet", "type": "outage"},
+      {"lesson_id": 193, "title": "Slack Jan 2021 Outage", "subtitle": "Couldn't Boot for 5 Hours on First Day Back from Holiday", "type": "outage"},
+      {"lesson_id": 194, "title": "YouTube Global Outage (Oct 2018)", "subtitle": "6 Hours Dark: What Happens When the World's Video Goes Down", "type": "outage"},
+      {"lesson_id": 195, "title": "Cloudflare Outage (Jun 2022)", "subtitle": "19 Data Centers Down Due to BGP Change Gone Wrong", "type": "outage"}
+    ],
+    "interview_masterclass": [
+      {"lesson_id": 196, "title": "System Design Interview Framework", "subtitle": "The 4-Step Method Used at FAANG", "type": "interview"},
+      {"lesson_id": 197, "title": "Back-of-Envelope Calculations Masterclass", "subtitle": "Every Number You Need to Know", "type": "interview"},
+      {"lesson_id": 198, "title": "CAP Theorem Applied to All 19 Systems", "subtitle": "Consistency vs Availability: Real Tradeoffs", "type": "interview"},
+      {"lesson_id": 199, "title": "Non-Functional Requirements Checklist", "subtitle": "Scalability, Reliability, Latency, Security, Cost", "type": "interview"},
+      {"lesson_id": 200, "title": "Final Exam: Design Any System in 45 Minutes", "subtitle": "Putting It All Together", "type": "interview"}
+    ]
+  }
+}

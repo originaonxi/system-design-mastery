@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin: 0; padding: 0; background: #f5f5f0; font-family: 'Georgia', 'Times New Roman', serif; }
+  .container { max-width: 720px; margin: 0 auto; background: #ffffff; }
+  .header { background: #1a1a2e; color: #ffffff; padding: 30px 40px; text-align: center; }
+  .header h1 { margin: 0; font-size: 28px; letter-spacing: 3px; font-weight: 900; text-transform: uppercase; }
+  .header .edition { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: #e94560; margin-top: 5px; }
+  .header .date-line { font-size: 11px; color: #aaa; margin-top: 8px; border-top: 1px solid #333; padding-top: 8px; }
+  .progress-bar-container { background: #0f3460; padding: 10px 40px; }
+  .progress-bar { background: #1a1a2e; border-radius: 10px; height: 20px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #e94560, #0f3460); height: 100%; border-radius: 10px; transition: width 0.5s; }
+  .progress-text { color: #fff; font-size: 11px; text-align: center; margin-top: 4px; }
+  .meta-bar { background: #16213e; color: #ccc; padding: 8px 40px; font-size: 11px; display: flex; justify-content: space-between; }
+  .content { padding: 30px 40px; line-height: 1.8; color: #2d2d2d; }
+  .section-header { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 5px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+  .headline { font-size: 32px; font-weight: 900; line-height: 1.2; color: #1a1a2e; margin: 10px 0; }
+  .subtitle { font-size: 18px; color: #666; font-style: italic; margin-bottom: 25px; }
+  .body-text { font-size: 16px; line-height: 1.9; margin-bottom: 15px; }
+  .diagram-box { background: #1a1a2e; color: #00ff41; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; margin: 20px 0; }
+  .napkin-math { background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px 20px; margin: 20px 0; font-size: 14px; }
+  .napkin-math .label { font-weight: 700; color: #f57f17; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .obstacle-box { background: #fce4ec; border-left: 4px solid #e53935; padding: 15px 20px; margin: 20px 0; }
+  .obstacle-box .label { font-weight: 700; color: #c62828; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .number-card { background: #e8eaf6; padding: 15px; border-radius: 8px; text-align: center; }
+  .number-card .value { font-size: 24px; font-weight: 900; color: #1a1a2e; }
+  .number-card .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  .tradeoff-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  .tradeoff-table th { background: #1a1a2e; color: #fff; padding: 10px; text-align: left; }
+  .tradeoff-table td { padding: 10px; border-bottom: 1px solid #eee; }
+  .tradeoff-table tr:nth-child(even) td { background: #f5f5f5; }
+  .code-block { background: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 20px 0; }
+  .code-block .keyword { color: #c678dd; }
+  .code-block .string { color: #98c379; }
+  .code-block .comment { color: #5c6370; font-style: italic; }
+  .ai-smb-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px 20px; margin: 20px 0; }
+  .ai-smb-box .label { font-weight: 700; color: #2e7d32; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px 20px; margin: 20px 0; }
+  .interview-box .label { font-weight: 700; color: #0d47a1; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box ol { margin: 10px 0; padding-left: 20px; }
+  .interview-box li { margin-bottom: 8px; }
+  .source-link { display: inline-block; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; margin: 3px; font-size: 12px; color: #1976d2; text-decoration: none; }
+  .source-link:hover { background: #e3f2fd; }
+  .scale-progression { margin: 20px 0; }
+  .scale-step { display: flex; align-items: center; margin: 8px 0; }
+  .scale-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .scale-line { width: 2px; height: 20px; background: #ddd; margin-left: 5px; }
+  .next-up { background: #f3e5f5; border: 2px dashed #9c27b0; padding: 15px 20px; margin: 25px 0; border-radius: 8px; }
+  .next-up .label { font-weight: 700; color: #6a1b9a; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .footer { background: #1a1a2e; color: #888; padding: 20px 40px; text-align: center; font-size: 11px; }
+  .footer a { color: #e94560; }
+  .divider { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+  .pull-quote { font-size: 22px; font-style: italic; color: #1a1a2e; border-left: 4px solid #e94560; padding: 10px 20px; margin: 25px 0; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .content { padding: 20px; }
+    .header { padding: 20px; }
+    .headline { font-size: 24px; }
+    .numbers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>System Design Daily</h1>
+    <div class="edition">The AI Software Engineer's Newspaper</div>
+    <div class="date-line">{{date}} &bull; Lesson {{lesson_number}} of {{total_lessons}} &bull; {{lesson_type}}</div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: {{progress_pct}}%"></div></div>
+    <div class="progress-text">{{progress_pct}}% Complete &mdash; {{lessons_remaining}} lessons remaining</div>
+  </div>
+  <div class="meta-bar">
+    <span>System {{system_number}}/19: {{system_name}}</span>
+    <span>Topic {{topic_in_system}}/{{topics_in_system}}</span>
+  </div>
+  <div class="content">
+    {{content}}
+  </div>
+  <div class="footer">
+    <p>System Design Daily &bull; Built by Sam Anmol &bull; Powered by Claude AI</p>
+    <p>19 Systems &bull; 200 Lessons &bull; From Zero to World-Class</p>
+    <p style="margin-top: 10px;">Reply STOP to end &bull; Reply SKIP to jump to next system</p>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin: 0; padding: 0; background: #f5f5f0; font-family: 'Georgia', 'Times New Roman', serif; }
+  .container { max-width: 720px; margin: 0 auto; background: #ffffff; }
+  .header { background: #1a1a2e; color: #ffffff; padding: 30px 40px; text-align: center; }
+  .header h1 { margin: 0; font-size: 28px; letter-spacing: 3px; font-weight: 900; text-transform: uppercase; }
+  .header .edition { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: #e94560; margin-top: 5px; }
+  .header .date-line { font-size: 11px; color: #aaa; margin-top: 8px; border-top: 1px solid #333; padding-top: 8px; }
+  .progress-bar-container { background: #0f3460; padding: 10px 40px; }
+  .progress-bar { background: #1a1a2e; border-radius: 10px; height: 20px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #e94560, #0f3460); height: 100%; border-radius: 10px; transition: width 0.5s; }
+  .progress-text { color: #fff; font-size: 11px; text-align: center; margin-top: 4px; }
+  .meta-bar { background: #16213e; color: #ccc; padding: 8px 40px; font-size: 11px; display: flex; justify-content: space-between; }
+  .content { padding: 30px 40px; line-height: 1.8; color: #2d2d2d; }
+  .section-header { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 5px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+  .headline { font-size: 32px; font-weight: 900; line-height: 1.2; color: #1a1a2e; margin: 10px 0; }
+  .subtitle { font-size: 18px; color: #666; font-style: italic; margin-bottom: 25px; }
+  .body-text { font-size: 16px; line-height: 1.9; margin-bottom: 15px; }
+  .diagram-box { background: #1a1a2e; color: #00ff41; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; margin: 20px 0; }
+  .napkin-math { background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px 20px; margin: 20px 0; font-size: 14px; }
+  .napkin-math .label { font-weight: 700; color: #f57f17; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .obstacle-box { background: #fce4ec; border-left: 4px solid #e53935; padding: 15px 20px; margin: 20px 0; }
+  .obstacle-box .label { font-weight: 700; color: #c62828; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .number-card { background: #e8eaf6; padding: 15px; border-radius: 8px; text-align: center; }
+  .number-card .value { font-size: 24px; font-weight: 900; color: #1a1a2e; }
+  .number-card .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  .tradeoff-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  .tradeoff-table th { background: #1a1a2e; color: #fff; padding: 10px; text-align: left; }
+  .tradeoff-table td { padding: 10px; border-bottom: 1px solid #eee; }
+  .tradeoff-table tr:nth-child(even) td { background: #f5f5f5; }
+  .code-block { background: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 20px 0; }
+  .code-block .keyword { color: #c678dd; }
+  .code-block .string { color: #98c379; }
+  .code-block .comment { color: #5c6370; font-style: italic; }
+  .ai-smb-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px 20px; margin: 20px 0; }
+  .ai-smb-box .label { font-weight: 700; color: #2e7d32; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px 20px; margin: 20px 0; }
+  .interview-box .label { font-weight: 700; color: #0d47a1; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box ol { margin: 10px 0; padding-left: 20px; }
+  .interview-box li { margin-bottom: 8px; }
+  .source-link { display: inline-block; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; margin: 3px; font-size: 12px; color: #1976d2; text-decoration: none; }
+  .source-link:hover { background: #e3f2fd; }
+  .scale-progression { margin: 20px 0; }
+  .scale-step { display: flex; align-items: center; margin: 8px 0; }
+  .scale-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .scale-line { width: 2px; height: 20px; background: #ddd; margin-left: 5px; }
+  .next-up { background: #f3e5f5; border: 2px dashed #9c27b0; padding: 15px 20px; margin: 25px 0; border-radius: 8px; }
+  .next-up .label { font-weight: 700; color: #6a1b9a; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .footer { background: #1a1a2e; color: #888; padding: 20px 40px; text-align: center; font-size: 11px; }
+  .footer a { color: #e94560; }
+  .divider { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+  .pull-quote { font-size: 22px; font-style: italic; color: #1a1a2e; border-left: 4px solid #e94560; padding: 10px 20px; margin: 25px 0; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .content { padding: 20px; }
+    .header { padding: 20px; }
+    .headline { font-size: 24px; }
+    .numbers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>System Design Daily</h1>
+    <div class="edition">The AI Software Engineer's Newspaper</div>
+    <div class="date-line">March 30, 2026 &bull; Lesson 1 of 200 &bull; CORE</div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: 0.5%"></div></div>
+    <div class="progress-text">0.5% Complete &mdash; 199 lessons remaining</div>
+  </div>
+  <div class="meta-bar">
+    <span>System 1/19: Stock Exchange</span>
+    <span>Topic 1/7</span>
+  </div>
+  <div class="content">
+    <h2 class="headline">Order Matching Engine</h2>
+<p class="subtitle">How NASDAQ Processes 1M+ Orders Per Second</p>
+<p class="body-text">At exactly 9:30 AM EST on August 1st, 2012, Knight Capital's order matching engine began spewing erratic buy orders into the market at a rate of thousands per minute. In just 45 minutes, a single deployment bug cost the firm $440 million—nearly four times their 2011 net income. This catastrophic failure illustrates why order matching engines are among the most mission-critical systems ever built, processing over 1 million orders per second with microsecond-level precision while handling trillions of dollars in daily volume. Understanding how NASDAQ and NYSE achieve 99.999% uptime at this scale isn't just an academic exercise—it's a masterclass in building systems where every nanosecond counts and every bug can bankrupt a company.</p>
+
+<div class="section-header">Architecture</div>
+<div class="diagram-box">
+┌─────────────┐    FIX 4.4     ┌──────────────┐    
+│   Trading   │ ──────────────→│  Gateway/    │    
+│   Client    │    TCP/IP      │  FIX Engine  │    
+│  (Goldman)  │←───────────────│  (Validation)│    
+└─────────────┘                └──────────────┘    
+                                       │            
+                                   Multicast        
+                                       ↓            
+┌─────────────┐                ┌──────────────┐    
+│  Market     │                │   Order      │    
+│  Data Feed  │←───────────────│  Matching    │    
+│ (Level II)  │   UDP Mcast    │   Engine     │    
+└─────────────┘                │ (FIFO Queues)│    
+                                └──────────────┘    
+                                       │            
+                                   In-Memory        
+                                       ↓            
+┌─────────────┐                ┌──────────────┐    
+│ Risk Mgmt   │←──────────────→│  Order Book  │    
+│ & Position  │   Real-time    │ Price Levels │    
+│ Tracking    │   Updates      │ $150.01: Q1  │    
+└─────────────┘                │ $150.00: Q2  │    
+                                │ $149.99: Q3  │    
+                                └──────────────┘    
+                                       │            
+                                  WAL Append        
+                                       ↓            
+                               ┌──────────────┐     
+                               │ Write-Ahead  │     
+                               │     Log      │     
+                               │ (Recovery)   │     
+                               └──────────────┘     
+</div>
+<p class="body-text">This architecture shows the core components of a modern order matching system. Orders flow through FIX (Financial Information eXchange) protocol gateways that validate syntax and business rules before entering the matching engine. The engine maintains price-time priority through FIFO queues at each price level, while simultaneously broadcasting market data to subscribers. A write-ahead log ensures crash recovery, and risk management systems monitor positions in real-time. The entire hot path runs single-threaded to avoid lock contention, achieving sub-100 microsecond latencies.</p>
+
+<div class="section-header">How It Works — Deep Dive</div>
+<p class="body-text">The heart of any order matching engine is the order book—a data structure that maintains all pending buy (bid) and sell (ask) orders sorted by price-time priority. NASDAQ's engine implements this using separate FIFO queues for each price level, with bids sorted highest-to-lowest and asks sorted lowest-to-highest. When a new market order arrives, the engine immediately matches against the best available price. Limit orders either match partially/fully against existing orders or get added to the appropriate price queue. This seemingly simple algorithm becomes extraordinarily complex at scale due to the performance requirements.</p>
+
+<p class="body-text">The FIX protocol (currently version 5.0 SP2) serves as the industry-standard messaging layer, defining over 200 message types for order entry, execution reports, and market data. A typical NewOrderSingle (MsgType=D) message contains 30-50 fields including Symbol (55), Side (54), OrderQty (38), OrdType (40), and Price (44). The gateway validates each field against business rules—checking symbol validity, price reasonableness, quantity limits, and client permissions. Invalid orders get rejected with ExecType (150) = '8' before ever reaching the matching engine. This preprocessing layer handles roughly 80% of all incoming messages, allowing the core engine to focus purely on valid orders.</p>
+
+<p class="body-text">NASDAQ's engine architecture leverages the LMAX Disruptor pattern—a lock-free ring buffer that achieves mechanical sympathy with modern CPU architectures. The disruptor maintains a circular buffer with power-of-two sizing (typically 64K slots) where each slot holds an order event. Producers write orders to the next available slot using compare-and-swap atomic operations, while the matching engine consumer processes events single-threaded. This design eliminates lock contention, reduces garbage collection pressure, and enables predictable latency even under extreme load. The single-threaded consumer can process up to 100 million events per second on modern hardware.</p>
+
+<p class="body-text">Order matching follows strict price-time priority rules mandated by SEC regulations. At any price level, orders execute in the exact sequence they arrived—even microsecond differences matter for fairness. The engine maintains precision timestamps (typically nanosecond resolution) for each order and implements sophisticated partial fill logic. When a large market order sweeps multiple price levels, the engine generates separate execution messages for each counterparty, updates the order book atomically, and publishes market data updates via UDP multicast. This entire process must complete in under 50 microseconds to remain competitive.</p>
+
+<p class="body-text">Fault tolerance requires write-ahead logging of every state change before processing. The WAL stores binary-encoded order events to high-performance storage (NVMe SSDs or persistent memory), allowing complete state reconstruction after crashes. NASDAQ's primary and backup engines run in active-passive configuration with sub-second failover times. The backup continuously replays the WAL to maintain hot standby state, ready to take over processing if the primary fails. This redundancy is critical given that even brief outages can cost millions in lost trading volume and regulatory penalties.</p>
+
+<div class="section-header">By The Numbers</div>
+<div class="numbers-grid">
+  <div class="number-card"><div class="value">1M+</div><div class="label">Orders/second peak</div></div>
+  <div class="number-card"><div class="value">50μs</div><div class="label">Matching latency</div></div>
+  <div class="number-card"><div class="value">99.999%</div><div class="label">Uptime target</div></div>
+  <div class="number-card"><div class="value">$25B</div><div class="label">NYSE daily volume</div></div>
+  <div class="number-card"><div class="value">6.5hr</div><div class="label">Market hours per day</div></div>
+  <div class="number-card"><div class="value">100MB/s</div><div class="label">Data throughput</div></div>
+</div>
+
+<div class="obstacle-box">
+  <div class="label">Real Obstacle — What Actually Went Wrong</div>
+  <p>On August 1, 2012, Knight Capital deployed new trading software to their market-making servers. The deployment process failed to update one critical server, which continued running old test code called "Power Peg" that had been dormant for years. When markets opened at 9:30 AM, this rogue code began generating massive buy orders for 154 different stocks, purchasing shares far above market prices. Within 45 minutes, Knight had accumulated $7 billion in unwanted positions, losing $440 million when they desperately liquidated. The root cause was a missing software flag that should have disabled the legacy code path. Knight's stock price collapsed 75% in two days, and Goldman Sachs ultimately acquired the firm. This incident led to stricter deployment controls and kill switches becoming mandatory for all trading systems. The SEC later fined Knight $12 million for inadequate risk controls.</p>
+</div>
+
+<div class="napkin-math">
+  <div class="label">Napkin Math — Back of Envelope</div>
+  <p>Start with peak load: 1M orders/sec × 100 bytes/order = 100MB/sec raw throughput. Add FIX protocol overhead (~30%) = 130MB/sec network bandwidth. At 50μs latency requirement, total in-flight orders = 1M orders/sec × 50μs = 50 orders maximum in pipeline. Each order book entry needs ~200 bytes (price, quantity, timestamp, client ID) × 10,000 active symbols × 100 price levels = 200MB memory for order books. Add 8x safety factor for market volatility spikes = 1.6GB RAM minimum. Storage: 1M orders/day × 6.5 hours × 3600 sec/hour = 23.4B orders daily. At 100 bytes each = 2.34TB daily WAL storage. For 99.999% uptime (5.26 minutes downtime/year), need N+2 redundancy minimum.</p>
+</div>
+
+<div class="section-header">Engineering Trade-Offs</div>
+<table class="tradeoff-table">
+  <tr><th>Decision</th><th>Option A</th><th>Option B</th><th>What They Chose</th><th>Why</th></tr>
+  <tr><td>Threading Model</td><td>Multi-threaded with locks</td><td>Single-threaded event loop</td><td>Single-threaded</td><td>Eliminates lock contention, provides deterministic latency</td></tr>
+  <tr><td>Order Book Storage</td><td>Database with ACID</td><td>In-memory with WAL</td><td>In-memory with WAL</td><td>Sub-microsecond access times vs 1-10ms DB latency</td></tr>
+  <tr><td>Market Data Distribution</td><td>TCP reliable delivery</td><td>UDP multicast best effort</td><td>UDP multicast</td><td>100x better throughput, subscribers handle packet loss</td></tr>
+  <tr><td>Failover Strategy</td><td>Load balancer failover</td><td>Hardware heartbeat takeover</td><td>Hardware heartbeat</td><td>Sub-second vs 10-30 second failover times</td></tr>
+</table>
+
+<div class="section-header">Code — Key Algorithm</div>
+<div class="code-block">
+from collections import defaultdict, deque
+import heapq
+import time
+
+class OrderBook:
+    def __init__(self):
+        self.bids = defaultdict(deque)  # price -> FIFO queue
+        self.asks = defaultdict(deque)  # price -> FIFO queue  
+        self.bid_prices = []  # max heap (negate prices)
+        self.ask_prices = []  # min heap
+        self.order_id = 0
+        
+    def add_order(self, side, price, quantity):
+        self.order_id += 1
+        order = {
+            'id': self.order_id,
+            'side': side,
+            'price': price, 
+            'quantity': quantity,
+            'timestamp': time.time_ns()
+        }
+        
+        if side == 'BUY':
+            if not self.bids[price]:
+                heapq.heappush(self.bid_prices, -price)
+            self.bids[price].append(order)
+        else:  # SELL
+            if not self.asks[price]:
+                heapq.heappush(self.ask_prices, price)
+            self.asks[price].append(order)
+            
+        return self.match_order(order)
+    
+    def match_order(self, order):
+        executions = []
+        remaining_qty = order['quantity']
+        
+        if order['side'] == 'BUY':
+            # Match against asks (sells)
+            while remaining_qty > 0 and self.ask_prices:
+                best_ask = self.ask_prices[0]
+                if best_ask <= order['price']:
+                    ask_queue = self.asks[best_ask]
+                    counterparty = ask_queue.popleft()
+                    
+                    fill_qty = min(remaining_qty, counterparty['quantity'])
+                    executions.append({
+                        'price': best_ask,
+                        'quantity': fill_qty,
+                        'buyer': order['id'],
+                        'seller': counterparty['id']
+                    })
+                    
+                    remaining_qty -= fill_qty
+                    counterparty['quantity'] -= fill_qty
+                    
+                    if counterparty['quantity'] > 0:
+                        ask_queue.appendleft(counterparty)
+                    elif not ask_queue:
+                        heapq.heappop(self.ask_prices)
+                else:
+                    break
+                    
+        return executions
+</div>
+<p class="body-text">This simplified order book implements the core matching algorithm used by exchanges. The key insight is using separate FIFO queues for each price level combined with heaps to efficiently find the best bid/ask prices. When orders arrive, they immediately attempt to match against the opposite side's best prices. The price-time priority is maintained through the FIFO queues—first order at each price level gets filled first. Real implementations would add partial fill handling, order cancellation, and sophisticated memory management for billion-message throughput.</p>
+
+<div class="section-header">Scale Progression</div>
+<div class="scale-progression">
+  <div class="scale-step"><div class="scale-dot" style="background:#4caf50"></div><strong>1K orders/sec:</strong>&nbsp; Single server with PostgreSQL, REST API, 100ms latency acceptable. Simple price-time matching in application code.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#ff9800"></div><strong>100K orders/sec:</strong>&nbsp; Switch to in-memory order book with Redis persistence. Add FIX protocol gateway. Deploy active-passive failover. Target <10ms latency.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#f44336"></div><strong>1M+ orders/sec:</strong>&nbsp; Full LMAX Disruptor architecture with lock-free ring buffers. Custom kernel bypass networking. Co-located servers for microsecond latency. Hardware timestamping and FPGA acceleration.</div>
+</div>
+
+<div class="ai-smb-box">
+  <div class="label">AI-First SMB Version — Build This Today</div>
+  <p>Build an AI-enhanced crypto exchange for SMBs using: AWS Lambda for order processing ($0.20/1M requests), DynamoDB for order storage ($0.25/GB), EventBridge for pub/sub ($1/M events). Add Claude API integration ($15/1M tokens) to analyze order patterns and detect anomalies like flash crashes or pump-and-dump schemes. Use Anthropic's function calling to automatically halt trading when unusual volume spikes are detected 30 seconds before they impact prices. Deploy vector embeddings (Pinecone $70/month) to cluster similar trading patterns and identify market manipulation. Total cost: ~$200/month for 100K orders/day with AI-powered risk management that would have prevented Knight Capital's $440M loss. The system uses serverless architecture for automatic scaling and CloudWatch for monitoring, replacing millions in custom hardware with managed services.</p>
+</div>
+
+<div class="pull-quote">"The difference between a good trading system and a great one isn't the profits it makes—it's the losses it prevents when everything goes wrong."</div>
+
+<div class="section-header">Sources & Further Reading</div>
+<p>
+<a class="source-link" href="https://queue.acm.org/detail.cfm?id=3448307">The Design of a Financial Exchange — ACM Queue</a>
+<a class="source-link" href="https://martinfowler.com/articles/lmax.html">LMAX Exchange Architecture — Martin Fowler</a>
+<a class="source-link" href="https://mechanical-sympathy.blogspot.com/">Mechanical Sympathy Blog - Disruptor — LMAX</a>
+<a class="source-link" href="https://www.sec.gov/litigation/admin/2013/34-70694.pdf">Knight Capital SEC Settlement — SEC.gov</a>
+<a class="source-link" href="https://www.fixtrading.org/standards/">FIX Protocol Standards — FIX Trading Community</a>
+<a class="source-link" href="https://www.nasdaq.com/solutions/nasdaq-market-technology">NASDAQ Market Technology — NASDAQ</a>
+<a class="source-link" href="https://github.com/LMAX-Exchange/disruptor">LMAX Disruptor Source Code — GitHub</a>
+<a class="source-link" href="https://dl.acm.org/doi/10.1145/2854006.2854013">High-Frequency Trading Architecture — ACM</a>
+</p>
+
+<div class="interview-box">
+  <div class="label">Interview Corner — FAANG-Level Questions</div>
+  <ol>
+    <li><strong>Q:</strong> Design an order matching engine that handles 100K orders/sec with <1ms latency<br><strong>Model Answer:</strong> Use single-threaded design with LMAX Disruptor for lock-free processing. Maintain in-memory order book with FIFO queues per price level. Implement write-ahead logging for recovery and active-passive failover for availability.</li>
+    <li><strong>Q:</strong> How would you handle partial fills in a limit order book?<br><strong>Model Answer:</strong> Track remaining quantity on each order. When matching, fill minimum of available quantity and order quantity. Generate separate execution messages for each fill. Update order book atomically and either remove fully-filled orders or update remaining quantity.</li>
+    <li><strong>Q:</strong> What happens when the matching engine crashes mid-trade?<br><strong>Model Answer:</strong> Write-ahead log ensures recovery by replaying all state changes. Backup engine takes over within seconds using hardware heartbeat failover. In-flight orders get restored from WAL. Market participants receive system status messages during recovery.</li>
+  </ol>
+</div>
+
+<div class="next-up">
+  <div class="label">Coming Up Next</div>
+  <p><strong>Content Delivery Network (CDN)</strong> — How Netflix streams 4K video to 200M users without buffering using edge caching and adaptive bitrate algorithms.</p>
+</div>
+  </div>
+  <div class="footer">
+    <p>System Design Daily &bull; Built by Sam Anmol &bull; Powered by Claude AI</p>
+    <p>19 Systems &bull; 200 Lessons &bull; From Zero to World-Class</p>
+    <p style="margin-top: 10px;">Reply STOP to end &bull; Reply SKIP to jump to next system</p>
+  </div>
+</div>
+</body>
+</html>
