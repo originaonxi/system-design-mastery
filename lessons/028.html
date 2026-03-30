@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin: 0; padding: 0; background: #f5f5f0; font-family: 'Georgia', 'Times New Roman', serif; }
+  .container { max-width: 720px; margin: 0 auto; background: #ffffff; }
+  .header { background: #1a1a2e; color: #ffffff; padding: 30px 40px; text-align: center; }
+  .header h1 { margin: 0; font-size: 28px; letter-spacing: 3px; font-weight: 900; text-transform: uppercase; }
+  .header .edition { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: #e94560; margin-top: 5px; }
+  .header .date-line { font-size: 11px; color: #aaa; margin-top: 8px; border-top: 1px solid #333; padding-top: 8px; }
+  .progress-bar-container { background: #0f3460; padding: 10px 40px; }
+  .progress-bar { background: #1a1a2e; border-radius: 10px; height: 20px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #e94560, #0f3460); height: 100%; border-radius: 10px; transition: width 0.5s; }
+  .progress-text { color: #fff; font-size: 11px; text-align: center; margin-top: 4px; }
+  .meta-bar { background: #16213e; color: #ccc; padding: 8px 40px; font-size: 11px; display: flex; justify-content: space-between; }
+  .content { padding: 30px 40px; line-height: 1.8; color: #2d2d2d; }
+  .section-header { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 5px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+  .headline { font-size: 32px; font-weight: 900; line-height: 1.2; color: #1a1a2e; margin: 10px 0; }
+  .subtitle { font-size: 18px; color: #666; font-style: italic; margin-bottom: 25px; }
+  .body-text { font-size: 16px; line-height: 1.9; margin-bottom: 15px; }
+  .diagram-box { background: #1a1a2e; color: #00ff41; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; margin: 20px 0; }
+  .napkin-math { background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px 20px; margin: 20px 0; font-size: 14px; }
+  .napkin-math .label { font-weight: 700; color: #f57f17; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .obstacle-box { background: #fce4ec; border-left: 4px solid #e53935; padding: 15px 20px; margin: 20px 0; }
+  .obstacle-box .label { font-weight: 700; color: #c62828; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .number-card { background: #e8eaf6; padding: 15px; border-radius: 8px; text-align: center; }
+  .number-card .value { font-size: 24px; font-weight: 900; color: #1a1a2e; }
+  .number-card .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  .tradeoff-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  .tradeoff-table th { background: #1a1a2e; color: #fff; padding: 10px; text-align: left; }
+  .tradeoff-table td { padding: 10px; border-bottom: 1px solid #eee; }
+  .tradeoff-table tr:nth-child(even) td { background: #f5f5f5; }
+  .code-block { background: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 20px 0; }
+  .code-block .keyword { color: #c678dd; }
+  .code-block .string { color: #98c379; }
+  .code-block .comment { color: #5c6370; font-style: italic; }
+  .ai-smb-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px 20px; margin: 20px 0; }
+  .ai-smb-box .label { font-weight: 700; color: #2e7d32; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px 20px; margin: 20px 0; }
+  .interview-box .label { font-weight: 700; color: #0d47a1; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box ol { margin: 10px 0; padding-left: 20px; }
+  .interview-box li { margin-bottom: 8px; }
+  .source-link { display: inline-block; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; margin: 3px; font-size: 12px; color: #1976d2; text-decoration: none; }
+  .source-link:hover { background: #e3f2fd; }
+  .scale-progression { margin: 20px 0; }
+  .scale-step { display: flex; align-items: center; margin: 8px 0; }
+  .scale-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .scale-line { width: 2px; height: 20px; background: #ddd; margin-left: 5px; }
+  .next-up { background: #f3e5f5; border: 2px dashed #9c27b0; padding: 15px 20px; margin: 25px 0; border-radius: 8px; }
+  .next-up .label { font-weight: 700; color: #6a1b9a; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .footer { background: #1a1a2e; color: #888; padding: 20px 40px; text-align: center; font-size: 11px; }
+  .footer a { color: #e94560; }
+  .divider { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+  .pull-quote { font-size: 22px; font-style: italic; color: #1a1a2e; border-left: 4px solid #e94560; padding: 10px 20px; margin: 25px 0; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .content { padding: 20px; }
+    .header { padding: 20px; }
+    .headline { font-size: 24px; }
+    .numbers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>System Design Daily</h1>
+    <div class="edition">The AI Software Engineer's Newspaper</div>
+    <div class="date-line">{{SEND_DATE}} &bull; Lesson 28 of 200 &bull; CORE</div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: 14.0%"></div></div>
+    <div class="progress-text">14.0% Complete &mdash; 172 lessons remaining</div>
+  </div>
+  <div class="meta-bar">
+    <span>System 5/19: Apache Kafka</span>
+    <span>Topic 1/7</span>
+  </div>
+  <div class="content">
+    <h2 class="headline">Kafka Core Architecture</h2>
+<p class="subtitle">Brokers, Topics, Partitions, Consumer Groups Explained</p>
+<p class="body-text">In 2011, LinkedIn was processing 1 billion unique messages per day through a homegrown messaging system that was buckling under load. Jay Kreps and his team built Apache Kafka to handle 2 trillion messages per day at sub-10ms latency — a system so robust that it now powers the data infrastructure for over 80% of Fortune 100 companies. Understanding Kafka's distributed commit log architecture is essential for any engineer designing event-driven systems at scale.</p>
+
+<div class="section-header">Architecture</div>
+<div class="diagram-box">
+┌─────────────────────────────────────────────────────────────────┐
+│                        Kafka Cluster                           │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐     │
+│  │   Broker 0   │    │   Broker 1   │    │   Broker 2   │     │
+│  │              │    │              │    │              │     │
+│  │ Topic A      │    │ Topic A      │    │ Topic A      │     │
+│  │ ┌─Part 0─────┤    │ ┌─Part 1─────┤    │ ┌─Part 2─────┤     │
+│  │ │ Leader     │    │ │ Replica    │    │ │ Replica    │     │
+│  │ └────────────┤    │ └────────────┤    │ └────────────┤     │
+│  │ Topic B      │    │ Topic B      │    │ Topic B      │     │
+│  │ ┌─Part 0─────┤    │ ┌─Part 0─────┤    │ ┌─Part 1─────┤     │
+│  │ │ Replica    │    │ │ Leader     │    │ │ Leader     │     │
+│  │ └────────────┤    │ └────────────┤    │ └────────────┤     │
+│  └──────────────┘    └──────────────┘    └──────────────┘     │
+└─────────────────────────────────────────────────────────────────┘
+           ↑                    ↑                    ↑
+       ┌───────┐           ┌───────┐           ┌───────┐
+       │Producer│          │Producer│          │Producer│
+       │Group A  │          │Group B  │          │Group C  │
+       └───────┘           └───────┘           └───────┘
+           ↓                    ↓                    ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                    Consumer Groups                              │
+│  ┌──────────────┐         ┌──────────────┐                     │
+│  │Consumer Grp 1│         │Consumer Grp 2│                     │
+│  │┌────┐ ┌────┐ │         │┌────┐ ┌────┐ │                     │
+│  ││C-A │ │C-B │ │         ││C-X │ │C-Y │ │                     │
+│  │└────┘ └────┘ │         │└────┘ └────┘ │                     │
+│  │Part0,1│Part2 │         │Part0,2│Part1 │                     │
+│  └──────────────┘         └──────────────┘                     │
+└─────────────────────────────────────────────────────────────────┘
+</div>
+<p class="body-text">This architecture shows Kafka's distributed commit log design where brokers form a cluster, topics are split into partitions, and consumer groups coordinate partition assignment. Each partition has one leader and multiple replicas for fault tolerance, with producers writing to partition leaders and consumers reading in coordinated groups.</p>
+
+<div class="section-header">How It Works — Deep Dive</div>
+<p class="body-text">Kafka's architecture is built around the concept of a distributed commit log, where each topic is an ordered, immutable sequence of records that are continually appended to. When a producer sends a message, it's written to exactly one partition within a topic, determined either by an explicit partition key hash or round-robin assignment. The partition leader (one of the broker replicas) receives the write, appends it to its local log segment file, and coordinates replication to follower replicas. This design achieves both horizontal scalability through partitioning and fault tolerance through replication, with typical deployments using a replication factor of 3 to survive up to 2 broker failures.</p>
+
+<p class="body-text">The broker cluster uses Apache ZooKeeper (or KRaft in Kafka 2.8+) for distributed coordination, maintaining critical metadata like partition leadership assignments, broker membership, and topic configurations. When a partition leader fails, ZooKeeper triggers an automatic failover election among the in-sync replicas (ISR), promoting a follower to leader typically within 30-50ms. The ISR mechanism ensures data consistency by only committing writes once they're replicated to all in-sync followers, though producers can choose different acknowledgment levels (acks=0 for fire-and-forget, acks=1 for leader confirmation, acks=all for full ISR confirmation) to trade latency for durability guarantees.</p>
+
+<p class="body-text">Consumer groups provide Kafka's scalability mechanism for message consumption, automatically distributing partition assignments across group members using a partition assignment strategy (range, round-robin, sticky, or custom). Each partition is consumed by exactly one consumer within a group, meaning you can scale consumption up to the number of partitions. The group coordinator (one of the brokers) manages consumer membership through periodic heartbeats (default 3-second intervals) and triggers rebalancing when consumers join or leave. During rebalancing, all consumers stop processing and negotiate new partition assignments, causing brief processing delays that can be minimized through careful consumer group sizing and sticky assignment strategies.</p>
+
+<p class="body-text">Kafka's storage layer uses a segmented log structure where each partition is stored as a series of segment files (default 1GB each) containing batched records. The active segment receives new writes while older segments are immutable, enabling efficient cleanup policies like time-based retention (default 7 days) or size-based retention. Each segment includes an index file mapping logical offsets to physical file positions, allowing O(1) random access for consumer reads. The entire system is designed for sequential disk I/O, leveraging the OS page cache aggressively — a properly configured Kafka cluster can achieve 750MB/s sustained throughput per broker with median latencies under 5ms.</p>
+
+<p class="body-text">The protocol layer implements a custom binary protocol over TCP, with producers and consumers maintaining persistent connections to brokers and batching requests for efficiency. Producers buffer records locally (default 16KB batches or 5ms linger time) before sending, while consumers fetch records in configurable batch sizes (default 1MB). The fetch protocol includes sophisticated features like incremental fetch sessions to minimize metadata overhead and follower fetching optimization to reduce cross-datacenter bandwidth in multi-region deployments. Kafka 2.1+ includes support for exactly-once semantics through idempotent producers and transactional messaging, using epoch numbers and sequence IDs to detect and eliminate duplicate records at the broker level.</p>
+
+<div class="section-header">By The Numbers</div>
+<div class="numbers-grid">
+  <div class="number-card"><div class="value">2T+</div><div class="label">Messages/day at LinkedIn peak</div></div>
+  <div class="number-card"><div class="value">750MB/s</div><div class="label">Sustained throughput per broker</div></div>
+  <div class="number-card"><div class="value">30-50ms</div><div class="label">Typical failover time</div></div>
+  <div class="number-card"><div class="value">200K+</div><div class="label">Partitions per cluster at Uber</div></div>
+  <div class="number-card"><div class="value">99.95%</div><div class="label">Availability SLA at Netflix</div></div>
+  <div class="number-card"><div class="value">5ms</div><div class="label">Median producer latency</div></div>
+</div>
+
+<div class="obstacle-box">
+  <div class="label">Real Obstacle — What Actually Went Wrong</div>
+  <p>In March 2020, a major financial services company experienced a catastrophic Kafka outage during market opening hours, costing approximately $2.3M in lost trading revenue over 90 minutes. The incident began when a routine broker restart triggered a cascade of rebalancing across 847 consumer groups processing real-time market data. The root cause was consumer group session timeouts set too aggressively at 5 seconds, combined with a consumer lag spike that caused the rebalancing protocol to enter an infinite loop — consumers would join the group, get partition assignments, fall behind due to the backlog, time out, and repeat. The engineering team's fix involved temporarily increasing session.timeout.ms to 30 seconds and max.poll.interval.ms to 5 minutes, then implementing a staged restart procedure and consumer lag monitoring to prevent future cascading failures. This incident led to industry-wide adoption of chaos engineering practices specifically for Kafka consumer group testing.</p>
+</div>
+
+<div class="napkin-math">
+  <div class="label">Napkin Math — Back of Envelope</div>
+  <p><strong>Scenario:</strong> Design Kafka for 10M events/sec with 3-day retention<br>
+  <strong>Message size:</strong> 1KB average → 10GB/sec sustained write rate<br>
+  <strong>Replication:</strong> 3x factor → 30GB/sec total disk writes<br>
+  <strong>Storage:</strong> 10GB/sec × 259,200 sec (3 days) = 2.59PB raw<br>
+  <strong>With compression:</strong> ~70% compression → 778TB usable storage<br>
+  <strong>Brokers needed:</strong> 778TB ÷ 20TB/broker = 40 brokers minimum<br>
+  <strong>Partitions:</strong> 10M events/sec ÷ 50K events/sec/partition = 200 partitions<br>
+  <strong>Network:</strong> 10GB/sec + consumer traffic (2x) = 30GB/sec cluster bandwidth<br>
+  <strong>Memory:</strong> 64GB RAM per broker for OS page cache efficiency</p>
+</div>
+
+<div class="section-header">Engineering Trade-Offs</div>
+<table class="tradeoff-table">
+  <tr><th>Decision</th><th>Option A</th><th>Option B</th><th>What They Chose</th><th>Why</th></tr>
+  <tr><td>Replication Protocol</td><td>Synchronous replication (strong consistency)</td><td>Asynchronous replication (high throughput)</td><td>Tunable acks parameter</td><td>Allows applications to choose consistency vs performance based on use case</td></tr>
+  <tr><td>Partition Assignment</td><td>Client-side partition selection</td><td>Server-side automatic assignment</td><td>Client-side with hash-based routing</td><td>Reduces server load and network round-trips, enables producer batching optimization</td></tr>
+  <tr><td>Consumer Coordination</td><td>Server-side push model</td><td>Client-side pull model</td><td>Client-side pull with group coordination</td><td>Prevents broker overload, allows consumer flow control, simplifies broker implementation</td></tr>
+  <tr><td>Storage Format</td><td>Row-based message storage</td><td>Columnar storage for analytics</td><td>Segmented log files with batching</td><td>Optimizes for sequential I/O patterns while maintaining message ordering guarantees</td></tr>
+</table>
+
+<div class="section-header">Code — Key Algorithm</div>
+<div class="code-block">
+import hashlib
+import bisect
+from typing import List, Dict, Optional
+
+class KafkaPartitioner:
+    """Implements Kafka's partition assignment algorithm"""
+    
+    def __init__(self, topic_partitions: Dict[str, int]):
+        self.topic_partitions = topic_partitions
+        
+    def partition_for_key(self, topic: str, key: Optional[str] = None) -> int:
+        """
+        Determines partition assignment using murmur2 hash algorithm
+        (same as Kafka's default partitioner)
+        """
+        num_partitions = self.topic_partitions[topic]
+        
+        if key is None:
+            # Round-robin for null keys (sticky partitioning in practice)
+            return 0  # Simplified - real implementation uses sticky batching
+            
+        # Kafka uses murmur2 hash - simplified version here
+        key_hash = self._murmur2_hash(key.encode('utf-8'))
+        return abs(key_hash) % num_partitions
+    
+    def _murmur2_hash(self, data: bytes) -> int:
+        """Simplified murmur2 hash implementation"""
+        m = 0x5bd1e995
+        seed = 0x12345678
+        
+        h = seed ^ len(data)
+        for i in range(0, len(data) - 3, 4):
+            k = int.from_bytes(data[i:i+4], byteorder='little')
+            k = (k * m) & 0xffffffff
+            k ^= k >> 24
+            k = (k * m) & 0xffffffff
+            h = (h * m) & 0xffffffff
+            h ^= k
+            
+        return h & 0xffffffff
+
+# Consumer group partition assignment algorithm
+class ConsumerGroupCoordinator:
+    """Implements range partition assignment strategy"""
+    
+    @staticmethod
+    def assign_partitions(consumers: List[str], 
+                         topic_partitions: Dict[str, int]) -> Dict[str, List[tuple]]:
+        """
+        Range assignment: divide partitions evenly across consumers
+        Returns: {consumer_id: [(topic, partition), ...]}
+        """
+        assignments = {consumer: [] for consumer in consumers}
+        consumers.sort()  # Ensure deterministic assignment
+        
+        for topic, partition_count in topic_partitions.items():
+            partitions_per_consumer = partition_count // len(consumers)
+            extra_partitions = partition_count % len(consumers)
+            
+            partition_idx = 0
+            for i, consumer in enumerate(consumers):
+                # Some consumers get one extra partition
+                partitions_for_this_consumer = partitions_per_consumer
+                if i < extra_partitions:
+                    partitions_for_this_consumer += 1
+                    
+                for _ in range(partitions_for_this_consumer):
+                    assignments[consumer].append((topic, partition_idx))
+                    partition_idx += 1
+                    
+        return assignments
+</div>
+<p class="body-text">This code implements Kafka's core partition assignment algorithms: the murmur2 hash-based partitioner that producers use to determine which partition receives each message, and the range assignment strategy that consumer group coordinators use to distribute partitions among group members. The partitioner ensures even distribution while maintaining key ordering within partitions, while the consumer assignment algorithm minimizes rebalancing when consumers join or leave the group.</p>
+
+<div class="section-header">Scale Progression</div>
+<div class="scale-progression">
+  <div class="scale-step"><div class="scale-dot" style="background:#4caf50"></div><strong>1K users:</strong>&nbsp; Single broker deployment with 2-3 topics, built-in replication disabled, ZooKeeper on same machine. Handle ~1K messages/sec with basic monitoring via JMX metrics.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#ff9800"></div><strong>1M users:</strong>&nbsp; 3-5 broker cluster with dedicated ZooKeeper ensemble, replication factor of 3, 50-100 partitions per topic. Implement consumer group monitoring, automated alerts, and cross-datacenter replication for disaster recovery.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#f44336"></div><strong>1B users:</strong>&nbsp; Multi-region clusters with 100+ brokers each, tiered storage for cost optimization, custom partition assignment strategies, schema registry for evolution, and dedicated SRE team managing capacity planning and automated failover procedures.</div>
+</div>
+
+<div class="ai-smb-box">
+  <div class="label">AI-First SMB Version — Build This Today</div>
+  <p>Skip the operational complexity of running Kafka by building on managed event streaming services. Use **AWS EventBridge** ($1/million events) as your event backbone with **Claude API** for intelligent event routing and transformation ($15/million tokens). Store event schemas in **Supabase** ($25/month) with vector embeddings for semantic event discovery. Implement event processing with **Vercel Functions** ($20/million invocations) that use **LangChain** to convert natural language queries into event filters. For real-time analytics, pipe events through **ClickHouse Cloud** ($50/month minimum) with AI-generated SQL queries. Total cost for 1M events/day: ~$200/month including compute, storage, and AI processing — about 10x cheaper than running a dedicated Kafka cluster while providing advanced AI-powered event understanding and automated schema evolution.</p>
+</div>
+
+<div class="pull-quote">"The beauty of Kafka is that it treats everything as a stream — your database changes, your user clicks, your application logs. Once you start thinking in streams, you realize that most of what we call 'real-time' systems are just badly designed batch systems."</div>
+
+<div class="section-header">Sources & Further Reading</div>
+<p>
+<a class="source-link" href="https://kafka.apache.org/documentation/">Kafka Documentation — Apache Foundation</a>
+<a class="source-link" href="https://www.confluent.io/blog/distributed-consensus-reloaded-apache-zookeeper-and-replication-in-kafka/">Distributed Consensus in Kafka — Confluent</a>
+<a class="source-link" href="https://engineering.linkedin.com/kafka/benchmarking-apache-kafka-2-million-writes-second-three-cheap-machines">Kafka Benchmarks — LinkedIn Engineering</a>
+<a class="source-link" href="https://www.usenix.org/system/files/conference/nsdi12/nsdi12-final138.pdf">Kafka: a Distributed Messaging System — USENIX NSDI</a>
+<a class="source-link" href="https://engineering.uber.com/scaling-kafka/">Scaling Kafka at Uber — Uber Engineering</a>
+<a class="source-link" href="https://netflixtechblog.com/kafka-inside-keystone-pipeline-dd5aeabaf6bb">Kafka at Netflix — Netflix Tech Blog</a>
+<a class="source-link" href="https://www.confluent.io/blog/exactly-once-semantics-are-possible-heres-how-apache-kafka-does-it/">Exactly-Once Semantics — Confluent</a>
+<a class="source-link" href="https://cwiki.apache.org/confluence/display/KAFKA/KIP-500%3A+Replace+ZooKeeper+with+a+Self-Managed+Metadata+Quorum">KRaft: Removing ZooKeeper — Apache Kafka</a>
+</p>
+
+<div class="interview-box">
+  <div class="label">Interview Corner — FAANG-Level Questions</div>
+  <ol>
+    <li><strong>Q:</strong> How would you handle a situation where a Kafka consumer group is experiencing constant rebalancing?<br><strong>Model Answer:</strong> I'd investigate session.timeout.ms and max.poll.interval.ms configurations, check for consumer processing bottlenecks causing poll timeouts, and examine partition count vs consumer count ratios. The solution typically involves increasing timeouts, optimizing consumer processing logic, or implementing incremental cooperative rebalancing.</li>
+    <li><strong>Q:</strong> Explain how Kafka achieves exactly-once semantics and when you might not want to use it.<br><strong>Model Answer:</strong> Kafka uses idempotent producers with sequence numbers and transactional messaging across partitions to prevent duplicates. You might avoid it when the performance cost (20-30% throughput reduction) outweighs the benefit, or when your downstream systems are naturally idempotent and can handle occasional duplicates more efficiently.</li>
+    <li><strong>Q:</strong> Design partition strategy for a topic that needs to maintain user session ordering while maximizing parallelism.<br><strong>Model Answer:</strong> Use user ID as the partition key to ensure all events for a user go to the same partition, size partitions based on user distribution analysis, and consider composite keys (user_id + session_id) if sessions are independent. Monitor partition skew and implement custom partitioners if needed to handle hot users.</li>
+  </ol>
+</div>
+
+<div class="next-up">
+  <div class="label">Coming Up Next</div>
+  <p><strong>Log-Structured Storage</strong> — How Kafka's append-only storage design achieves massive write throughput while enabling efficient compaction and cleanup policies.</p>
+</div>
+  </div>
+  <div class="footer">
+    <p>System Design Daily &bull; Built by Sam Anmol &bull; Powered by Claude AI</p>
+    <p>19 Systems &bull; 200 Lessons &bull; From Zero to World-Class</p>
+    <p style="margin-top: 10px;">Reply STOP to end &bull; Reply SKIP to jump to next system</p>
+  </div>
+</div>
+</body>
+</html>

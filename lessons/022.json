@@ -1,0 +1,9 @@
+{
+  "lesson_id": 22,
+  "title": "Operational Transformation vs CRDT",
+  "subtitle": "How Concurrent Edits Merge Without Conflict",
+  "system_name": "Google Docs",
+  "type": "core",
+  "generated_at": "2026-03-30T15:59:31.330262+00:00",
+  "content_length": 20917
+}

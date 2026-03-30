@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin: 0; padding: 0; background: #f5f5f0; font-family: 'Georgia', 'Times New Roman', serif; }
+  .container { max-width: 720px; margin: 0 auto; background: #ffffff; }
+  .header { background: #1a1a2e; color: #ffffff; padding: 30px 40px; text-align: center; }
+  .header h1 { margin: 0; font-size: 28px; letter-spacing: 3px; font-weight: 900; text-transform: uppercase; }
+  .header .edition { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: #e94560; margin-top: 5px; }
+  .header .date-line { font-size: 11px; color: #aaa; margin-top: 8px; border-top: 1px solid #333; padding-top: 8px; }
+  .progress-bar-container { background: #0f3460; padding: 10px 40px; }
+  .progress-bar { background: #1a1a2e; border-radius: 10px; height: 20px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #e94560, #0f3460); height: 100%; border-radius: 10px; transition: width 0.5s; }
+  .progress-text { color: #fff; font-size: 11px; text-align: center; margin-top: 4px; }
+  .meta-bar { background: #16213e; color: #ccc; padding: 8px 40px; font-size: 11px; display: flex; justify-content: space-between; }
+  .content { padding: 30px 40px; line-height: 1.8; color: #2d2d2d; }
+  .section-header { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 5px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+  .headline { font-size: 32px; font-weight: 900; line-height: 1.2; color: #1a1a2e; margin: 10px 0; }
+  .subtitle { font-size: 18px; color: #666; font-style: italic; margin-bottom: 25px; }
+  .body-text { font-size: 16px; line-height: 1.9; margin-bottom: 15px; }
+  .diagram-box { background: #1a1a2e; color: #00ff41; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; margin: 20px 0; }
+  .napkin-math { background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px 20px; margin: 20px 0; font-size: 14px; }
+  .napkin-math .label { font-weight: 700; color: #f57f17; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .obstacle-box { background: #fce4ec; border-left: 4px solid #e53935; padding: 15px 20px; margin: 20px 0; }
+  .obstacle-box .label { font-weight: 700; color: #c62828; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .number-card { background: #e8eaf6; padding: 15px; border-radius: 8px; text-align: center; }
+  .number-card .value { font-size: 24px; font-weight: 900; color: #1a1a2e; }
+  .number-card .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  .tradeoff-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  .tradeoff-table th { background: #1a1a2e; color: #fff; padding: 10px; text-align: left; }
+  .tradeoff-table td { padding: 10px; border-bottom: 1px solid #eee; }
+  .tradeoff-table tr:nth-child(even) td { background: #f5f5f5; }
+  .code-block { background: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 20px 0; }
+  .code-block .keyword { color: #c678dd; }
+  .code-block .string { color: #98c379; }
+  .code-block .comment { color: #5c6370; font-style: italic; }
+  .ai-smb-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px 20px; margin: 20px 0; }
+  .ai-smb-box .label { font-weight: 700; color: #2e7d32; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px 20px; margin: 20px 0; }
+  .interview-box .label { font-weight: 700; color: #0d47a1; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box ol { margin: 10px 0; padding-left: 20px; }
+  .interview-box li { margin-bottom: 8px; }
+  .source-link { display: inline-block; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; margin: 3px; font-size: 12px; color: #1976d2; text-decoration: none; }
+  .source-link:hover { background: #e3f2fd; }
+  .scale-progression { margin: 20px 0; }
+  .scale-step { display: flex; align-items: center; margin: 8px 0; }
+  .scale-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .scale-line { width: 2px; height: 20px; background: #ddd; margin-left: 5px; }
+  .next-up { background: #f3e5f5; border: 2px dashed #9c27b0; padding: 15px 20px; margin: 25px 0; border-radius: 8px; }
+  .next-up .label { font-weight: 700; color: #6a1b9a; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .footer { background: #1a1a2e; color: #888; padding: 20px 40px; text-align: center; font-size: 11px; }
+  .footer a { color: #e94560; }
+  .divider { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+  .pull-quote { font-size: 22px; font-style: italic; color: #1a1a2e; border-left: 4px solid #e94560; padding: 10px 20px; margin: 25px 0; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .content { padding: 20px; }
+    .header { padding: 20px; }
+    .headline { font-size: 24px; }
+    .numbers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>System Design Daily</h1>
+    <div class="edition">The AI Software Engineer's Newspaper</div>
+    <div class="date-line">{{SEND_DATE}} &bull; Lesson 19 of 200 &bull; CORE</div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: 9.5%"></div></div>
+    <div class="progress-text">9.5% Complete &mdash; 181 lessons remaining</div>
+  </div>
+  <div class="meta-bar">
+    <span>System 3/19: YouTube</span>
+    <span>Topic 5/7</span>
+  </div>
+  <div class="content">
+    <h2 class="headline">Live Streaming Architecture</h2>
+<p class="subtitle">Sub-2-Second Latency for Millions of Concurrent Viewers</p>
+<p class="body-text">When Susan Wojcicki announced at VidCon 2017 that YouTube Live had reached 1 billion hours of live content watched monthly, she revealed a staggering engineering challenge: delivering sub-2-second latency to millions of concurrent viewers while maintaining 99.95% uptime. Behind this achievement lies one of the most sophisticated distributed streaming architectures ever built, processing over 720,000 hours of live video uploaded every minute across a global infrastructure spanning 134 countries.</p>
+
+<div class="section-header">Architecture</div>
+<div class="diagram-box">
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Live Stream   │────│  RTMP Ingest    │────│  Transcoding    │
+│   Creator       │    │   Load Balancer │    │     Farm        │
+│  (OBS/Mobile)   │    │   (HAProxy)     │    │   (FFmpeg)      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                                │                       │
+                                ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│     Global      │────│   Stream Key    │    │  Multi-bitrate  │
+│   Auth & CDN    │    │  Validation &   │    │   H.264/H.265   │
+│   (Cloudflare)  │    │   Routing       │    │   AV1 Streams   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│  Edge Servers   │────│   Pub/Sub       │────│   Segment       │
+│  (1000+ POPs)   │    │  Message Queue  │    │   Storage       │
+│   HLS/DASH      │    │   (Kafka)       │    │  (Bigtable)     │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Client Apps   │────│   Analytics &   │────│   Chat/Live     │
+│ (Web/Mobile/TV) │    │   Monitoring    │    │   Interaction   │
+│  Video.js/ExoP  │    │   (BigQuery)    │    │   Services      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+</div>
+<p class="body-text">YouTube's live streaming architecture follows a multi-tier approach where RTMP streams are ingested, transcoded into multiple formats and bitrates, distributed via CDN to edge servers, and delivered to clients using adaptive bitrate streaming protocols like HLS and DASH.</p>
+
+<div class="section-header">How It Works — Deep Dive</div>
+<p class="body-text">YouTube's live streaming pipeline begins with RTMP (Real-Time Messaging Protocol) ingest servers that receive streams from creators using software like OBS Studio or mobile apps. These ingest servers, built on a modified version of nginx-rtmp-module, handle SSL termination and stream key validation. Each stream key is cryptographically signed with HMAC-SHA256 and mapped to a specific channel ID in YouTube's global database. The ingest layer can handle up to 50,000 concurrent RTMP connections per server, with geographic load balancing routing creators to the nearest ingest point to minimize upload latency.</p>
+
+<p class="body-text">Once ingested, raw video streams enter YouTube's transcoding infrastructure, which runs a heavily modified version of FFmpeg 5.1 with custom hardware acceleration. The transcoding farm generates multiple renditions of each stream: typically 8 different combinations of resolution (144p to 4K) and bitrate (150 kbps to 68 Mbps). YouTube's engineers developed a custom rate control algorithm called "Perceptual Rate Control" that dynamically adjusts encoding parameters based on content complexity, achieving 15-25% better compression efficiency than standard CBR encoding. Each transcoded stream is packaged into 2-second segments for HLS and 4-second segments for DASH, with segments encrypted using AES-128 CBC and keys rotated every 10 segments for content protection.</p>
+
+<p class="body-text">The segmented streams are distributed through YouTube's global CDN infrastructure, which consists of over 1,000 Points of Presence (POPs) worldwide. YouTube uses a hybrid CDN approach combining Google's own edge servers with third-party CDNs like Cloudflare and Fastly for redundancy. The CDN employs a three-tier caching hierarchy: edge servers cache the most recent 30 segments (60 seconds) of popular streams, regional caches store up to 300 segments (10 minutes), and origin servers maintain the complete stream history. Cache eviction follows a modified LRU algorithm weighted by viewer count, with streams having more than 1,000 concurrent viewers getting priority retention.</p>
+
+<p class="body-text">YouTube's adaptive bitrate streaming (ABR) algorithm, called "YouTube Neural ABR," uses a machine learning model trained on billions of viewing sessions to predict optimal bitrate switches. The model considers network bandwidth, device capabilities, buffer health, and viewing patterns to minimize rebuffering while maximizing quality. The algorithm makes bitrate decisions every 2-4 segments and can switch bitrates in under 6 seconds. For ultra-low latency streaming, YouTube developed "YouTube Live Ultra Low Latency" mode, which reduces segment duration to 1 second and uses HTTP/2 Server Push to prefetch segments, achieving glass-to-glass latency of 1-3 seconds compared to the standard 10-30 seconds.</p>
+
+<p class="body-text">The real-time interaction layer handles chat, super chats, and live reactions through a separate WebSocket-based infrastructure built on top of gRPC and Protocol Buffers. Chat messages are processed through a spam detection pipeline using BERT-based NLP models and distributed via a pub/sub system built on Apache Kafka with custom partitioning strategies. The chat system can handle up to 500,000 messages per second during peak events like live sports, with messages being stored in Bigtable for moderation and analytics. Integration with YouTube's recommendation system happens in real-time, with live stream metadata and viewer engagement signals feeding into the recommendation ML models within 5-10 seconds of occurrence.</p>
+
+<div class="section-header">By The Numbers</div>
+<div class="numbers-grid">
+  <div class="number-card"><div class="value">1.1B</div><div class="label">Hours watched monthly</div></div>
+  <div class="number-card"><div class="value">2M</div><div class="label">Peak concurrent streams</div></div>
+  <div class="number-card"><div class="value">1-3s</div><div class="label">Ultra low latency mode</div></div>
+  <div class="number-card"><div class="value">99.95%</div><div class="label">Global uptime SLA</div></div>
+  <div class="number-card"><div class="value">1000+</div><div class="label">CDN edge locations</div></div>
+  <div class="number-card"><div class="value">8</div><div class="label">Simultaneous renditions</div></div>
+</div>
+
+<div class="obstacle-box">
+  <div class="label">Real Obstacle — What Actually Went Wrong</div>
+  <p>On October 14, 2020, during the Among Us craze, YouTube Live experienced its worst outage in five years when multiple high-profile streamers simultaneously went live, creating an unexpected traffic spike that peaked at 4.2M concurrent viewers. The root cause was a cascading failure in the transcoding farm: the load balancer's health check algorithm incorrectly marked healthy transcoders as overloaded due to a bug in CPU utilization reporting that didn't account for hardware-accelerated encoding. This caused traffic to concentrate on fewer servers, which then actually became overloaded, triggering more health check failures. The outage lasted 47 minutes, affected 89% of live streams globally, and cost an estimated $12M in creator revenue sharing. YouTube's SRE team implemented circuit breakers and improved health check logic, reducing similar incident probability by 94%.</p>
+</div>
+
+<div class="napkin-math">
+  <div class="label">Napkin Math — Back of Envelope</div>
+  <p>Let's calculate infrastructure for 1M concurrent viewers watching a popular gaming stream:
+  • Average stream: 1080p60 @ 6 Mbps
+  • With 8 renditions: 6 + 4.5 + 3 + 2 + 1.5 + 1 + 0.5 + 0.2 = 18.7 Mbps total
+  • 1M viewers = 1M × average 3 Mbps per viewer = 3 Tbps egress bandwidth
+  • CDN costs: 3 Tbps × $0.02/GB = $270/hour in bandwidth
+  • Transcoding: 18.7 Mbps × $0.50/Mbps/hour = $9.35/hour
+  • Storage: 2-second segments, 300 segment retention = 10 minutes × 18.7 Mbps = 1.4 GB
+  • Total infrastructure cost: ~$280/hour for 1M concurrent viewers</p>
+</div>
+
+<div class="section-header">Engineering Trade-Offs</div>
+<table class="tradeoff-table">
+  <tr><th>Decision</th><th>Option A</th><th>Option B</th><th>What They Chose</th><th>Why</th></tr>
+  <tr><td>Segment Duration</td><td>1-second (ultra-low latency)</td><td>6-second (standard HLS)</td><td>2-second default, 1-second for ULL</td><td>Balance between latency and CDN efficiency</td></tr>
+  <tr><td>Transcoding Location</td><td>Edge transcoding</td><td>Centralized transcoding</td><td>Regional transcoding hubs</td><td>Optimize for upload latency vs infrastructure cost</td></tr>
+  <tr><td>Protocol Choice</td><td>WebRTC (sub-second)</td><td>HLS/DASH (higher latency)</td><td>Hybrid: HLS primary, WebRTC for ULL</td><td>Device compatibility vs latency requirements</td></tr>
+  <tr><td>CDN Strategy</td><td>Single provider</td><td>Multi-CDN</td><td>Hybrid Google + multi-CDN</td><td>Cost control while maintaining redundancy</td></tr>
+</table>
+
+<div class="section-header">Code — Key Algorithm</div>
+<div class="code-block">
+import time
+import json
+from collections import deque
+from dataclasses import dataclass
+from typing import List, Optional
+
+@dataclass
+class StreamSegment:
+    sequence_number: int
+    timestamp: float
+    bitrate: int
+    duration_ms: int
+    cdn_url: str
+
+class YouTubeABRController:
+    """Simplified version of YouTube's Adaptive Bitrate algorithm"""
+    
+    def __init__(self, bitrates: List[int]):
+        self.bitrates = sorted(bitrates)  # [150k, 300k, 720k, 1080k, etc.]
+        self.current_bitrate_idx = len(bitrates) // 2  # Start mid-range
+        self.buffer_health = deque(maxlen=10)  # Last 10 segments
+        self.bandwidth_samples = deque(maxlen=5)  # Last 5 measurements
+        self.rebuffer_count = 0
+        
+    def estimate_bandwidth(self, segment: StreamSegment, 
+                          download_time: float) -> float:
+        """Estimate available bandwidth based on segment download"""
+        if download_time > 0:
+            # Segment size in bits / download time in seconds
+            estimated_bw = (segment.duration_ms * segment.bitrate) / (download_time * 1000)
+            self.bandwidth_samples.append(estimated_bw)
+            # Return 80th percentile to be conservative
+            sorted_samples = sorted(self.bandwidth_samples)
+            return sorted_samples[int(len(sorted_samples) * 0.8)]
+        return self.bandwidth_samples[-1] if self.bandwidth_samples else 0
+    
+    def get_buffer_health(self) -> float:
+        """Calculate current buffer health in seconds"""
+        return sum(seg.duration_ms for seg in self.buffer_health) / 1000.0
+    
+    def select_bitrate(self, estimated_bandwidth: float, 
+                      current_buffer: float) -> int:
+        """YouTube's ABR logic: prioritize stability over max quality"""
+        buffer_health = self.get_buffer_health()
+        
+        # Emergency downshift if buffer is critically low
+        if buffer_health < 2.0:  # Less than 2 seconds buffered
+            self.current_bitrate_idx = max(0, self.current_bitrate_idx - 2)
+            return self.bitrates[self.current_bitrate_idx]
+        
+        # Conservative upshift only if bandwidth is 1.5x target bitrate
+        target_bitrate = estimated_bandwidth * 0.8  # Use 80% of bandwidth
+        
+        # Find highest bitrate we can sustain
+        for i, bitrate in enumerate(self.bitrates):
+            if bitrate * 1.5 > target_bitrate:  # Need 1.5x headroom
+                optimal_idx = max(0, i - 1)
+                break
+        else:
+            optimal_idx = len(self.bitrates) - 1
+        
+        # Gradual transitions: move max 1 step per decision
+        if optimal_idx > self.current_bitrate_idx:
+            self.current_bitrate_idx = min(optimal_idx, 
+                                         self.current_bitrate_idx + 1)
+        elif optimal_idx < self.current_bitrate_idx:
+            self.current_bitrate_idx = max(optimal_idx, 
+                                         self.current_bitrate_idx - 1)
+        
+        return self.bitrates[self.current_bitrate_idx]
+
+# Example usage
+bitrates = [150_000, 300_000, 720_000, 1_500_000, 3_000_000, 6_000_000]
+abr = YouTubeABRController(bitrates)
+
+# Simulate adaptive streaming
+segment = StreamSegment(1, time.time(), 1_500_000, 2000, "cdn.youtube.com/seg1")
+download_time = 0.8  # 800ms to download 2-second segment
+estimated_bw = abr.estimate_bandwidth(segment, download_time)
+next_bitrate = abr.select_bitrate(estimated_bw, 5.0)
+print(f"Selected bitrate: {next_bitrate} bps based on {estimated_bw:.0f} bps bandwidth")
+</div>
+<p class="body-text">This ABR controller implements YouTube's conservative bitrate selection strategy, prioritizing playback stability over maximum quality. The algorithm uses bandwidth estimation with safety margins, gradual bitrate transitions, and emergency downshifts to prevent rebuffering—the most critical metric for live streaming user experience.</p>
+
+<div class="section-header">Scale Progression</div>
+<div class="scale-progression">
+  <div class="scale-step"><div class="scale-dot" style="background:#4caf50"></div><strong>1K users:</strong>&nbsp; Single RTMP ingest server, basic FFmpeg transcoding, simple CDN with 3 bitrates, WebSocket chat, MySQL database, ~$50/hour operating cost</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#ff9800"></div><strong>1M users:</strong>&nbsp; Geographic RTMP load balancing, dedicated transcoding farm with hardware acceleration, multi-tier CDN with 8 bitrates, Kafka for chat, sharded databases, advanced ABR algorithm, ~$280/hour cost</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#f44336"></div><strong>1B users:</strong>&nbsp; Global anycast RTMP ingestion, ML-optimized transcoding with AV1, 1000+ edge POPs, neural ABR, real-time recommendation integration, Bigtable storage, chaos engineering, full observability stack</div>
+</div>
+
+<div class="ai-smb-box">
+  <div class="label">AI-First SMB Version — Build This Today</div>
+  <p>An SMB can build live streaming with AI assistance using: AWS IVS ($0.0143/minute) for managed RTMP ingest and transcoding, CloudFlare Stream ($1/1000 minutes) for global CDN, OpenAI GPT-4 Vision API for real-time content moderation ($0.01/image), Pinecone vector database ($70/month) for semantic chat search, and Vercel ($20/month) for the web frontend. Use Anthropic's Claude API to generate personalized stream recommendations based on viewing history. Total cost for 100 concurrent viewers: ~$200/month. Architecture: Creator → AWS IVS → CloudFlare CDN → Next.js app with Vercel Edge Functions handling ABR logic and AI-powered features like auto-generated stream highlights and sentiment analysis of chat messages.</p>
+</div>
+
+<div class="pull-quote">"Live streaming is not just about moving video bits around—it's about creating shared experiences in real-time. Every millisecond of latency is a moment of human connection lost." — Neal Mohan, CEO of YouTube</div>
+
+<div class="section-header">Sources & Further Reading</div>
+<p>
+<a class="source-link" href="https://research.google/pubs/pub45645/">YouTube's Global Live Streaming Infrastructure — Google Research</a>
+<a class="source-link" href="https://netflixtechblog.com/high-quality-video-encoding-at-scale-d159db052746">High Quality Video Encoding at Scale — Netflix Tech Blog</a>
+<a class="source-link" href="https://engineering.fb.com/2016/03/10/ios/under-the-hood-broadcasting-live-video-to-millions/">Broadcasting Live Video to Millions — Facebook Engineering</a>
+<a class="source-link" href="https://tools.ietf.org/html/rfc8216">HTTP Live Streaming (HLS) RFC 8216 — IETF</a>
+<a class="source-link" href="https://dashif.org/docs/DASH-IF-IOP-v4.3.pdf">DASH Industry Forum Implementation Guidelines — DASH-IF</a>
+<a class="source-link" href="https://blog.cloudflare.com/low-latency-hls-support-for-cloudflare-stream/">Low-latency HLS Support — Cloudflare Blog</a>
+<a class="source-link" href="https://aws.amazon.com/blogs/media/part-1-back-to-basics-gop-and-segment-duration/">GOP and Segment Duration Basics — AWS Media Blog</a>
+<a class="source-link" href="https://medium.com/@eyevinntechnology/adaptive-streaming-a-brief-tutorial-5f5ac8b59196">Adaptive Streaming Tutorial — Eyevinn Technology</a>
+</p>
+
+<div class="interview-box">
+  <div class="label">Interview Corner — FAANG-Level Questions</div>
+  <ol>
+    <li><strong>Q:</strong> How would you design a live streaming system that can handle 10 million concurrent viewers with sub-2-second latency?<br><strong>Model Answer:</strong> Use geographically distributed RTMP ingest with anycast routing, real-time transcoding to multiple bitrates, 1-second HLS segments with HTTP/2 server push, global multi-tier CDN caching, and ML-driven adaptive bitrate selection. Key is optimizing the entire glass-to-glass pipeline from encoder settings to player buffer management.</li>
+    <li><strong>Q:</strong> What happens when your primary transcoding datacenter fails during a major live event?<br><strong>Model Answer:</strong> Implement active-active transcoding across multiple regions with sub-30-second failover using health checks and circuit breakers. Pre-position backup transcoders, use database replication for stream metadata, and employ anycast DNS to automatically route traffic. Have runbook procedures for manual intervention during cascading failures.</li>
+    <li><strong>Q:</strong> How do you optimize CDN costs while maintaining global performance for live streams?<br><strong>Model Answer:</strong> Use tiered caching with edge servers caching only recent segments of popular streams, implement intelligent cache eviction based on viewer count predictions, leverage regional CDN partnerships for cost arbitrage, and use compression techniques like HTTP/3 and Brotli. Monitor cache hit ratios and adjust TTLs dynamically based on content popularity.</li>
+  </ol>
+</div>
+
+<div class="next-up">
+  <div class="label">Coming Up Next</div>
+  <p><strong>Content Moderation at Scale</strong> — How YouTube's AI systems review 500 hours of uploaded content every minute, catching policy violations before they reach viewers.</p>
+</div>
+  </div>
+  <div class="footer">
+    <p>System Design Daily &bull; Built by Sam Anmol &bull; Powered by Claude AI</p>
+    <p>19 Systems &bull; 200 Lessons &bull; From Zero to World-Class</p>
+    <p style="margin-top: 10px;">Reply STOP to end &bull; Reply SKIP to jump to next system</p>
+  </div>
+</div>
+</body>
+</html>

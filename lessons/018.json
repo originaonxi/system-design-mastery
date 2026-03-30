@@ -1,0 +1,9 @@
+{
+  "lesson_id": 18,
+  "title": "Vitess: MySQL Sharding Born at YouTube",
+  "subtitle": "How YouTube Scaled MySQL to Serve Billions",
+  "system_name": "YouTube",
+  "type": "core",
+  "generated_at": "2026-03-30T15:52:35.030989+00:00",
+  "content_length": 20247
+}

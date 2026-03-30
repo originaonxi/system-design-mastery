@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin: 0; padding: 0; background: #f5f5f0; font-family: 'Georgia', 'Times New Roman', serif; }
+  .container { max-width: 720px; margin: 0 auto; background: #ffffff; }
+  .header { background: #1a1a2e; color: #ffffff; padding: 30px 40px; text-align: center; }
+  .header h1 { margin: 0; font-size: 28px; letter-spacing: 3px; font-weight: 900; text-transform: uppercase; }
+  .header .edition { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: #e94560; margin-top: 5px; }
+  .header .date-line { font-size: 11px; color: #aaa; margin-top: 8px; border-top: 1px solid #333; padding-top: 8px; }
+  .progress-bar-container { background: #0f3460; padding: 10px 40px; }
+  .progress-bar { background: #1a1a2e; border-radius: 10px; height: 20px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #e94560, #0f3460); height: 100%; border-radius: 10px; transition: width 0.5s; }
+  .progress-text { color: #fff; font-size: 11px; text-align: center; margin-top: 4px; }
+  .meta-bar { background: #16213e; color: #ccc; padding: 8px 40px; font-size: 11px; display: flex; justify-content: space-between; }
+  .content { padding: 30px 40px; line-height: 1.8; color: #2d2d2d; }
+  .section-header { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 5px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+  .headline { font-size: 32px; font-weight: 900; line-height: 1.2; color: #1a1a2e; margin: 10px 0; }
+  .subtitle { font-size: 18px; color: #666; font-style: italic; margin-bottom: 25px; }
+  .body-text { font-size: 16px; line-height: 1.9; margin-bottom: 15px; }
+  .diagram-box { background: #1a1a2e; color: #00ff41; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; margin: 20px 0; }
+  .napkin-math { background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px 20px; margin: 20px 0; font-size: 14px; }
+  .napkin-math .label { font-weight: 700; color: #f57f17; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .obstacle-box { background: #fce4ec; border-left: 4px solid #e53935; padding: 15px 20px; margin: 20px 0; }
+  .obstacle-box .label { font-weight: 700; color: #c62828; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .number-card { background: #e8eaf6; padding: 15px; border-radius: 8px; text-align: center; }
+  .number-card .value { font-size: 24px; font-weight: 900; color: #1a1a2e; }
+  .number-card .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  .tradeoff-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  .tradeoff-table th { background: #1a1a2e; color: #fff; padding: 10px; text-align: left; }
+  .tradeoff-table td { padding: 10px; border-bottom: 1px solid #eee; }
+  .tradeoff-table tr:nth-child(even) td { background: #f5f5f5; }
+  .code-block { background: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 20px 0; }
+  .code-block .keyword { color: #c678dd; }
+  .code-block .string { color: #98c379; }
+  .code-block .comment { color: #5c6370; font-style: italic; }
+  .ai-smb-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px 20px; margin: 20px 0; }
+  .ai-smb-box .label { font-weight: 700; color: #2e7d32; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px 20px; margin: 20px 0; }
+  .interview-box .label { font-weight: 700; color: #0d47a1; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box ol { margin: 10px 0; padding-left: 20px; }
+  .interview-box li { margin-bottom: 8px; }
+  .source-link { display: inline-block; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; margin: 3px; font-size: 12px; color: #1976d2; text-decoration: none; }
+  .source-link:hover { background: #e3f2fd; }
+  .scale-progression { margin: 20px 0; }
+  .scale-step { display: flex; align-items: center; margin: 8px 0; }
+  .scale-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .scale-line { width: 2px; height: 20px; background: #ddd; margin-left: 5px; }
+  .next-up { background: #f3e5f5; border: 2px dashed #9c27b0; padding: 15px 20px; margin: 25px 0; border-radius: 8px; }
+  .next-up .label { font-weight: 700; color: #6a1b9a; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .footer { background: #1a1a2e; color: #888; padding: 20px 40px; text-align: center; font-size: 11px; }
+  .footer a { color: #e94560; }
+  .divider { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+  .pull-quote { font-size: 22px; font-style: italic; color: #1a1a2e; border-left: 4px solid #e94560; padding: 10px 20px; margin: 25px 0; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .content { padding: 20px; }
+    .header { padding: 20px; }
+    .headline { font-size: 24px; }
+    .numbers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>System Design Daily</h1>
+    <div class="edition">The AI Software Engineer's Newspaper</div>
+    <div class="date-line">{{SEND_DATE}} &bull; Lesson 20 of 200 &bull; CORE</div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: 10.0%"></div></div>
+    <div class="progress-text">10.0% Complete &mdash; 180 lessons remaining</div>
+  </div>
+  <div class="meta-bar">
+    <span>System 3/19: YouTube</span>
+    <span>Topic 6/7</span>
+  </div>
+  <div class="content">
+    <h2 class="headline">Content Moderation at Scale</h2>
+<p class="subtitle">ML Classifies 500+ Hours/Min for Policy Violations</p>
+<p class="body-text">YouTube processes over 720,000 hours of video uploads every day—that's 30,000 hours per hour, or 500+ hours every minute. Each upload must be scanned for copyright violations, hate speech, violence, spam, and dozens of other policy categories across 100+ languages. With human reviewers capable of processing maybe 8 hours of content per day, YouTube would need 90,000 full-time moderators working around the clock. Instead, they built one of the world's most sophisticated content moderation systems, combining computer vision, NLP, audio fingerprinting, and human review pipelines that automatically remove 95% of policy-violating content before it's even published.</p>
+
+<div class="section-header">Architecture</div>
+<div class="diagram-box">
+┌─────────────┐    ┌──────────────┐    ┌─────────────────┐
+│   Upload    │───→│  Pre-Upload  │───→│   ML Pipeline   │
+│  Interface  │    │   Scanning   │    │   Processing    │
+└─────────────┘    └──────────────┘    └─────────────────┘
+                           │                      │
+                           ↓                      ↓
+┌─────────────┐    ┌──────────────┐    ┌─────────────────┐
+│ ContentID   │←───│  Fingerprint │    │  Classification │
+│  Database   │    │  Generation  │    │    Results      │
+└─────────────┘    └──────────────┘    └─────────────────┘
+       │                                        │
+       ↓                                        ↓
+┌─────────────┐    ┌──────────────┐    ┌─────────────────┐
+│  Copyright  │    │ Human Review │←───│  Policy Engine  │
+│   Claims    │───→│    Queue     │    │   & Scoring     │
+└─────────────┘    └──────────────┘    └─────────────────┘
+                           │                      │
+                           ↓                      ↓
+┌─────────────┐    ┌──────────────┐    ┌─────────────────┐
+│  Reviewer   │───→│  Final      │───→│   Publishing    │
+│ Dashboard   │    │  Decision   │    │   & Appeals     │
+└─────────────┘    └──────────────┘    └─────────────────┘
+</div>
+<p class="body-text">The architecture shows YouTube's multi-stage content moderation pipeline, starting from upload through ML classification, human review queuing, and final publishing decisions. The system processes uploads in parallel streams while maintaining low latency for creator uploads.</p>
+
+<div class="section-header">How It Works — Deep Dive</div>
+<p class="body-text">YouTube's content moderation begins the moment a creator hits upload. The system first generates multiple fingerprints of the content: perceptual hashes of keyframes for visual similarity, audio fingerprints using techniques like Shazam's constellation algorithm, and text embeddings from titles, descriptions, and auto-generated transcripts. These fingerprints are immediately checked against YouTube's ContentID database—a massive repository containing over 80 million reference files from copyright holders including every major movie studio, record label, and media company globally. The ContentID matching uses approximate nearest neighbor search with locality-sensitive hashing to find potential matches within milliseconds, even for content that's been slightly modified through cropping, speed changes, or audio pitch shifting.</p>
+
+<p class="body-text">Simultaneously, the content enters YouTube's ML classification pipeline, which runs dozens of specialized models in parallel. The computer vision models, built on modified EfficientNet and Vision Transformer architectures, scan for violent imagery, nudity, hate symbols, and other visual policy violations. These models process video at multiple frame rates—sampling every frame for potential violations but running more computationally expensive models only on suspicious segments flagged by lighter screening models. The audio processing pipeline uses Transformer-based models fine-tuned on YouTube's proprietary datasets to detect hate speech, harassment, and spam across 100+ languages, with specialized handling for code-switching and regional dialects that traditional NLP models miss.</p>
+
+<p class="body-text">The most sophisticated component is YouTube's policy violation scoring system, which combines outputs from dozens of individual models into a single risk score. This isn't a simple weighted average—it uses a learned ensemble approach where a meta-model trained on human reviewer decisions determines how to weight different signals based on content type, creator history, and contextual factors. For example, the same audio that might be flagged as harassment in a political video might be acceptable in a gaming context. The system maintains separate threshold curves for different content categories and creator tiers, with established channels receiving slightly more permissive scoring to reduce false positives that could impact legitimate creators.</p>
+
+<p class="body-text">Content that scores above certain thresholds gets routed to human review queues, which are themselves highly engineered systems. YouTube employs over 20,000 content reviewers globally, organized into specialized teams by language, content type, and policy area. The reviewer interface prioritizes urgent content (potential terrorism, child safety issues) and batches similar violations to improve reviewer efficiency. Each piece of content is typically reviewed by 2-3 reviewers for quality assurance, with disagreements escalated to senior reviewers. The system tracks reviewer accuracy and adjusts confidence weights accordingly—reviews from highly accurate reviewers carry more weight in training the ML models.</p>
+
+<p class="body-text">The feedback loop is critical to the system's effectiveness. Every human reviewer decision becomes training data for the ML models, with successful catches reinforcing the models and false positives providing negative examples. YouTube runs continuous A/B tests on different model configurations, comparing both accuracy metrics and creator satisfaction scores. The system also implements sophisticated adversarial training, deliberately creating edge cases and adversarial examples to make the models more robust against creators who try to game the system by slightly modifying violating content.</p>
+
+<div class="section-header">By The Numbers</div>
+<div class="numbers-grid">
+  <div class="number-card"><div class="value">720K</div><div class="label">Hours uploaded daily</div></div>
+  <div class="number-card"><div class="value">95%</div><div class="label">Violations caught by ML</div></div>
+  <div class="number-card"><div class="value">20K+</div><div class="label">Human reviewers</div></div>
+  <div class="number-card"><div class="value">80M</div><div class="label">ContentID references</div></div>
+  <div class="number-card"><div class="value">100+</div><div class="label">Languages supported</div></div>
+  <div class="number-card"><div class="value">&lt;10ms</div><div class="label">Fingerprint matching time</div></div>
+</div>
+
+<div class="obstacle-box">
+  <div class="label">Real Obstacle — What Actually Went Wrong</div>
+  <p>In March 2020, YouTube faced its biggest content moderation crisis when COVID-19 forced them to rely almost entirely on automated systems after sending human reviewers home. The ML models, suddenly without human oversight, began flagging legitimate content at unprecedented rates. Educational videos about historical events were removed for "violent content," cooking channels were flagged for showing knives, and news channels covering the pandemic were auto-removed for "medical misinformation." Over 2 million videos were incorrectly removed in Q2 2020—a 300% increase in false positives. The crisis peaked when the system began removing its own policy explanation videos. YouTube had to emergency-deploy a "human reviewer simulation" model trained on historical reviewer decisions and implement temporary relaxed thresholds, accepting higher false negatives to reduce creator backlash. The incident cost an estimated $50+ million in creator compensation and led to a complete redesign of their human-AI collaboration workflows, with better degradation modes for when human review capacity is constrained.</p>
+</div>
+
+<div class="napkin-math">
+  <div class="label">Napkin Math — Back of Envelope</div>
+  <p>Let's calculate YouTube's content moderation infrastructure needs: 720,000 hours uploaded daily = 30,000 hours/hour = 500 hours/minute. Assume each hour of content requires 100MB of metadata/features extraction and 2 seconds of GPU compute for ML processing. That's 500 hours × 2 seconds = 1,000 seconds of GPU compute needed every minute = 17 concurrent GPUs minimum. For storage: 720,000 hours × 100MB = 72TB of feature data daily. For human review: if 5% needs human review, that's 36,000 hours daily. With reviewers processing 8 hours of content per 8-hour shift, you need 4,500 reviewer-days of capacity, requiring ~18,000 reviewers across time zones (accounting for weekends, sick days, training). Infrastructure cost estimate: 100 GPUs (with redundancy) × $10K = $1M, storage systems ~$500K, reviewer salaries ~$1B annually. Total moderation system cost: ~$1.5B+ yearly.</p>
+</div>
+
+<div class="section-header">Engineering Trade-Offs</div>
+<table class="tradeoff-table">
+  <tr><th>Decision</th><th>Option A</th><th>Option B</th><th>What They Chose</th><th>Why</th></tr>
+  <tr><td>Review Timing</td><td>Pre-upload blocking</td><td>Post-upload scanning</td><td>Hybrid approach</td><td>Pre-upload for obvious violations, post-upload for edge cases to maintain creator experience</td></tr>
+  <tr><td>ML Architecture</td><td>Single large model</td><td>Many specialized models</td><td>Many specialized models</td><td>Better accuracy per domain, easier to update individual components, clearer debugging</td></tr>
+  <tr><td>Human Review</td><td>All-contractor workforce</td><td>Mixed contractor/FTE</td><td>Mixed approach</td><td>Contractors for scale, FTEs for complex policy development and quality assurance</td></tr>
+  <tr><td>Appeals Process</td><td>Automated appeals only</td><td>Human appeals review</td><td>Tiered appeals system</td><td>Automated for clear-cut cases, human review for complex policy edge cases</td></tr>
+</table>
+
+<div class="section-header">Code — Key Algorithm</div>
+<div class="code-block">
+import hashlib
+import numpy as np
+from typing import List, Tuple, Dict
+
+class ContentModerationPipeline:
+    def __init__(self, policy_thresholds: Dict[str, float]):
+        self.policy_thresholds = policy_thresholds
+        self.model_weights = {
+            'violence': 0.3, 'hate_speech': 0.25, 'spam': 0.2, 
+            'copyright': 0.15, 'nudity': 0.1
+        }
+    
+    def generate_perceptual_hash(self, frame_data: np.ndarray) -> str:
+        """Generate perceptual hash for video frame similarity matching"""
+        # Resize to 8x8, convert to grayscale
+        resized = np.mean(frame_data, axis=2).astype(np.uint8)
+        resized = np.array([[resized[i//8, j//8] for j in range(64)] for i in range(64)])
+        
+        # Calculate DCT-like hash
+        avg = np.mean(resized)
+        hash_bits = ''.join(['1' if pixel > avg else '0' for pixel in resized.flatten()])
+        return hashlib.md5(hash_bits.encode()).hexdigest()
+    
+    def classify_content(self, content_features: Dict) -> Dict[str, float]:
+        """Simulate ML model predictions for different policy categories"""
+        # In reality, these would be calls to deployed ML models
+        scores = {}
+        for policy in self.model_weights.keys():
+            # Simulate model inference with weighted feature combination
+            raw_score = np.random.beta(2, 5)  # Simulated model output
+            scores[policy] = min(raw_score * content_features.get('risk_multiplier', 1.0), 1.0)
+        
+        return scores
+    
+    def calculate_final_risk_score(self, individual_scores: Dict[str, float], 
+                                 creator_tier: str) -> float:
+        """Combine individual model scores into final risk assessment"""
+        weighted_score = sum(score * self.model_weights[policy] 
+                           for policy, score in individual_scores.items())
+        
+        # Apply creator tier adjustment
+        tier_multipliers = {'established': 0.85, 'partner': 0.9, 'new': 1.0}
+        adjusted_score = weighted_score * tier_multipliers.get(creator_tier, 1.0)
+        
+        return min(adjusted_score, 1.0)
+    
+    def needs_human_review(self, risk_score: float, policy_scores: Dict[str, float]) -> bool:
+        """Determine if content should be sent for human review"""
+        # High-risk content always goes to human review
+        if risk_score > 0.8:
+            return True
+        
+        # Edge cases near policy thresholds need human judgment
+        for policy, score in policy_scores.items():
+            threshold = self.policy_thresholds[policy]
+            if abs(score - threshold) < 0.1:  # Within ambiguous range
+                return True
+                
+        return False
+</div>
+<p class="body-text">This code demonstrates the core content moderation pipeline logic, showing how YouTube combines multiple ML model outputs into a final risk score while accounting for creator reputation and policy-specific thresholds. The perceptual hashing enables efficient content similarity matching, while the weighted scoring system allows fine-tuning for different types of violations.</p>
+
+<div class="section-header">Scale Progression</div>
+<div class="scale-progression">
+  <div class="scale-step"><div class="scale-dot" style="background:#4caf50"></div><strong>1K users:</strong>&nbsp; Simple keyword filtering and basic image hashing with manual review queue. Single server with OpenCV for basic computer vision, running on modest hardware with human reviewers handling most decisions.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#ff9800"></div><strong>1M users:</strong>&nbsp; Dedicated ML pipeline with specialized models for different content types. Distributed processing across multiple servers, automated ContentID matching, and tiered human review with specialized teams by policy area.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#f44336"></div><strong>1B users:</strong>&nbsp; Fully distributed global system with edge processing, real-time ML inference, sophisticated ensemble models, 20K+ human reviewers across time zones, and continuous adversarial training. Multi-region deployment with localized policy enforcement.</div>
+</div>
+
+<div class="ai-smb-box">
+  <div class="label">AI-First SMB Version — Build This Today</div>
+  <p>An SMB can build a modern content moderation system using: OpenAI's GPT-4V for visual content analysis ($0.01/image), OpenAI Whisper for audio transcription, and GPT-4 for text classification (~$0.03/1K tokens). Architecture: Upload to Cloudflare R2 storage → trigger AWS Lambda → extract frames with FFmpeg → parallel API calls to OpenAI for visual/audio/text analysis → store results in Supabase → auto-reject high-confidence violations, queue borderline content in Retool admin dashboard for human review. Use Pinecone vector database for similarity matching against known violations. Total cost: ~$0.10-0.50 per video depending on length. Modern tools like Hive Moderation API or Sightengine provide pre-built models for common violations at $0.001-0.01 per request. For a platform with 1K videos/day, total moderation cost would be $50-500/day—dramatically cheaper than building custom ML models.</p>
+</div>
+
+<div class="pull-quote">"The hardest part of content moderation isn't building the ML models—it's defining what should be removed. Every edge case requires a human judgment that becomes part of your policy, and those policies compound into impossible complexity."</div>
+
+<div class="section-header">Sources & Further Reading</div>
+<p>
+<a class="source-link" href="https://blog.google/inside-google/company-announcements/an-update-on-our-content-policies-and-enforcement/">An update on our content policies and enforcement — Google Blog</a>
+<a class="source-link" href="https://research.google/pubs/pub46618/">Learning to Moderate Online Content at Scale — Google Research</a>
+<a class="source-link" href="https://transparencyreport.google.com/youtube-policy/removals">YouTube Community Guidelines Enforcement — Google Transparency Report</a>
+<a class="source-link" href="https://arxiv.org/abs/2103.14749">Large-scale Content Moderation with Deep Learning — ArXiv</a>
+<a class="source-link" href="https://blog.youtube/inside-youtube/four-rs-responsibility-raise-reduce-remove-reward/">The Four Rs of Responsibility — YouTube Official Blog</a>
+<a class="source-link" href="https://www.usenix.org/conference/nsdi21/presentation/wang-jingjing">Content Moderation in the Wild: Lessons from YouTube — USENIX NSDI 21</a>
+<a class="source-link" href="https://support.google.com/youtube/answer/2797370">Content ID system overview — YouTube Help</a>
+<a class="source-link" href="https://research.google/pubs/pub48882/">Adversarial Training for Content Moderation — Google Research</a>
+</p>
+
+<div class="interview-box">
+  <div class="label">Interview Corner — FAANG-Level Questions</div>
+  <ol>
+    <li><strong>Q:</strong> How would you handle a creator who keeps uploading slightly modified versions of violating content to evade your detection system?<br><strong>Model Answer:</strong> Implement creator-level risk scoring with escalating penalties, use adversarial training to make models robust to common evasion techniques, and deploy behavioral analysis to detect systematic policy circumvention patterns across uploads.</li>
+    <li><strong>Q:</strong> Your content moderation system has 95% accuracy but generates 100K false positives daily. How do you reduce this while maintaining safety?<br><strong>Model Answer:</strong> Implement confidence-based thresholds where borderline cases get human review, create creator reputation systems that reduce false positives for trusted users, and deploy active learning to continuously retrain on the most challenging edge cases.</li>
+    <li><strong>Q:</strong> How would you design content moderation for a new platform launching globally from day one?<br><strong>Model Answer:</strong> Start with pre-trained models from providers like OpenAI/Google, implement human-in-the-loop review workflows from launch, collect training data through user reports, and gradually build custom models for platform-specific policy violations while maintaining cultural sensitivity across regions.</li>
+  </ol>
+</div>
+
+<div class="next-up">
+  <div class="label">Coming Up Next</div>
+  <p><strong>Ad Auction & Monetization</strong> — How YouTube runs real-time auctions for millions of ad slots per second while optimizing for both advertiser ROI and creator revenue.</p>
+</div>
+  </div>
+  <div class="footer">
+    <p>System Design Daily &bull; Built by Sam Anmol &bull; Powered by Claude AI</p>
+    <p>19 Systems &bull; 200 Lessons &bull; From Zero to World-Class</p>
+    <p style="margin-top: 10px;">Reply STOP to end &bull; Reply SKIP to jump to next system</p>
+  </div>
+</div>
+</body>
+</html>

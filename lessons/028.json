@@ -1,0 +1,9 @@
+{
+  "lesson_id": 28,
+  "title": "Kafka Core Architecture",
+  "subtitle": "Brokers, Topics, Partitions, Consumer Groups Explained",
+  "system_name": "Apache Kafka",
+  "type": "core",
+  "generated_at": "2026-03-30T16:09:26.324422+00:00",
+  "content_length": 19718
+}

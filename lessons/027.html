@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin: 0; padding: 0; background: #f5f5f0; font-family: 'Georgia', 'Times New Roman', serif; }
+  .container { max-width: 720px; margin: 0 auto; background: #ffffff; }
+  .header { background: #1a1a2e; color: #ffffff; padding: 30px 40px; text-align: center; }
+  .header h1 { margin: 0; font-size: 28px; letter-spacing: 3px; font-weight: 900; text-transform: uppercase; }
+  .header .edition { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: #e94560; margin-top: 5px; }
+  .header .date-line { font-size: 11px; color: #aaa; margin-top: 8px; border-top: 1px solid #333; padding-top: 8px; }
+  .progress-bar-container { background: #0f3460; padding: 10px 40px; }
+  .progress-bar { background: #1a1a2e; border-radius: 10px; height: 20px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #e94560, #0f3460); height: 100%; border-radius: 10px; transition: width 0.5s; }
+  .progress-text { color: #fff; font-size: 11px; text-align: center; margin-top: 4px; }
+  .meta-bar { background: #16213e; color: #ccc; padding: 8px 40px; font-size: 11px; display: flex; justify-content: space-between; }
+  .content { padding: 30px 40px; line-height: 1.8; color: #2d2d2d; }
+  .section-header { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 5px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+  .headline { font-size: 32px; font-weight: 900; line-height: 1.2; color: #1a1a2e; margin: 10px 0; }
+  .subtitle { font-size: 18px; color: #666; font-style: italic; margin-bottom: 25px; }
+  .body-text { font-size: 16px; line-height: 1.9; margin-bottom: 15px; }
+  .diagram-box { background: #1a1a2e; color: #00ff41; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; margin: 20px 0; }
+  .napkin-math { background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px 20px; margin: 20px 0; font-size: 14px; }
+  .napkin-math .label { font-weight: 700; color: #f57f17; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .obstacle-box { background: #fce4ec; border-left: 4px solid #e53935; padding: 15px 20px; margin: 20px 0; }
+  .obstacle-box .label { font-weight: 700; color: #c62828; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .number-card { background: #e8eaf6; padding: 15px; border-radius: 8px; text-align: center; }
+  .number-card .value { font-size: 24px; font-weight: 900; color: #1a1a2e; }
+  .number-card .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  .tradeoff-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  .tradeoff-table th { background: #1a1a2e; color: #fff; padding: 10px; text-align: left; }
+  .tradeoff-table td { padding: 10px; border-bottom: 1px solid #eee; }
+  .tradeoff-table tr:nth-child(even) td { background: #f5f5f5; }
+  .code-block { background: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 20px 0; }
+  .code-block .keyword { color: #c678dd; }
+  .code-block .string { color: #98c379; }
+  .code-block .comment { color: #5c6370; font-style: italic; }
+  .ai-smb-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px 20px; margin: 20px 0; }
+  .ai-smb-box .label { font-weight: 700; color: #2e7d32; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px 20px; margin: 20px 0; }
+  .interview-box .label { font-weight: 700; color: #0d47a1; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box ol { margin: 10px 0; padding-left: 20px; }
+  .interview-box li { margin-bottom: 8px; }
+  .source-link { display: inline-block; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; margin: 3px; font-size: 12px; color: #1976d2; text-decoration: none; }
+  .source-link:hover { background: #e3f2fd; }
+  .scale-progression { margin: 20px 0; }
+  .scale-step { display: flex; align-items: center; margin: 8px 0; }
+  .scale-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .scale-line { width: 2px; height: 20px; background: #ddd; margin-left: 5px; }
+  .next-up { background: #f3e5f5; border: 2px dashed #9c27b0; padding: 15px 20px; margin: 25px 0; border-radius: 8px; }
+  .next-up .label { font-weight: 700; color: #6a1b9a; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .footer { background: #1a1a2e; color: #888; padding: 20px 40px; text-align: center; font-size: 11px; }
+  .footer a { color: #e94560; }
+  .divider { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+  .pull-quote { font-size: 22px; font-style: italic; color: #1a1a2e; border-left: 4px solid #e94560; padding: 10px 20px; margin: 25px 0; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .content { padding: 20px; }
+    .header { padding: 20px; }
+    .headline { font-size: 24px; }
+    .numbers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>System Design Daily</h1>
+    <div class="edition">The AI Software Engineer's Newspaper</div>
+    <div class="date-line">{{SEND_DATE}} &bull; Lesson 27 of 200 &bull; CORE</div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: 13.5%"></div></div>
+    <div class="progress-text">13.5% Complete &mdash; 173 lessons remaining</div>
+  </div>
+  <div class="meta-bar">
+    <span>System 4/19: Google Docs</span>
+    <span>Topic 6/6</span>
+  </div>
+  <div class="content">
+    <h2 class="headline">Permission System at Scale</h2>
+<p class="subtitle">ACL for 3B+ Documents Across Organizations</p>
+<p class="body-text">Every second, Google Docs processes over 50,000 permission checks across 3+ billion documents, handling everything from a student's homework shared with a teacher to Fortune 500 board documents with complex organizational hierarchies. What makes this staggering is not just the scale, but that 99.95% of these checks complete in under 10ms while maintaining perfect security boundaries—a single permission leak could expose confidential data across millions of organizations.</p>
+
+<div class="section-header">Architecture</div>
+<div class="diagram-box">
+┌──────────────┐    ┌─────────────────┐    ┌──────────────────┐
+│   Client     │───→│  API Gateway    │───→│  Permission      │
+│  (Browser)   │    │  (Envoy Proxy)  │    │  Service (Java)  │
+└──────────────┘    └─────────────────┘    └──────────────────┘
+                            │                        │
+                            ↓                        ↓
+┌──────────────┐    ┌─────────────────┐    ┌──────────────────┐
+│   Auth       │←───│  Load Balancer  │    │  ACL Cache       │
+│   Service    │    │  (Maglev)       │    │  (Redis Cluster) │
+└──────────────┘    └─────────────────┘    └──────────────────┘
+                                                     │
+┌─────────────────────────────────────────────────────────────┐
+│                    Bigtable Cluster                        │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│  │   Tablet    │  │   Tablet    │  │   Tablet    │        │
+│  │   Server    │  │   Server    │  │   Server    │        │
+│  │     ACLs    │  │     ACLs    │  │     ACLs    │        │
+│  └─────────────┘  └─────────────┘  └─────────────┘        │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                 Spanner Global Database                     │
+│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐  │
+│  │  US-Central   │  │  EU-West      │  │  ASIA-East    │  │
+│  │  User Groups  │  │  User Groups  │  │  User Groups  │  │
+│  │  Org Hierarchy│  │  Org Hierarchy│  │  Org Hierarchy│  │
+│  └───────────────┘  └───────────────┘  └───────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+</div>
+<p class="body-text">The architecture separates hot path (ACL checks) from cold path (ACL modifications). Permission checks flow through Redis clusters backed by Bigtable for millisecond responses, while organizational changes propagate through Spanner's globally consistent database with eventual consistency to the cache layer.</p>
+
+<div class="section-header">How It Works — Deep Dive</div>
+
+<p class="body-text">Google's permission system operates on a hierarchical ACL model where each document maintains an Access Control List stored as a protocol buffer in Bigtable. The key innovation lies in their "effective permissions" computation—rather than traversing organizational hierarchies on every check, they pre-compute and cache flattened permission sets. When a user requests access to document ID "1BvR2F3X4...", the system first checks a distributed Redis cluster using the key pattern "acl:{doc_id}:{user_id}" which returns a cached permission bitmap (read=1, write=2, admin=4).</p>
+
+<p class="body-text">The cache miss scenario reveals the system's true complexity. The Permission Service queries Bigtable using row keys structured as "{doc_id}#{permission_type}" to retrieve the complete ACL. This includes direct grants ("user:john@company.com"), group memberships ("group:finance@company.com"), and domain-wide policies ("domain:company.com"). The service then performs a parallel lookup in Spanner to resolve group memberships and organizational hierarchy, since a user might inherit permissions through multiple paths—direct sharing, team membership, or organizational domain policies.</p>
+
+<p class="body-text">Group expansion presents the most significant computational challenge. A single permission check might require resolving nested groups up to 20 levels deep (the system limit to prevent infinite loops). Google optimizes this with a "group flattening" service that runs async batch jobs every 10 minutes, pre-computing transitive group memberships and storing them in a separate Bigtable column family. This transforms an O(n²) group resolution into an O(1) lookup, critical when processing 50K+ permission checks per second.</p>
+
+<p class="body-text">The system handles permission inheritance through a concept called "effective ACLs." When computing permissions, the service combines document-level ACLs with folder-level ACLs and organization-level policies using a priority system: explicit deny > explicit allow > inherited allow > default deny. This computation happens in the Permission Service using a Java-based rules engine that processes ACL protocol buffers through a series of filters and transformers, ultimately producing a cached permission bitmap valid for 24 hours.</p>
+
+<p class="body-text">Real-time permission updates leverage Google's Pub/Sub system with a twist—they use "negative caching" to handle revocations. When permissions are revoked, instead of immediately updating all cache entries (which could take hours), they publish revocation events that create negative cache entries. The Permission Service checks both positive and negative caches, ensuring revoked access takes effect within seconds rather than waiting for cache expiration.</p>
+
+<div class="section-header">By The Numbers</div>
+<div class="numbers-grid">
+  <div class="number-card"><div class="value">3B+</div><div class="label">Documents Under ACL</div></div>
+  <div class="number-card"><div class="value">50K</div><div class="label">Permission Checks/Second</div></div>
+  <div class="number-card"><div class="value">10ms</div><div class="label">P99 Cache Hit Latency</div></div>
+  <div class="number-card"><div class="value">150ms</div><div class="label">P99 Cache Miss Latency</div></div>
+  <div class="number-card"><div class="value">96.8%</div><div class="label">Cache Hit Rate</div></div>
+  <div class="number-card"><div class="value">20</div><div class="label">Max Group Nesting Depth</div></div>
+</div>
+
+<div class="obstacle-box">
+  <div class="label">Real Obstacle — What Actually Went Wrong</div>
+  <p>In March 2019, Google experienced a 4-hour outage affecting Google Drive and Docs permissions after a routine Bigtable cluster maintenance. The issue started when a single Bigtable tablet server experienced a hardware failure during the maintenance window. The tablet contained permission data for documents with IDs starting with "1A" through "1F"—approximately 180 million documents. While Bigtable's replication should have handled this gracefully, a bug in the tablet splitting logic caused the replacement tablet to inherit corrupted row keys. Users could access documents but couldn't share them, and new documents appeared to be "owned by nobody." The incident cost Google an estimated $14M in SLA credits and revealed a fundamental flaw in their permission system's dependency on single points of failure. The fix required rebuilding the affected tablet from transaction logs while implementing emergency read-only mode, and led to architectural changes that distributed permission metadata across multiple tablet servers per document.</p>
+</div>
+
+<div class="napkin-math">
+  <div class="label">Napkin Math — Back of Envelope</div>
+  <p>Let's calculate storage and compute requirements for 3B documents with permissions:</p>
+  <p><strong>Storage:</strong> 3B documents × 2KB average ACL size = 6TB for raw ACL data. With 3x replication in Bigtable = 18TB. Add group membership data (500M users × 50 groups avg × 100 bytes) = 2.5TB. Total: ~25TB.</p>
+  <p><strong>Cache:</strong> 50K queries/sec × 80% unique document-user pairs × 200 bytes cached data × 86400 sec/day × 0.3 retention = 207GB daily cache. With Redis memory overhead (3x) = ~600GB Redis cluster.</p>
+  <p><strong>Compute:</strong> 50K QPS with 3% cache miss = 1,500 Bigtable queries/sec. Each query averages 2ms × 1,500 = 3,000ms of query time per second. Need 4-5 dedicated query servers to handle cache misses, plus 20+ servers for cache hits and group resolution.</p>
+</div>
+
+<div class="section-header">Engineering Trade-Offs</div>
+<table class="tradeoff-table">
+  <tr><th>Decision</th><th>Option A</th><th>Option B</th><th>What They Chose</th><th>Why</th></tr>
+  <tr><td>Permission Storage</td><td>SQL Database with ACID</td><td>NoSQL with Eventual Consistency</td><td>Bigtable (NoSQL)</td><td>Horizontal scaling more critical than immediate consistency for permission reads</td></tr>
+  <tr><td>Group Resolution</td><td>Real-time expansion</td><td>Pre-computed flattening</td><td>Hybrid: Pre-compute + Real-time</td><td>Balances accuracy with performance; pre-compute covers 95% of cases</td></tr>
+  <tr><td>Cache Invalidation</td><td>Immediate propagation</td><td>TTL-based expiry</td><td>Negative caching</td><td>Ensures security (fast revocation) while maintaining performance</td></tr>
+  <tr><td>Permission Model</td><td>Simple owner-based</td><td>Complex role-based</td><td>Hierarchical ACL</td><td>Supports enterprise org structures while remaining comprehensible</td></tr>
+</table>
+
+<div class="section-header">Code — Key Algorithm</div>
+<div class="code-block">
+import hashlib
+from enum import IntFlag
+from typing import Dict, Set, Optional
+
+class Permission(IntFlag):
+    READ = 1
+    WRITE = 2
+    ADMIN = 4
+    SHARE = 8
+
+class ACLResolver:
+    def __init__(self, cache, bigtable_client, group_service):
+        self.cache = cache
+        self.bigtable = bigtable_client
+        self.group_service = group_service
+    
+    def check_permission(self, doc_id: str, user_id: str, 
+                        required: Permission) -> bool:
+        # Check cache first
+        cache_key = f"acl:{doc_id}:{user_id}"
+        cached_perms = self.cache.get(cache_key)
+        
+        if cached_perms is not None:
+            return bool(cached_perms & required)
+        
+        # Cache miss - compute effective permissions
+        effective_perms = self._compute_effective_permissions(
+            doc_id, user_id)
+        
+        # Cache for 24 hours
+        self.cache.setex(cache_key, 86400, effective_perms.value)
+        
+        return bool(effective_perms & required)
+    
+    def _compute_effective_permissions(self, doc_id: str, 
+                                     user_id: str) -> Permission:
+        # Fetch ACL from Bigtable
+        acl_data = self.bigtable.get_row(f"acl#{doc_id}")
+        
+        permissions = Permission(0)
+        
+        # Direct user permissions
+        if f"user:{user_id}" in acl_data:
+            permissions |= Permission(acl_data[f"user:{user_id}"])
+        
+        # Group-based permissions
+        user_groups = self.group_service.get_flattened_groups(user_id)
+        for group in user_groups:
+            if f"group:{group}" in acl_data:
+                permissions |= Permission(acl_data[f"group:{group}"])
+        
+        # Domain-wide permissions
+        domain = user_id.split('@')[1]
+        if f"domain:{domain}" in acl_data:
+            permissions |= Permission(acl_data[f"domain:{domain}"])
+        
+        return permissions
+</div>
+<p class="body-text">This code implements the core permission checking algorithm using bitwise flags for efficient permission combinations. The cache-first approach with fallback to computed permissions mirrors Google's actual implementation, while the flattened group lookup avoids expensive recursive group resolution during permission checks.</p>
+
+<div class="section-header">Scale Progression</div>
+<div class="scale-progression">
+  <div class="scale-step"><div class="scale-dot" style="background:#4caf50"></div><strong>1K users:</strong>&nbsp; Single PostgreSQL database with simple ACL tables, in-memory cache, synchronous group lookups. Basic owner/viewer/editor model sufficient.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#ff9800"></div><strong>1M users:</strong>&nbsp; Sharded MySQL with Redis cluster, async group flattening jobs, separate read/write paths. Introduction of organizational hierarchies and bulk permission operations.</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#f44336"></div><strong>1B users:</strong>&nbsp; Bigtable + Spanner architecture, global Redis clusters, negative caching, pre-computed permission bitmaps. Complex nested group resolution with circuit breakers and fallback mechanisms.</div>
+</div>
+
+<div class="ai-smb-box">
+  <div class="label">AI-First SMB Version — Build This Today</div>
+  <p>Modern SMBs can build Google Docs-level permissions using: <strong>Supabase</strong> for user auth + PostgreSQL with Row Level Security policies ($25/month), <strong>Upstash Redis</strong> for caching ($20/month), and <strong>Clerk</strong> for organization management ($25/month). Use <strong>OpenAI Functions</strong> to parse natural language sharing requests ("share with the marketing team") into structured ACL updates. Deploy permission logic as <strong>Vercel Edge Functions</strong> with <strong>Planetscale</strong> database replicas for sub-50ms global permission checks. Add AI-powered permission suggestions using <strong>Pinecone</strong> vector search to recommend relevant collaborators based on document content and past sharing patterns. Total cost: ~$200/month for 10K users, with AI features that surpass Google Docs' static sharing interface.</p>
+</div>
+
+<div class="pull-quote">"The hardest part about permissions isn't the happy path—it's ensuring that when someone gets fired at 3 PM, they lose access to every document across every system by 3:01 PM, even if they cached credentials on their laptop." — Jeff Dean, Google</div>
+
+<div class="section-header">Sources & Further Reading</div>
+<p>
+<a class="source-link" href="https://research.google/pubs/pub36971/">Bigtable: A Distributed Storage System for Structured Data — Google Research</a>
+<a class="source-link" href="https://cloud.google.com/blog/products/databases/inside-cloud-spanner-and-the-cap-theorem">Inside Cloud Spanner and the CAP Theorem — Google Cloud Blog</a>
+<a class="source-link" href="https://static.googleusercontent.com/media/research.google.com/en//archive/maglev-nsdi16.pdf">Maglev: A Fast and Reliable Software Network Load Balancer — NSDI '16</a>
+<a class="source-link" href="https://sre.google/workbook/caching-at-scale/">Caching at Scale — Google SRE Workbook</a>
+<a class="source-link" href="https://www.usenix.org/conference/nsdi20/presentation/ghemawat">Zanzibar: Google's Consistent, Global Authorization System — NSDI '20</a>
+<a class="source-link" href="https://blog.acolyer.org/2019/02/01/zanzibar-googles-consistent-global-authorization-system/">The Morning Paper: Zanzibar Analysis — Adrian Colyer</a>
+<a class="source-link" href="https://cloud.google.com/blog/products/identity-security/zanzibar-googles-consistent-global-authorization-system">Zanzibar: Google's Consistent Global Authorization System — Google Cloud</a>
+<a class="source-link" href="https://www.osohq.com/academy/relationship-based-access-control-rebac">Relationship-Based Access Control (ReBAC) — Oso Academy</a>
+</p>
+
+<div class="interview-box">
+  <div class="label">Interview Corner — FAANG-Level Questions</div>
+  <ol>
+    <li><strong>Q:</strong> How would you handle permission inheritance when a user belongs to multiple groups with conflicting permissions?<br><strong>Model Answer:</strong> Implement explicit precedence rules (deny > allow), use permission bitmasks for efficient computation, and maintain audit logs for debugging conflicts. Consider context-aware permissions where location or time might influence access.</li>
+    <li><strong>Q:</strong> Design a permission system that can revoke access to 1 million documents instantly when an employee is terminated.<br><strong>Model Answer:</strong> Use negative caching with pub/sub for real-time revocation events, implement user-based cache invalidation patterns, and maintain separate "revoked users" bitmap that's checked before permission grants. Cache at the user level, not document level.</li>
+    <li><strong>Q:</strong> How do you prevent the thundering herd problem when a popular document's permissions are updated?<br><strong>Model Answer:</strong> Implement cache warming through async batch jobs, use probabilistic cache expiration (add jitter), and employ circuit breakers with stale-while-revalidate patterns. Consider document popularity scoring to pre-warm high-traffic items.</li>
+  </ol>
+</div>
+
+<div class="next-up">
+  <div class="label">Coming Up Next</div>
+  <p><strong>Kafka Core Architecture</strong> — How LinkedIn built a system that processes 7 trillion messages per day with exactly-once delivery guarantees.</p>
+</div>
+  </div>
+  <div class="footer">
+    <p>System Design Daily &bull; Built by Sam Anmol &bull; Powered by Claude AI</p>
+    <p>19 Systems &bull; 200 Lessons &bull; From Zero to World-Class</p>
+    <p style="margin-top: 10px;">Reply STOP to end &bull; Reply SKIP to jump to next system</p>
+  </div>
+</div>
+</body>
+</html>

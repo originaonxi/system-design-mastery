@@ -1,0 +1,9 @@
+{
+  "lesson_id": 29,
+  "title": "Log-Structured Storage",
+  "subtitle": "Why Kafka Gets 2M+ Messages/Sec Write Throughput",
+  "system_name": "Apache Kafka",
+  "type": "core",
+  "generated_at": "2026-03-30T16:11:00.453423+00:00",
+  "content_length": 17460
+}
