@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin: 0; padding: 0; background: #f5f5f0; font-family: 'Georgia', 'Times New Roman', serif; }
+  .container { max-width: 720px; margin: 0 auto; background: #ffffff; }
+  .header { background: #1a1a2e; color: #ffffff; padding: 30px 40px; text-align: center; }
+  .header h1 { margin: 0; font-size: 28px; letter-spacing: 3px; font-weight: 900; text-transform: uppercase; }
+  .header .edition { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: #e94560; margin-top: 5px; }
+  .header .date-line { font-size: 11px; color: #aaa; margin-top: 8px; border-top: 1px solid #333; padding-top: 8px; }
+  .progress-bar-container { background: #0f3460; padding: 10px 40px; }
+  .progress-bar { background: #1a1a2e; border-radius: 10px; height: 20px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #e94560, #0f3460); height: 100%; border-radius: 10px; transition: width 0.5s; }
+  .progress-text { color: #fff; font-size: 11px; text-align: center; margin-top: 4px; }
+  .meta-bar { background: #16213e; color: #ccc; padding: 8px 40px; font-size: 11px; display: flex; justify-content: space-between; }
+  .content { padding: 30px 40px; line-height: 1.8; color: #2d2d2d; }
+  .section-header { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 5px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+  .headline { font-size: 32px; font-weight: 900; line-height: 1.2; color: #1a1a2e; margin: 10px 0; }
+  .subtitle { font-size: 18px; color: #666; font-style: italic; margin-bottom: 25px; }
+  .body-text { font-size: 16px; line-height: 1.9; margin-bottom: 15px; }
+  .diagram-box { background: #1a1a2e; color: #00ff41; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; margin: 20px 0; }
+  .napkin-math { background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px 20px; margin: 20px 0; font-size: 14px; }
+  .napkin-math .label { font-weight: 700; color: #f57f17; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .obstacle-box { background: #fce4ec; border-left: 4px solid #e53935; padding: 15px 20px; margin: 20px 0; }
+  .obstacle-box .label { font-weight: 700; color: #c62828; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .numbers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .number-card { background: #e8eaf6; padding: 15px; border-radius: 8px; text-align: center; }
+  .number-card .value { font-size: 24px; font-weight: 900; color: #1a1a2e; }
+  .number-card .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  .tradeoff-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  .tradeoff-table th { background: #1a1a2e; color: #fff; padding: 10px; text-align: left; }
+  .tradeoff-table td { padding: 10px; border-bottom: 1px solid #eee; }
+  .tradeoff-table tr:nth-child(even) td { background: #f5f5f5; }
+  .code-block { background: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 20px 0; }
+  .code-block .keyword { color: #c678dd; }
+  .code-block .string { color: #98c379; }
+  .code-block .comment { color: #5c6370; font-style: italic; }
+  .ai-smb-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px 20px; margin: 20px 0; }
+  .ai-smb-box .label { font-weight: 700; color: #2e7d32; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px 20px; margin: 20px 0; }
+  .interview-box .label { font-weight: 700; color: #0d47a1; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .interview-box ol { margin: 10px 0; padding-left: 20px; }
+  .interview-box li { margin-bottom: 8px; }
+  .source-link { display: inline-block; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; margin: 3px; font-size: 12px; color: #1976d2; text-decoration: none; }
+  .source-link:hover { background: #e3f2fd; }
+  .scale-progression { margin: 20px 0; }
+  .scale-step { display: flex; align-items: center; margin: 8px 0; }
+  .scale-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .scale-line { width: 2px; height: 20px; background: #ddd; margin-left: 5px; }
+  .next-up { background: #f3e5f5; border: 2px dashed #9c27b0; padding: 15px 20px; margin: 25px 0; border-radius: 8px; }
+  .next-up .label { font-weight: 700; color: #6a1b9a; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .footer { background: #1a1a2e; color: #888; padding: 20px 40px; text-align: center; font-size: 11px; }
+  .footer a { color: #e94560; }
+  .divider { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+  .pull-quote { font-size: 22px; font-style: italic; color: #1a1a2e; border-left: 4px solid #e94560; padding: 10px 20px; margin: 25px 0; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .content { padding: 20px; }
+    .header { padding: 20px; }
+    .headline { font-size: 24px; }
+    .numbers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>System Design Daily</h1>
+    <div class="edition">The AI Software Engineer's Newspaper</div>
+    <div class="date-line">{{SEND_DATE}} &bull; Lesson 2 of 200 &bull; CORE</div>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: 1.0%"></div></div>
+    <div class="progress-text">1.0% Complete &mdash; 198 lessons remaining</div>
+  </div>
+  <div class="meta-bar">
+    <span>System 1/19: Stock Exchange</span>
+    <span>Topic 2/7</span>
+  </div>
+  <div class="content">
+    <h2 class="headline">Order Book Data Structure</h2>
+<p class="subtitle">The Heart of Every Exchange - Price-Time Priority at Nanosecond Speed</p>
+<p class="body-text">At 2:45 PM on May 6, 2010, NASDAQ's order book for Apple stock processed 75,000 order updates in a single second as the Flash Crash unfolded. Every nanosecond mattered—the difference between a profitable arbitrage and a devastating loss. The order book data structure is the beating heart of every modern exchange, maintaining perfect price-time priority across millions of orders while handling update rates that would bring traditional databases to their knees. Understanding how exchanges achieve sub-microsecond order matching at scale is essential knowledge for any engineer building high-frequency systems.</p>
+
+<div class="section-header">Architecture</div>
+<div class="diagram-box">
+Order Book Data Structure Architecture
+                                    
+┌─────────────────┐    Orders    ┌──────────────────────┐
+│   Market Data   │─────────────→│    Order Router      │
+│   Gateway       │              │   (FIX Protocol)     │
+└─────────────────┘              └──────────┬───────────┘
+                                            │
+                 ┌──────────────────────────┼──────────────────────────┐
+                 │                          ▼                          │
+                 │              ┌───────────────────────┐              │
+                 │              │   Matching Engine     │              │
+                 │              │     (C++/FPGA)       │              │
+                 │              └───────────┬───────────┘              │
+                 │                          │                          │
+                 │                          ▼                          │
+┌────────────────▼──┐                ┌─────────────┐           ┌──────▼─────────┐
+│    BID SIDE       │                │    Price    │           │   ASK SIDE     │
+│  (Buy Orders)     │                │   Levels    │           │ (Sell Orders)  │
+│                   │                │  HashMap    │           │                │
+│ $150.01: RB-Tree  │◄──────────────►│             │◄─────────►│ $150.02: RB-Tree│
+│ $150.00: RB-Tree  │                │ Key: Price  │           │ $150.03: RB-Tree│
+│ $149.99: RB-Tree  │                │ Val: Level  │           │ $150.04: RB-Tree│
+│ ...               │                └─────────────┘           │ ...            │
+└───────────────────┘                                          └────────────────┘
+        │                                                              │
+        ▼                                                              ▼
+┌───────────────┐     Market Data     ┌─────────────────┐    ┌─────────────────┐
+│ L2 Data Feed  │◄────────────────────┤ Book Publisher  │───►│ Trade Reporting │
+│ (Market Depth)│                     │                 │    │      Feed       │
+└───────────────┘                     └─────────────────┘    └─────────────────┘
+</div>
+<p class="body-text">The order book architecture consists of two main sides (bid/ask) with each price level maintaining a red-black tree for time-priority ordering. The central matching engine processes orders against the book structure, while separate publishers handle market data distribution to thousands of subscribers in real-time.</p>
+
+<div class="section-header">How It Works — Deep Dive</div>
+<p class="body-text">The limit order book is fundamentally a two-sided data structure that maintains strict price-time priority. On the bid side, buy orders are sorted with highest prices first (descending), while the ask side maintains sell orders with lowest prices first (ascending). Each price level contains a red-black tree that preserves the exact time-ordering of orders at that price—critical for regulatory compliance and fairness.</p>
+
+<p class="body-text">When a new order arrives via FIX 4.4 protocol, the matching engine first determines if it's marketable (can execute immediately). A buy order is marketable if its price is greater than or equal to the best ask price. The engine performs price-level lookup using a HashMap with the price as key—this provides O(1) access to the correct price level. Within each price level, the red-black tree ensures O(log n) insertion and deletion while maintaining perfect time priority. NASDAQ's matching engine, built in C++ with FPGA acceleration for market data parsing, processes this logic in under 200 nanoseconds per order.</p>
+
+<p class="body-text">Market data distribution operates on two levels: Level 2 (L2) shows aggregated quantity at each price level, while Level 3 (L3) reveals individual orders. The book publisher maintains separate data structures optimized for each feed type. For L2, it aggregates quantities across all orders at each price level, updating subscribers only when the aggregated quantity changes. L3 feeds require transmitting every order change, generating significantly more bandwidth—up to 100x more data volume for active stocks. The publisher uses efficient delta compression, sending only changes rather than full book snapshots, reducing network traffic by 85-90%.</p>
+
+<p class="body-text">Memory management becomes critical at scale. Each order consumes approximately 64 bytes (order ID, symbol, price, quantity, timestamp, side, customer ID). For a liquid stock like SPY with 10,000 orders in the book, that's 640KB just for order storage, plus additional overhead for the tree structures. The matching engine pre-allocates memory pools to avoid garbage collection pauses—even a 100-microsecond pause could mean missing thousands of orders during peak trading. Modern exchanges implement custom memory allocators that can allocate/deallocate order objects in constant time using free-list management.</p>
+
+<p class="body-text">Cross-venue arbitrage detection requires maintaining synchronized order books across multiple exchanges. The challenge is handling clock skew and network latency differences. A bid at $150.00 on NASDAQ arriving at 14:30:00.000001 might appear before an ask at $149.99 on NYSE arriving at 14:30:00.000002, even if the NYSE order was sent first. Sophisticated trading systems use GPS-synchronized clocks accurate to within 100 nanoseconds and implement complex timestamp normalization algorithms. They also maintain separate "virtual books" that account for estimated network delays to each venue, enabling more accurate arbitrage calculations.</p>
+
+<div class="section-header">By The Numbers</div>
+<div class="numbers-grid">
+  <div class="number-card"><div class="value">200ns</div><div class="label">Order processing latency (NASDAQ)</div></div>
+  <div class="number-card"><div class="value">100,000+</div><div class="label">Book updates/sec for active stocks</div></div>
+  <div class="number-card"><div class="value">$0.01</div><div class="label">Typical spread for liquid stocks</div></div>
+  <div class="number-card"><div class="value">50MB</div><div class="label">Memory per active stock book</div></div>
+  <div class="number-card"><div class="value">10-50</div><div class="label">Visible price levels (market depth)</div></div>
+  <div class="number-card"><div class="value">64 bytes</div><div class="label">Memory per individual order</div></div>
+</div>
+
+<div class="obstacle-box">
+  <div class="label">Real Obstacle — What Actually Went Wrong</div>
+  <p><strong>The 2010 Flash Crash: When Order Books Collapsed</strong><br><br>On May 6, 2010, at 2:32 PM, Waddell & Reed initiated a $4.1 billion sell order for E-Mini S&P 500 futures using an automated execution algorithm. The algorithm was programmed to sell 75,000 contracts (9% of daily trading volume) as quickly as possible, without regard to price or timing. Within minutes, this massive sell pressure created a liquidity vacuum in the order books. The ask side of the book became thin—instead of the usual 10-20 price levels with substantial quantity, only 2-3 levels remained with minimal size. High-frequency trading firms, detecting the imbalance, began withdrawing their quotes en masse. By 2:45 PM, the Dow had dropped over 600 points in 5 minutes, with some stocks trading at prices 60% below their previous levels. The root cause was order book design that couldn't handle such massive one-sided flow. The SEC's post-mortem revealed that during the crash, over 2.78 billion shares changed hands in 20 minutes—more than typical daily volume. Exchange order books, designed for balanced two-sided flow, had no circuit breakers to pause trading when book imbalance reached critical levels. The fix: implementing market-wide circuit breakers that halt trading when the S&P 500 drops 7%, 13%, or 20% from the previous close, giving order books time to rebuild liquidity.</p>
+</div>
+
+<div class="napkin-math">
+  <div class="label">Napkin Math — Back of Envelope</div>
+  <p><strong>Memory Requirements for Exchange Order Book System:</strong><br>
+  • Orders per stock: 10,000 orders (liquid stock like AAPL)<br>
+  • Memory per order: 64 bytes (ID, symbol, price, qty, timestamp, etc.)<br>
+  • Memory per stock book: 10,000 × 64 = 640KB for orders<br>
+  • Red-black tree overhead: ~40 bytes per node × 10,000 = 400KB<br>
+  • Price level hash map: ~100 price levels × 32 bytes = 3.2KB<br>
+  • Total per stock: 640KB + 400KB + 3.2KB ≈ 1MB base + market data buffers<br><br>
+  • Active stocks on NASDAQ: ~4,000<br>
+  • Total order book memory: 4,000 × 1MB = 4GB<br>
+  • Market data feeds (L2/L3): ~2x multiplier for buffering = 8GB<br>
+  • Safety margin (GC, fragmentation): 2x = <strong>16GB total RAM needed</strong><br><br>
+  • Network bandwidth: 100K updates/sec × 8 bytes × 4,000 stocks = 3.2GB/sec theoretical<br>
+  • Actual with compression: ~400MB/sec sustained</p>
+</div>
+
+<div class="section-header">Engineering Trade-Offs</div>
+<table class="tradeoff-table">
+  <tr><th>Decision</th><th>Option A</th><th>Option B</th><th>What They Chose</th><th>Why</th></tr>
+  <tr><td>Time Priority Structure</td><td>Linked List (O(1) insert)</td><td>Red-Black Tree (O(log n))</td><td>Red-Black Tree</td><td>Need random access for cancellations, O(log n) acceptable for fairness guarantee</td></tr>
+  <tr><td>Price Level Access</td><td>Sorted Array (cache friendly)</td><td>HashMap (O(1) lookup)</td><td>HashMap</td><td>Price lookup frequency >> iteration, O(1) critical for latency</td></tr>
+  <tr><td>Market Data Feed</td><td>Full snapshots</td><td>Delta updates</td><td>Delta + periodic snapshots</td><td>90% bandwidth savings with delta, snapshots for recovery</td></tr>
+  <tr><td>Memory Management</td><td>Standard malloc/free</td><td>Custom memory pools</td><td>Custom pools</td><td>Eliminate GC pauses, predictable allocation patterns</td></tr>
+</table>
+
+<div class="section-header">Code — Key Algorithm</div>
+<div class="code-block">
+import heapq
+from collections import defaultdict, deque
+import time
+
+class OrderBook:
+    def __init__(self):
+        # Bid side: max heap (highest prices first)
+        self.bids = defaultdict(deque)  # price -> FIFO queue of orders
+        self.bid_prices = []  # max heap
+        
+        # Ask side: min heap (lowest prices first)  
+        self.asks = defaultdict(deque)  # price -> FIFO queue of orders
+        self.ask_prices = []  # min heap
+        
+    def add_order(self, order_id, side, price, quantity):
+        """Add limit order maintaining price-time priority"""
+        timestamp = time.time_ns()  # nanosecond precision
+        order = {
+            'id': order_id, 
+            'price': price, 
+            'qty': quantity,
+            'timestamp': timestamp
+        }
+        
+        if side == 'BUY':
+            if price not in self.bids:
+                heapq.heappush(self.bid_prices, -price)  # negative for max heap
+            self.bids[price].append(order)
+        else:  # SELL
+            if price not in self.asks:
+                heapq.heappush(self.ask_prices, price)  # min heap
+            self.asks[price].append(order)
+            
+        return self._try_match()
+    
+    def _try_match(self):
+        """Attempt to match orders, return list of trades"""
+        trades = []
+        
+        while (self.bid_prices and self.ask_prices and 
+               -self.bid_prices[0] >= self.ask_prices[0]):
+            
+            best_bid_price = -self.bid_prices[0]
+            best_ask_price = self.ask_prices[0]
+            
+            bid_order = self.bids[best_bid_price][0]
+            ask_order = self.asks[best_ask_price][0]
+            
+            # Trade at ask price (price-time priority)
+            trade_qty = min(bid_order['qty'], ask_order['qty'])
+            trade_price = best_ask_price
+            
+            trades.append({
+                'price': trade_price,
+                'quantity': trade_qty,
+                'buy_order_id': bid_order['id'],
+                'sell_order_id': ask_order['id']
+            })
+            
+            # Update remaining quantities
+            bid_order['qty'] -= trade_qty
+            ask_order['qty'] -= trade_qty
+            
+            # Remove fully filled orders
+            if bid_order['qty'] == 0:
+                self.bids[best_bid_price].popleft()
+                if not self.bids[best_bid_price]:
+                    heapq.heappop(self.bid_prices)
+                    del self.bids[best_bid_price]
+                    
+            if ask_order['qty'] == 0:
+                self.asks[best_ask_price].popleft()
+                if not self.asks[best_ask_price]:
+                    heapq.heappop(self.ask_prices)
+                    del self.asks[best_ask_price]
+                    
+        return trades
+    
+    def get_best_bid_ask(self):
+        """Return current best bid/ask prices"""
+        best_bid = -self.bid_prices[0] if self.bid_prices else None
+        best_ask = self.ask_prices[0] if self.ask_prices else None
+        return best_bid, best_ask
+</div>
+<p class="body-text">This implementation demonstrates the core order book algorithm using heaps for price priority and deques for time priority within each price level. The matching logic follows standard exchange rules: trades execute at the resting order's price (ask price for buyer-initiated trades). Real exchanges use more sophisticated data structures like red-black trees, but this captures the essential price-time priority mechanism.</p>
+
+<div class="section-header">Scale Progression</div>
+<div class="scale-progression">
+  <div class="scale-step"><div class="scale-dot" style="background:#4caf50"></div><strong>1K users:</strong>&nbsp; Single-threaded order book in Python/Java, SQLite for persistence, ~100 orders/sec, WebSocket feeds, runs on single 4-core server with 8GB RAM</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#ff9800"></div><strong>1M users:</strong>&nbsp; C++ matching engine with custom memory pools, Redis for L2 caching, separate market data publishers, horizontal scaling with symbol partitioning, 50K orders/sec per shard</div>
+  <div class="scale-step"><div class="scale-dot" style="background:#f44336"></div><strong>1B users:</strong>&nbsp; FPGA-accelerated matching, kernel bypass networking (DPDK), co-located data centers, microsecond-precision timestamping, dedicated hardware per symbol, 1M+ orders/sec with sub-100ns latency</div>
+</div>
+
+<div class="ai-smb-box">
+  <div class="label">AI-First SMB Version — Build This Today</div>
+  <p><strong>AI-Enhanced Order Book for SMB Trading Platform</strong><br><br>Architecture: Next.js frontend → Vercel Edge Functions → Redis Cloud (order storage) → OpenAI GPT-4 API for trade analysis. Use Supabase for user data and real-time subscriptions for order book updates. Implement order matching in TypeScript with Redis sorted sets for price levels.<br><br>AI Components: (1) GPT-4 analyzes order book imbalance patterns, generates plain-English market insights: "Large sell wall at $150 suggests resistance level" (2) Embedding-based anomaly detection using OpenAI embeddings to identify unusual order patterns that might indicate manipulation (3) ChatGPT integration for natural language order entry: "Buy 100 shares of Apple when it drops below $150"<br><br>Cost estimate: Vercel Pro ($20/mo) + Redis Cloud ($15/mo) + OpenAI API (~$100/mo for 10K queries) + Supabase Pro ($25/mo) = $160/month for up to 1,000 active traders. Revenue model: $29/month per trader subscription. The AI features provide enough value-add over traditional platforms to justify premium pricing while keeping infrastructure costs minimal through managed services.</p>
+</div>
+
+<div class="pull-quote">"The order book is not just a data structure—it's the physical manifestation of supply and demand, updated millions of times per second. Every nanosecond of latency is money lost or gained."</div>
+
+<div class="section-header">Sources & Further Reading</div>
+<p>
+<a class="source-link" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2449288">Limit Order Book Dynamics and Asset Pricing — SSRN</a>
+<a class="source-link" href="https://arxiv.org/abs/1104.4596">Price Dynamics in a Markovian Limit Order Market — arXiv</a>
+<a class="source-link" href="https://www.sec.gov/news/studies/2010/marketevents-report.pdf">Findings Regarding the Market Events of May 6, 2010 — SEC</a>
+<a class="source-link" href="https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf">NASDAQ TotalView-ITCH Data Feed Specification — NASDAQ</a>
+<a class="source-link" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1735338">The High-Frequency Trading Arms Race — SSRN</a>
+<a class="source-link" href="https://queue.acm.org/detail.cfm?id=2536492">Ultra-Low Latency Trading Architecture — ACM Queue</a>
+<a class="source-link" href="https://web.archive.org/web/20200417074626/https://business.nasdaq.com/market-tech/market-infrastructure/trading-services">NASDAQ Market Technology Overview — NASDAQ</a>
+<a class="source-link" href="https://www.fixtrading.org/standards/fix-4-4/">FIX Protocol 4.4 Specification — FIX Trading Community</a>
+</p>
+
+<div class="interview-box">
+  <div class="label">Interview Corner — FAANG-Level Questions</div>
+  <ol>
+    <li><strong>Q:</strong> What data structure would you use for a limit order book and why?<br><strong>Model Answer:</strong> HashMap for O(1) price level access with red-black trees at each level for time priority. Heaps won't work because we need random access for cancellations. Arrays are too slow for insertions at arbitrary prices.</li>
+    <li><strong>Q:</strong> How do you handle the thundering herd problem when a large order hits multiple price levels?<br><strong>Model Answer:</strong> Implement circuit breakers that pause matching when book imbalance exceeds thresholds. Use batching to process multiple small matches together. Consider order size caps and minimum resting times for very large orders.</li>
+    <li><strong>Q:</strong> Design a system to detect spoofing (fake orders to manipulate prices) in the order book.<br><strong>Model Answer:</strong> Track order-to-trade ratios per trader, flag rapid order placement/cancellation patterns, monitor for layering (multiple orders at same price), use ML to detect abnormal order book shapes, implement minimum order lifetimes.</li>
+  </ol>
+</div>
+
+<div class="next-up">
+  <div class="label">Coming Up Next</div>
+  <p><strong>Market Data Feed Architecture</strong> — How exchanges broadcast millions of price updates per second to thousands of subscribers without melting the internet.</p>
+</div>
+  </div>
+  <div class="footer">
+    <p>System Design Daily &bull; Built by Sam Anmol &bull; Powered by Claude AI</p>
+    <p>19 Systems &bull; 200 Lessons &bull; From Zero to World-Class</p>
+    <p style="margin-top: 10px;">Reply STOP to end &bull; Reply SKIP to jump to next system</p>
+  </div>
+</div>
+</body>
+</html>
